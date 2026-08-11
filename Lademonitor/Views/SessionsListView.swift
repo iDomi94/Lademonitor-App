@@ -1,0 +1,228 @@
+import SwiftUI
+
+struct SessionsListView: View {
+    @State private var sessions: [ChargingSession] = []
+    @State private var vehicles: [Vehicle] = []
+    @State private var providers: [Provider] = []
+    @State private var errorMessage: String?
+    @State private var isLoading = false
+    @State private var showingAddSheet = false
+    @State private var editingSession: ChargingSession?
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if let errorMessage {
+                    ContentUnavailableView {
+                        Label("Keine Verbindung", systemImage: "wifi.slash")
+                    } description: {
+                        Text(errorMessage)
+                    } actions: {
+                        Button("Erneut versuchen") { Task { await load() } }
+                    }
+                } else if sessions.isEmpty && !isLoading {
+                    ContentUnavailableView("Noch keine Ladevorgänge", systemImage: "bolt.slash")
+                } else {
+                    List {
+                        ForEach(sessions) { session in
+                            Button {
+                                editingSession = session
+                            } label: {
+                                SessionRow(
+                                    session: session,
+                                    vehicleName: vehicles.first(where: { $0.id == session.vehicleId })?.name,
+                                    providerName: providers.first(where: { $0.id == session.providerId })?.name
+                                )
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .onDelete(perform: delete)
+                    }
+                    .listStyle(.plain)
+                }
+            }
+            .navigationTitle("Ladevorgänge")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showingAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .disabled(vehicles.isEmpty)
+                }
+            }
+            .task { await load() }
+            .refreshable { await load() }
+            .sheet(isPresented: $showingAddSheet) {
+                AddEditSessionView(vehicles: vehicles, providers: providers, session: nil) {
+                    Task { await load() }
+                }
+            }
+            .sheet(item: $editingSession) { session in
+                AddEditSessionView(vehicles: vehicles, providers: providers, session: session) {
+                    Task { await load() }
+                }
+            }
+        }
+    }
+
+    private func load() async {
+        guard AppSettings.shared.isConfigured else {
+            errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
+            return
+        }
+        isLoading = true
+        errorMessage = nil
+        do {
+            async let s = APIClient.shared.fetchSessions()
+            async let v = APIClient.shared.fetchVehicles()
+            async let p = APIClient.shared.fetchProviders()
+            let (fetchedSessions, fetchedVehicles, fetchedProviders) = try await (s, v, p)
+            sessions = fetchedSessions
+            vehicles = fetchedVehicles
+            providers = fetchedProviders
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    private func delete(at offsets: IndexSet) {
+        let toDelete = offsets.map { sessions[$0] }
+        sessions.remove(atOffsets: offsets)
+        Task {
+            for session in toDelete {
+                try? await APIClient.shared.deleteSession(id: session.id)
+            }
+        }
+    }
+}
+
+private struct SessionRow: View {
+    let session: ChargingSession
+    let vehicleName: String?
+    let providerName: String?
+
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .short
+        f.locale = Locale(identifier: "de_DE")
+        return f
+    }()
+
+    private static let kmFormatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        f.locale = Locale(identifier: "de_DE")
+        f.maximumFractionDigits = 0
+        return f
+    }()
+
+    /// Zweite Detailzeile: SoC-Verlauf und Kilometerstand, falls vorhanden.
+    private var detailsLine: String {
+        var parts: [String] = []
+        switch (session.socStart, session.socEnd) {
+        case let (start?, end?):
+            parts.append("SoC \(start) → \(end) %")
+        case let (start?, nil):
+            parts.append("SoC ab \(start) %")
+        case let (nil, end?):
+            parts.append("SoC bis \(end) %")
+        default:
+            break
+        }
+        if let km = session.odometerKm {
+            let formatted = Self.kmFormatter.string(from: NSNumber(value: km)) ?? "\(km)"
+            parts.append("\(formatted) km")
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    var body: some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(Self.dateFormatter.string(from: session.startTime))
+                        .font(.subheadline.bold())
+                    if let type = session.chargingType {
+                        ChargingTypeBadge(type: type)
+                    }
+                    if session.needsReview {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                            .font(.caption)
+                    }
+                }
+                let subtitle = [vehicleName, providerName, session.geocodedPlace].compactMap { $0 }.joined(separator: " · ")
+                if !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if !detailsLine.isEmpty {
+                    Text(detailsLine)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                if let consumption = session.consumptionKwhPer100km,
+                   let method = session.consumptionMethodValue,
+                   method != .unavailable {
+                    HStack(spacing: 4) {
+                        if !method.marker.isEmpty {
+                            Text(method.marker)
+                        }
+                        Text(String(format: "%.1f kWh/100km", consumption))
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .contextMenu {
+                        Text("\(method.marker) \(method.shortLabel)")
+                        Text(method.explanation)
+                    }
+                }
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 4) {
+                if let kwh = session.energyKwh {
+                    Text(String(format: "%.1f kWh", kwh))
+                        .font(.subheadline)
+                }
+                if let price = session.priceTotal {
+                    Text(String(format: "%.2f €", price))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if let pricePerKwh = session.pricePerKwh {
+                    Text(String(format: "%.3f €/kWh", pricePerKwh))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+/// Kleines ovales Badge mit "AC" bzw. "DC".
+private struct ChargingTypeBadge: View {
+    let type: ChargingType
+
+    private var color: Color { type == .dc ? .orange : .blue }
+
+    var body: some View {
+        Text(type.rawValue)
+            .font(.caption2.bold())
+            .foregroundStyle(color)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(color.opacity(0.15))
+            .clipShape(Capsule())
+    }
+}
+
+#Preview {
+    SessionsListView()
+}

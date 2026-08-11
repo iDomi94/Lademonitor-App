@@ -1,0 +1,27 @@
+# Xcode user-specific settings (contain local paths and username)
+xcuserdata/
+*.xcuserstate
+*.xcbkptlist
+
+# Build output
+build/
+DerivedData/
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode compatibility
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.xccheckout
+*.xcscmblueprint
