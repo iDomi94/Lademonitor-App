@@ -4,6 +4,7 @@ struct SessionsListView: View {
     @State private var sessions: [ChargingSession] = []
     @State private var vehicles: [Vehicle] = []
     @State private var providers: [Provider] = []
+    @State private var locations: [ChargingLocation] = []
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showingAddSheet = false
@@ -31,11 +32,22 @@ struct SessionsListView: View {
                                 SessionRow(
                                     session: session,
                                     vehicleName: vehicles.first(where: { $0.id == session.vehicleId })?.name,
-                                    providerName: providers.first(where: { $0.id == session.providerId })?.name
+                                    providerName: providers.first(where: { $0.id == session.providerId })?.name,
+                                    locationName: locations.first(where: { $0.id == session.locationId })?.name
                                 )
                                 .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
+                            .swipeActions(edge: .leading) {
+                                if session.needsReview {
+                                    Button {
+                                        Task { await confirm(session) }
+                                    } label: {
+                                        Label("Bestätigen", systemImage: "checkmark")
+                                    }
+                                    .tint(.green)
+                                }
+                            }
                         }
                         .onDelete(perform: delete)
                     }
@@ -79,10 +91,12 @@ struct SessionsListView: View {
             async let s = APIClient.shared.fetchSessions()
             async let v = APIClient.shared.fetchVehicles()
             async let p = APIClient.shared.fetchProviders()
-            let (fetchedSessions, fetchedVehicles, fetchedProviders) = try await (s, v, p)
+            async let l = APIClient.shared.fetchLocations()
+            let (fetchedSessions, fetchedVehicles, fetchedProviders, fetchedLocations) = try await (s, v, p, l)
             sessions = fetchedSessions
             vehicles = fetchedVehicles
             providers = fetchedProviders
+            locations = fetchedLocations
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -98,12 +112,27 @@ struct SessionsListView: View {
             }
         }
     }
+
+    /// Markiert einen automatisch erkannten Ladevorgang als geprüft (Swipe-Geste),
+    /// ohne den vollen Bearbeiten-Dialog zu öffnen.
+    private func confirm(_ session: ChargingSession) async {
+        guard let updated = try? await APIClient.shared.updateSession(
+            id: session.id,
+            ChargingSessionPayload(needsReview: false)
+        ) else { return }
+        if let index = sessions.firstIndex(where: { $0.id == session.id }) {
+            sessions[index] = updated
+        }
+    }
 }
 
 private struct SessionRow: View {
     let session: ChargingSession
     let vehicleName: String?
     let providerName: String?
+    /// Name des verknuepften Ladeorts (aus locationId). Fallback wenn geocodedPlace nil ist,
+    /// z.B. bei automatisch importierten Sessions ohne freien Ortstext.
+    let locationName: String?
 
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -156,7 +185,10 @@ private struct SessionRow: View {
                             .font(.caption)
                     }
                 }
-                let subtitle = [vehicleName, providerName, session.geocodedPlace].compactMap { $0 }.joined(separator: " · ")
+                // geocodedPlace hat Vorrang; locationName dient als Fallback fuer
+                // auto-importierte Sessions ohne freien Ortstext.
+                let place = session.geocodedPlace ?? locationName
+                let subtitle = [vehicleName, providerName, place].compactMap { $0 }.joined(separator: " · ")
                 if !subtitle.isEmpty {
                     Text(subtitle)
                         .font(.caption)

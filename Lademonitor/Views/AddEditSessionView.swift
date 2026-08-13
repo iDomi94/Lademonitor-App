@@ -177,7 +177,11 @@ struct AddEditSessionView: View {
             odometerKm: Int(odometerKm),
             geocodedPlace: geocodedPlace.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 ? nil : geocodedPlace.trimmingCharacters(in: .whitespacesAndNewlines),
-            notes: nil
+            notes: nil,
+            // Manuelles Öffnen + Speichern gilt als Review: automatisch erkannte
+            // Ladevorgänge verlieren dadurch ihr needs_review-Flag, ohne dass es
+            // ein eigenes UI-Element dafür braucht.
+            needsReview: isEditing ? false : nil
         )
 
         do {

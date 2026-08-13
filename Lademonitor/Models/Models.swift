@@ -180,6 +180,7 @@ struct ChargingSessionPayload: Codable {
     var odometerKm: Int?
     var geocodedPlace: String?
     var notes: String?
+    var needsReview: Bool?
 
     enum CodingKeys: String, CodingKey {
         case notes
@@ -194,6 +195,7 @@ struct ChargingSessionPayload: Codable {
         case priceTotal = "price_total"
         case odometerKm = "odometer_km"
         case geocodedPlace = "geocoded_place"
+        case needsReview = "needs_review"
     }
 }
 
@@ -284,18 +286,36 @@ struct GeocodeResult: Codable, Hashable {
     }
 }
 
+/// Anbieter-Statistik aus dem by_provider-Array der Stats-API.
+/// Bereits nach kWh absteigend vorsortiert; Sessions ohne Anbieter laufen unter
+/// "Ohne Anbieter".
+struct ProviderStat: Codable, Identifiable {
+    var id: String { providerName }
+    let providerName: String
+    let totalKwh: Double
+    let totalCost: Double
+
+    enum CodingKeys: String, CodingKey {
+        case providerName = "provider_name"
+        case totalKwh = "total_kwh"
+        case totalCost = "total_cost"
+    }
+}
+
 struct MonthlyStat: Codable, Identifiable {
     var id: String { month }
     let month: String
     let totalCost: Double
     let totalKwh: Double
     let sessionCount: Int
+    let avgConsumptionKwhPer100km: Double?
 
     enum CodingKeys: String, CodingKey {
         case month
         case totalCost = "total_cost"
         case totalKwh = "total_kwh"
         case sessionCount = "session_count"
+        case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
     }
 
     /// Wandelt das Server-Format "YYYY-MM" (z.B. "2026-08") in einen deutschen
@@ -312,6 +332,22 @@ struct MonthlyStat: Codable, Identifiable {
                      "Juli", "August", "September", "Oktober", "November", "Dezember"]
         return "\(names[monthIndex - 1]) \(parts[0])"
     }
+
+    /// Kurze Variante fuer Diagramm-Achsen, z.B. "Aug '26". Eindeutig, weil
+    /// Jahr-Kuerzel enthalten ist (kein Merge bei gleichen Monatsnamen aus
+    /// verschiedenen Jahren).
+    var shortMonth: String {
+        let parts = month.split(separator: "-")
+        guard parts.count == 2,
+              let monthIndex = Int(parts[1]),
+              (1...12).contains(monthIndex) else {
+            return month
+        }
+        let names = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+                     "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+        let yearSuffix = parts[0].suffix(2)
+        return "\(names[monthIndex - 1]) '\(yearSuffix)"
+    }
 }
 
 struct StatsSummary: Codable {
@@ -323,7 +359,10 @@ struct StatsSummary: Codable {
     let pricePer100km: Double?
     let acSharePct: Double?
     let dcSharePct: Double?
+    let acKwh: Double?
+    let dcKwh: Double?
     let totalKmDriven: Int?
+    let byProvider: [ProviderStat]
     let monthly: [MonthlyStat]
 
     enum CodingKeys: String, CodingKey {
@@ -335,7 +374,10 @@ struct StatsSummary: Codable {
         case pricePer100km = "price_per_100km"
         case acSharePct = "ac_share_pct"
         case dcSharePct = "dc_share_pct"
+        case acKwh = "ac_kwh"
+        case dcKwh = "dc_kwh"
         case totalKmDriven = "total_km_driven"
+        case byProvider = "by_provider"
         case monthly
     }
 }
