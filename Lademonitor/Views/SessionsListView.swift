@@ -8,7 +8,7 @@ struct SessionsListView: View {
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showingAddSheet = false
-    @State private var editingSession: ChargingSession?
+    @State private var selectedSession: ChargingSession?
 
     var body: some View {
         NavigationStack {
@@ -27,7 +27,7 @@ struct SessionsListView: View {
                     List {
                         ForEach(sessions) { session in
                             Button {
-                                editingSession = session
+                                selectedSession = session
                             } label: {
                                 SessionRow(
                                     session: session,
@@ -72,8 +72,13 @@ struct SessionsListView: View {
                     Task { await load() }
                 }
             }
-            .sheet(item: $editingSession) { session in
-                AddEditSessionView(vehicles: vehicles, providers: providers, session: session) {
+            .sheet(item: $selectedSession) { session in
+                SessionDetailView(
+                    session: session,
+                    vehicles: vehicles,
+                    providers: providers,
+                    locations: locations
+                ) {
                     Task { await load() }
                 }
             }

@@ -12,6 +12,9 @@ struct ContentView: View {
                 SessionsListView()
                     .tabItem { Label("Ladevorgänge", systemImage: "bolt.fill") }
 
+                MapOverviewView()
+                    .tabItem { Label("Karte", systemImage: "map.fill") }
+
                 SettingsView()
                     .tabItem { Label("Einstellungen", systemImage: "gearshape.fill") }
             }
