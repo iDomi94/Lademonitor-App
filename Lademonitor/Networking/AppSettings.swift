@@ -12,8 +12,23 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(serverURLString, forKey: "serverURL") }
     }
 
+    @Published var appMode: AppMode {
+        didSet {
+            UserDefaults.standard.set(appMode.rawValue, forKey: "appMode")
+            if appMode == .localOnly {
+                // Sicherheitsmassnahme: Anmeldedaten beim Wechsel in den Local-Only-Modus
+                // verwerfen (nur lokal, kein Server-Roundtrip), damit ein spaeterer Wechsel
+                // zurueck zu Server immer eine frische Anmeldung verlangt, statt eine alte
+                // Session unbemerkt weiterzuverwenden.
+                SessionManager.shared.invalidateSession()
+            }
+        }
+    }
+
     private init() {
         self.serverURLString = UserDefaults.standard.string(forKey: "serverURL") ?? ""
+        let storedMode = UserDefaults.standard.string(forKey: "appMode").flatMap(AppMode.init(rawValue:))
+        self.appMode = storedMode ?? .undecided
     }
 
     var serverURL: URL? {
@@ -31,4 +46,8 @@ final class AppSettings: ObservableObject {
     }
 
     var isConfigured: Bool { serverURL != nil }
+
+    /// Ob Views Daten laden duerfen: im Local-Only-Modus immer (kein Server noetig),
+    /// im Server-Modus nur mit konfigurierter Server-Adresse.
+    var isReadyForDataAccess: Bool { appMode == .localOnly || isConfigured }
 }

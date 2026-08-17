@@ -126,13 +126,13 @@ struct DashboardView: View {
     }
 
     private func load() async {
-        guard AppSettings.shared.isConfigured else {
+        guard AppSettings.shared.isReadyForDataAccess else {
             errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
             return
         }
         isLoading = true
         do {
-            stats = try await APIClient.shared.fetchStatsSummary()
+            stats = try await AppRepository.shared.fetchStatsSummary()
             errorMessage = nil
         } catch {
             // Fehlgeschlagener Refresh soll bestehende Daten nicht verwerfen.

@@ -139,17 +139,17 @@ struct MapOverviewView: View {
     }
 
     private func load() async {
-        guard AppSettings.shared.isConfigured else {
+        guard AppSettings.shared.isReadyForDataAccess else {
             errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
             return
         }
         isLoading = true
         errorMessage = nil
         do {
-            async let l = APIClient.shared.fetchLocations()
-            async let s = APIClient.shared.fetchSessions()
-            async let v = APIClient.shared.fetchVehicles()
-            async let p = APIClient.shared.fetchProviders()
+            async let l = AppRepository.shared.fetchLocations()
+            async let s = AppRepository.shared.fetchSessions()
+            async let v = AppRepository.shared.fetchVehicles()
+            async let p = AppRepository.shared.fetchProviders()
             let (fetchedLocations, fetchedSessions, fetchedVehicles, fetchedProviders) = try await (l, s, v, p)
             locations = fetchedLocations
             sessions = fetchedSessions

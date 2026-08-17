@@ -81,6 +81,16 @@ struct AuthView: View {
                     }
                     .font(.footnote)
                 }
+
+                Section {
+                    Button {
+                        settings.appMode = .localOnly
+                    } label: {
+                        Label("Stattdessen nur lokal nutzen", systemImage: "iphone")
+                    }
+                } footer: {
+                    Text("Ohne Server, alle Daten bleiben auf diesem Gerät.")
+                }
             }
             .navigationTitle("Lademonitor")
         }
@@ -102,6 +112,9 @@ struct AuthView: View {
                 response = try await APIClient.shared.login(username: trimmedUsername, password: password)
             }
             SessionManager.shared.completeAuthentication(response)
+            // Migration lokaler Daten (falls vorhanden) ist kein Sonderfall, sondern
+            // einfach der erste normale Sync-Durchlauf - siehe SyncService.
+            Task { await SyncService.shared.syncNow() }
         } catch let APIError.server(_, message) {
             // Server liefert die Fehlerursache im Klartext (z.B. "Nutzername oder Passwort falsch").
             errorMessage = message

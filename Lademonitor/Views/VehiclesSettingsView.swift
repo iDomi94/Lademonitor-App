@@ -64,13 +64,13 @@ struct VehiclesSettingsView: View {
     }
 
     private func load() async {
-        guard AppSettings.shared.isConfigured else {
+        guard AppSettings.shared.isReadyForDataAccess else {
             errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
             return
         }
         isLoading = true
         do {
-            vehicles = try await APIClient.shared.fetchVehicles()
+            vehicles = try await AppRepository.shared.fetchVehicles()
             errorMessage = nil
         } catch {
             if vehicles.isEmpty { errorMessage = error.localizedDescription }
@@ -80,7 +80,7 @@ struct VehiclesSettingsView: View {
 
     private func delete(_ vehicle: Vehicle) async {
         do {
-            try await APIClient.shared.deleteVehicle(id: vehicle.id)
+            try await AppRepository.shared.deleteVehicle(id: vehicle.id)
             vehicles.removeAll { $0.id == vehicle.id }
         } catch {
             errorMessage = error.localizedDescription
@@ -233,9 +233,9 @@ struct AddEditVehicleView: View {
 
         do {
             if let vehicle {
-                _ = try await APIClient.shared.updateVehicle(id: vehicle.id, payload)
+                _ = try await AppRepository.shared.updateVehicle(id: vehicle.id, payload)
             } else {
-                _ = try await APIClient.shared.createVehicle(payload)
+                _ = try await AppRepository.shared.createVehicle(payload)
             }
             onSaved()
             dismiss()

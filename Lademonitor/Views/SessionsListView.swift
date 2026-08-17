@@ -8,6 +8,8 @@ struct SessionsListView: View {
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showingAddSheet = false
+    @State private var showingNoVehicleAlert = false
+    @State private var showingAddVehicleSheet = false
     @State private var selectedSession: ChargingSession?
 
     var body: some View {
@@ -58,15 +60,29 @@ struct SessionsListView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        showingAddSheet = true
+                        if vehicles.isEmpty {
+                            showingNoVehicleAlert = true
+                        } else {
+                            showingAddSheet = true
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .disabled(vehicles.isEmpty)
                 }
             }
             .task { await load() }
             .refreshable { await load() }
+            .alert("Kein Fahrzeug vorhanden", isPresented: $showingNoVehicleAlert) {
+                Button("Fahrzeug anlegen") { showingAddVehicleSheet = true }
+                Button("Abbrechen", role: .cancel) {}
+            } message: {
+                Text("Bevor du einen Ladevorgang erfassen kannst, musst du mindestens ein Fahrzeug anlegen.")
+            }
+            .sheet(isPresented: $showingAddVehicleSheet) {
+                AddEditVehicleView(vehicle: nil) {
+                    Task { await load() }
+                }
+            }
             .sheet(isPresented: $showingAddSheet) {
                 AddEditSessionView(vehicles: vehicles, providers: providers, session: nil) {
                     Task { await load() }
@@ -86,17 +102,17 @@ struct SessionsListView: View {
     }
 
     private func load() async {
-        guard AppSettings.shared.isConfigured else {
+        guard AppSettings.shared.isReadyForDataAccess else {
             errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
             return
         }
         isLoading = true
         errorMessage = nil
         do {
-            async let s = APIClient.shared.fetchSessions()
-            async let v = APIClient.shared.fetchVehicles()
-            async let p = APIClient.shared.fetchProviders()
-            async let l = APIClient.shared.fetchLocations()
+            async let s = AppRepository.shared.fetchSessions()
+            async let v = AppRepository.shared.fetchVehicles()
+            async let p = AppRepository.shared.fetchProviders()
+            async let l = AppRepository.shared.fetchLocations()
             let (fetchedSessions, fetchedVehicles, fetchedProviders, fetchedLocations) = try await (s, v, p, l)
             sessions = fetchedSessions
             vehicles = fetchedVehicles
@@ -113,7 +129,7 @@ struct SessionsListView: View {
         sessions.remove(atOffsets: offsets)
         Task {
             for session in toDelete {
-                try? await APIClient.shared.deleteSession(id: session.id)
+                try? await AppRepository.shared.deleteSession(id: session.id)
             }
         }
     }
@@ -121,7 +137,7 @@ struct SessionsListView: View {
     /// Markiert einen automatisch erkannten Ladevorgang als geprüft (Swipe-Geste),
     /// ohne den vollen Bearbeiten-Dialog zu öffnen.
     private func confirm(_ session: ChargingSession) async {
-        guard let updated = try? await APIClient.shared.updateSession(
+        guard let updated = try? await AppRepository.shared.updateSession(
             id: session.id,
             ChargingSessionPayload(needsReview: false)
         ) else { return }

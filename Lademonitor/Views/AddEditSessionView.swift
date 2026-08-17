@@ -186,9 +186,9 @@ struct AddEditSessionView: View {
 
         do {
             if let session {
-                _ = try await APIClient.shared.updateSession(id: session.id, payload)
+                _ = try await AppRepository.shared.updateSession(id: session.id, payload)
             } else {
-                _ = try await APIClient.shared.createSession(payload)
+                _ = try await AppRepository.shared.createSession(payload)
             }
             onSaved()
             dismiss()

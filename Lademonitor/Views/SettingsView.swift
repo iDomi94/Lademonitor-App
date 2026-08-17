@@ -2,38 +2,104 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject private var session = SessionManager.shared
+    @ObservedObject private var settings = AppSettings.shared
+    @ObservedObject private var syncService = SyncService.shared
     @State private var isLoggingOut = false
+    @State private var showingServerSwitchConfirmation = false
+    @State private var showingResetConfirmation = false
+    @State private var resetErrorMessage: String?
+
+    private static let relativeFormatter: RelativeDateTimeFormatter = {
+        let f = RelativeDateTimeFormatter()
+        f.locale = Locale(identifier: "de_DE")
+        return f
+    }()
 
     var body: some View {
         NavigationStack {
             List {
-                Section("Konto") {
-                    if let user = session.currentUser {
-                        LabeledContent("Angemeldet als", value: user.username)
-                    }
-                    Button(role: .destructive) {
-                        Task {
-                            isLoggingOut = true
-                            await session.logout()
-                            isLoggingOut = false
+                Section {
+                    LabeledContent("Aktuell", value: settings.appMode == .localOnly ? "Nur lokal" : "Server")
+                    if settings.appMode == .localOnly {
+                        Button {
+                            showingServerSwitchConfirmation = true
+                        } label: {
+                            Label("Zu Server wechseln", systemImage: "network")
                         }
-                    } label: {
-                        HStack {
-                            Text("Abmelden")
-                            if isLoggingOut {
-                                Spacer()
-                                ProgressView()
-                            }
+                    } else {
+                        Button {
+                            settings.appMode = .localOnly
+                        } label: {
+                            Label("Zu \"Nur lokal\" wechseln", systemImage: "iphone")
                         }
                     }
-                    .disabled(isLoggingOut)
+                } header: {
+                    Text("Modus")
+                } footer: {
+                    if settings.appMode == .localOnly {
+                        Text("Alle Daten liegen ausschließlich auf diesem Gerät.")
+                    }
                 }
 
-                Section("Verbindung") {
-                    NavigationLink {
-                        ConnectionSettingsView()
-                    } label: {
-                        Label("Server & Verbindung", systemImage: "network")
+                if settings.appMode == .server {
+                    Section("Konto") {
+                        if let user = session.currentUser {
+                            LabeledContent("Angemeldet als", value: user.username)
+                        }
+                        Button(role: .destructive) {
+                            Task {
+                                isLoggingOut = true
+                                await session.logout()
+                                isLoggingOut = false
+                            }
+                        } label: {
+                            HStack {
+                                Text("Abmelden")
+                                if isLoggingOut {
+                                    Spacer()
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(isLoggingOut)
+                    }
+
+                    Section("Verbindung") {
+                        NavigationLink {
+                            ConnectionSettingsView()
+                        } label: {
+                            Label("Server & Verbindung", systemImage: "network")
+                        }
+                    }
+
+                    Section {
+                        if let lastSync = syncService.lastSyncDate {
+                            LabeledContent("Zuletzt synchronisiert", value: Self.relativeFormatter.localizedString(for: lastSync, relativeTo: Date()))
+                        } else {
+                            Text("Noch nicht synchronisiert")
+                                .foregroundStyle(.secondary)
+                        }
+                        if let error = syncService.lastSyncError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                        Button {
+                            Task { await SyncService.shared.syncNow() }
+                        } label: {
+                            HStack {
+                                Text("Jetzt synchronisieren")
+                                if syncService.isSyncing {
+                                    Spacer()
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(syncService.isSyncing)
+                    } header: {
+                        Text("Synchronisierung")
+                    } footer: {
+                        Text("Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an.")
                     }
                 }
 
@@ -54,8 +120,51 @@ struct SettingsView: View {
                         Label("Anbieter", systemImage: "bolt.fill")
                     }
                 }
+
+                Section {
+                    Button(role: .destructive) {
+                        showingResetConfirmation = true
+                    } label: {
+                        Label("Alle lokalen Daten zurücksetzen", systemImage: "trash")
+                    }
+                    if let resetErrorMessage {
+                        Text(resetErrorMessage)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
+                } footer: {
+                    Text(settings.appMode == .server
+                        ? "Löscht Fahrzeuge, Anbieter, Ladeorte und Ladevorgänge auf diesem Gerät. Bereits synchronisierte Daten bleiben auf dem Server und werden danach automatisch zurückgeholt – noch nicht hochgeladene Änderungen gehen verloren."
+                        : "Löscht Fahrzeuge, Anbieter, Ladeorte und Ladevorgänge unwiderruflich von diesem Gerät. Es gibt keine weitere Kopie.")
+                }
             }
             .navigationTitle("Einstellungen")
+            .alert("Zu Server wechseln?", isPresented: $showingServerSwitchConfirmation) {
+                Button("Wechseln", role: .destructive) {
+                    settings.appMode = .server
+                }
+                Button("Abbrechen", role: .cancel) {}
+            } message: {
+                Text("Nach der Anmeldung werden deine bisherigen lokalen Daten automatisch zum Server hochgeladen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln.")
+            }
+            .alert("Alle lokalen Daten löschen?", isPresented: $showingResetConfirmation) {
+                Button("Löschen", role: .destructive) { resetAllData() }
+                Button("Abbrechen", role: .cancel) {}
+            } message: {
+                Text("Das kann nicht rückgängig gemacht werden.")
+            }
+        }
+    }
+
+    private func resetAllData() {
+        resetErrorMessage = nil
+        do {
+            try LocalDataStore.shared.resetAllData()
+            if settings.appMode == .server {
+                Task { await SyncService.shared.syncNow() }
+            }
+        } catch {
+            resetErrorMessage = error.localizedDescription
         }
     }
 }

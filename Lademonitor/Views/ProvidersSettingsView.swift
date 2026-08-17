@@ -64,13 +64,13 @@ struct ProvidersSettingsView: View {
     }
 
     private func load() async {
-        guard AppSettings.shared.isConfigured else {
+        guard AppSettings.shared.isReadyForDataAccess else {
             errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
             return
         }
         isLoading = true
         do {
-            providers = try await APIClient.shared.fetchProviders()
+            providers = try await AppRepository.shared.fetchProviders()
             errorMessage = nil
         } catch {
             if providers.isEmpty { errorMessage = error.localizedDescription }
@@ -80,7 +80,7 @@ struct ProvidersSettingsView: View {
 
     private func delete(_ provider: Provider) async {
         do {
-            try await APIClient.shared.deleteProvider(id: provider.id)
+            try await AppRepository.shared.deleteProvider(id: provider.id)
             providers.removeAll { $0.id == provider.id }
         } catch {
             errorMessage = error.localizedDescription
@@ -209,9 +209,9 @@ struct AddEditProviderView: View {
 
         do {
             if let provider {
-                _ = try await APIClient.shared.updateProvider(id: provider.id, payload)
+                _ = try await AppRepository.shared.updateProvider(id: provider.id, payload)
             } else {
-                _ = try await APIClient.shared.createProvider(payload)
+                _ = try await AppRepository.shared.createProvider(payload)
             }
             onSaved()
             dismiss()

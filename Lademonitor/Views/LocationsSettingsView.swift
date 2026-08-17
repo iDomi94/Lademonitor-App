@@ -68,14 +68,14 @@ struct LocationsSettingsView: View {
     }
 
     private func load() async {
-        guard AppSettings.shared.isConfigured else {
+        guard AppSettings.shared.isReadyForDataAccess else {
             errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
             return
         }
         isLoading = true
         do {
-            async let l = APIClient.shared.fetchLocations()
-            async let p = APIClient.shared.fetchProviders()
+            async let l = AppRepository.shared.fetchLocations()
+            async let p = AppRepository.shared.fetchProviders()
             let (fetchedLocations, fetchedProviders) = try await (l, p)
             locations = fetchedLocations
             providers = fetchedProviders
@@ -88,7 +88,7 @@ struct LocationsSettingsView: View {
 
     private func delete(_ location: ChargingLocation) async {
         do {
-            try await APIClient.shared.deleteLocation(id: location.id)
+            try await AppRepository.shared.deleteLocation(id: location.id)
             locations.removeAll { $0.id == location.id }
         } catch {
             errorMessage = error.localizedDescription
@@ -293,7 +293,7 @@ struct AddEditLocationView: View {
         isSearching = true
         searchMessage = nil
         do {
-            let results = try await APIClient.shared.forwardGeocode(query: query)
+            let results = try await AppRepository.shared.forwardGeocode(query: query)
             searchResults = results
             if results.isEmpty {
                 searchMessage = "Keine Treffer. Bitte die Koordinaten unten manuell eintragen."
@@ -340,9 +340,9 @@ struct AddEditLocationView: View {
 
         do {
             if let location {
-                _ = try await APIClient.shared.updateLocation(id: location.id, payload)
+                _ = try await AppRepository.shared.updateLocation(id: location.id, payload)
             } else {
-                _ = try await APIClient.shared.createLocation(payload)
+                _ = try await AppRepository.shared.createLocation(payload)
             }
             onSaved()
             dismiss()

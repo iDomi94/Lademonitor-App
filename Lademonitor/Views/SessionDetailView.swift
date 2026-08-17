@@ -156,7 +156,7 @@ struct SessionDetailView: View {
         isConfirming = true
         errorMessage = nil
         do {
-            _ = try await APIClient.shared.updateSession(id: session.id, ChargingSessionPayload(needsReview: false))
+            _ = try await AppRepository.shared.updateSession(id: session.id, ChargingSessionPayload(needsReview: false))
             onChanged()
             dismiss()
         } catch {
