@@ -13,6 +13,8 @@ struct MapOverviewView: View {
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var showLocations = true
     @State private var showSessions = true
+    @State private var showingFilterSheet = false
+    @ObservedObject private var sessionFilter = SessionFilter.shared
 
     /// Tag der Map-Auswahl - wird nur als einmaliger Tap-Trigger genutzt, siehe
     /// onChange unten (danach sofort wieder auf nil gesetzt).
@@ -90,8 +92,14 @@ struct MapOverviewView: View {
                 }
             }
             .navigationTitle("Karte")
-            .task { await load() }
+            .toolbar {
+                FilterToolbarItem(isPresented: $showingFilterSheet)
+            }
+            .task(id: sessionFilter.dateRange) { await load() }
             .refreshable { await load() }
+            .sheet(isPresented: $showingFilterSheet) {
+                FilterSheetView()
+            }
             // Tap auf einen Marker: Ladeort -> direkt in den Bearbeiten-Dialog
             // (derselbe wie unter Einstellungen -> Ladeorte), Ladevorgang -> in
             // dieselbe Vorschau wie in der Ladevorgänge-Liste. selectedTag dient
@@ -147,7 +155,7 @@ struct MapOverviewView: View {
         errorMessage = nil
         do {
             async let l = AppRepository.shared.fetchLocations()
-            async let s = AppRepository.shared.fetchSessions()
+            async let s = AppRepository.shared.fetchSessions(dateRange: sessionFilter.dateRange)
             async let v = AppRepository.shared.fetchVehicles()
             async let p = AppRepository.shared.fetchProviders()
             let (fetchedLocations, fetchedSessions, fetchedVehicles, fetchedProviders) = try await (l, s, v, p)

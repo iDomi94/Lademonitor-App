@@ -2,9 +2,11 @@ import SwiftUI
 import Charts
 
 struct DashboardView: View {
+    @ObservedObject private var sessionFilter = SessionFilter.shared
     @State private var stats: StatsSummary?
     @State private var errorMessage: String?
     @State private var isLoading = false
+    @State private var showingFilterSheet = false
 
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
@@ -120,8 +122,14 @@ struct DashboardView: View {
                 }
             }
             .navigationTitle("Dashboard")
-            .task { await load() }
+            .toolbar {
+                FilterToolbarItem(isPresented: $showingFilterSheet)
+            }
+            .task(id: sessionFilter.dateRange) { await load() }
             .refreshable { await load() }
+            .sheet(isPresented: $showingFilterSheet) {
+                FilterSheetView()
+            }
         }
     }
 
@@ -132,7 +140,7 @@ struct DashboardView: View {
         }
         isLoading = true
         do {
-            stats = try await AppRepository.shared.fetchStatsSummary()
+            stats = try await AppRepository.shared.fetchStatsSummary(dateRange: sessionFilter.dateRange)
             errorMessage = nil
         } catch {
             // Fehlgeschlagener Refresh soll bestehende Daten nicht verwerfen.

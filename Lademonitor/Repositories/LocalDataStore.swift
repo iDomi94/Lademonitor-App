@@ -217,15 +217,16 @@ final class LocalDataStore {
 
     // MARK: - Sessions
 
-    func fetchSessions(vehicleId: String?, needsReview: Bool?) throws -> [ChargingSession] {
+    func fetchSessions(vehicleId: String?, needsReview: Bool?, dateRange: ClosedRange<Date>? = nil) throws -> [ChargingSession] {
         // Verbrauch muss ueber die VOLLSTAENDIGE Fahrzeug-Historie berechnet werden
         // (Vorgaenger/Nachfolger-Vergleich), deshalb erst dekorieren, dann filtern -
-        // sonst wuerde z.B. ein needs_review-Filter den chronologischen Vorgaenger
-        // faelschlich aus der Berechnung herausnehmen.
+        // sonst wuerde z.B. ein Datums- oder needs_review-Filter den chronologischen
+        // Vorgaenger faelschlich aus der Berechnung herausnehmen.
         let all = try allUndeletedSessions()
         var sessions = decoratedWithConsumption(all).sorted { $0.startTime > $1.startTime }
         if let vehicleId { sessions = sessions.filter { $0.vehicleId == vehicleId } }
         if let needsReview { sessions = sessions.filter { $0.needsReview == needsReview } }
+        if let dateRange { sessions = sessions.filter { dateRange.contains($0.startTime) } }
         return sessions
     }
 

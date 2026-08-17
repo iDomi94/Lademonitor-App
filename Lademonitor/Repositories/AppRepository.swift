@@ -110,9 +110,9 @@ final class AppRepository {
 
     // MARK: - Sessions
 
-    func fetchSessions(vehicleId: String? = nil, needsReview: Bool? = nil) async throws -> [ChargingSession] {
+    func fetchSessions(vehicleId: String? = nil, needsReview: Bool? = nil, dateRange: ClosedRange<Date>? = nil) async throws -> [ChargingSession] {
         await syncBeforeRead()
-        return try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: needsReview)
+        return try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: needsReview, dateRange: dateRange)
     }
 
     func createSession(_ payload: ChargingSessionPayload) async throws -> ChargingSession {
@@ -138,9 +138,9 @@ final class AppRepository {
     // Listen speist, damit das Dashboard offline nicht leer bleibt, nur weil syncBeforeRead()
     // gerade keine Verbindung hatte.
 
-    func fetchStatsSummary(vehicleId: String? = nil) async throws -> StatsSummary {
+    func fetchStatsSummary(vehicleId: String? = nil, dateRange: ClosedRange<Date>? = nil) async throws -> StatsSummary {
         await syncBeforeRead()
-        let sessions = try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: nil)
+        let sessions = try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: nil, dateRange: dateRange)
         let vehicles = try LocalDataStore.shared.fetchVehicles()
         let providers = try LocalDataStore.shared.fetchProviders()
         return LocalStatsCalculator.compute(sessions: sessions, vehicles: vehicles, providers: providers)

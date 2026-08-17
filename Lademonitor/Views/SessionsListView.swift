@@ -10,7 +10,9 @@ struct SessionsListView: View {
     @State private var showingAddSheet = false
     @State private var showingNoVehicleAlert = false
     @State private var showingAddVehicleSheet = false
+    @State private var showingFilterSheet = false
     @State private var selectedSession: ChargingSession?
+    @ObservedObject private var sessionFilter = SessionFilter.shared
 
     var body: some View {
         NavigationStack {
@@ -69,8 +71,9 @@ struct SessionsListView: View {
                         Image(systemName: "plus")
                     }
                 }
+                FilterToolbarItem(isPresented: $showingFilterSheet)
             }
-            .task { await load() }
+            .task(id: sessionFilter.dateRange) { await load() }
             .refreshable { await load() }
             .alert("Kein Fahrzeug vorhanden", isPresented: $showingNoVehicleAlert) {
                 Button("Fahrzeug anlegen") { showingAddVehicleSheet = true }
@@ -82,6 +85,9 @@ struct SessionsListView: View {
                 AddEditVehicleView(vehicle: nil) {
                     Task { await load() }
                 }
+            }
+            .sheet(isPresented: $showingFilterSheet) {
+                FilterSheetView()
             }
             .sheet(isPresented: $showingAddSheet) {
                 AddEditSessionView(vehicles: vehicles, providers: providers, session: nil) {
@@ -109,7 +115,7 @@ struct SessionsListView: View {
         isLoading = true
         errorMessage = nil
         do {
-            async let s = AppRepository.shared.fetchSessions()
+            async let s = AppRepository.shared.fetchSessions(dateRange: sessionFilter.dateRange)
             async let v = AppRepository.shared.fetchVehicles()
             async let p = AppRepository.shared.fetchProviders()
             async let l = AppRepository.shared.fetchLocations()
