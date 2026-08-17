@@ -16,7 +16,12 @@ final class NetworkMonitor: ObservableObject {
     private init() {
         monitor.pathUpdateHandler = { [weak self] path in
             let online = path.status == .satisfied
-            Task { @MainActor in self?.isOnline = online }
+            // `guard let self` erzeugt eine unveraendliche lokale Kopie statt der
+            // erfassten `weak var self` direkt in der verschachtelten Task-Closure zu
+            // verwenden - Letzteres ist unter Swift 6 strict concurrency ein Fehler
+            // ("reference to captured var 'self' in concurrently-executing code").
+            guard let self else { return }
+            Task { @MainActor in self.isOnline = online }
         }
         monitor.start(queue: queue)
     }

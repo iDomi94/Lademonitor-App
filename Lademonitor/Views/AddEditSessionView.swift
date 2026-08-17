@@ -2,12 +2,12 @@ import SwiftUI
 
 struct AddEditSessionView: View {
     let vehicles: [Vehicle]
-    let providers: [Provider]
     let session: ChargingSession?
     let onSaved: () -> Void
 
     @Environment(\.dismiss) private var dismiss
 
+    @State private var providers: [Provider]
     @State private var vehicleId: String
     @State private var providerId: String?
     @State private var startTime: Date
@@ -23,10 +23,15 @@ struct AddEditSessionView: View {
 
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var showingAddProviderSheet = false
+
+    /// Sentinel-Tag fuer den "Neuer Anbieter…"-Eintrag im Picker - eine echte Provider-ID
+    /// ist immer eine UUID und kollidiert damit nie mit diesem Wert.
+    private static let newProviderSentinel = "__new_provider__"
 
     init(vehicles: [Vehicle], providers: [Provider], session: ChargingSession?, onSaved: @escaping () -> Void) {
         self.vehicles = vehicles
-        self.providers = providers
+        _providers = State(initialValue: providers)
         self.session = session
         self.onSaved = onSaved
 
@@ -64,8 +69,16 @@ struct AddEditSessionView: View {
                         ForEach(providers) { provider in
                             Text(provider.name).tag(String?.some(provider.id))
                         }
+                        Label("Neuer Anbieter…", systemImage: "plus").tag(String?.some(Self.newProviderSentinel))
                     }
-                    .onChange(of: providerId) { _, _ in suggestPrice() }
+                    .onChange(of: providerId) { _, newValue in
+                        if newValue == Self.newProviderSentinel {
+                            providerId = session?.providerId
+                            showingAddProviderSheet = true
+                        } else {
+                            suggestPrice()
+                        }
+                    }
 
                     HStack {
                         Text("Lade-Art")
@@ -146,6 +159,12 @@ struct AddEditSessionView: View {
                         Task { await save() }
                     }
                     .disabled(isSaving || vehicleId.isEmpty)
+                }
+            }
+            .sheet(isPresented: $showingAddProviderSheet) {
+                AddEditProviderView(provider: nil) { newProvider in
+                    providers.append(newProvider)
+                    providerId = newProvider.id
                 }
             }
         }

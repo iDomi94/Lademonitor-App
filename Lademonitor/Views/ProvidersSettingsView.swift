@@ -46,10 +46,10 @@ struct ProvidersSettingsView: View {
         .task { await load() }
         .refreshable { await load() }
         .sheet(isPresented: $showingAdd) {
-            AddEditProviderView(provider: nil) { Task { await load() } }
+            AddEditProviderView(provider: nil) { _ in Task { await load() } }
         }
         .sheet(item: $editing) { provider in
-            AddEditProviderView(provider: provider) { Task { await load() } }
+            AddEditProviderView(provider: provider) { _ in Task { await load() } }
         }
         .alert("Anbieter löschen?", isPresented: deleteAlertBinding, presenting: pendingDelete) { provider in
             Button("Löschen", role: .destructive) { Task { await delete(provider) } }
@@ -114,7 +114,7 @@ private struct ProviderRow: View {
 
 struct AddEditProviderView: View {
     let provider: Provider?
-    let onSaved: () -> Void
+    let onSaved: (Provider) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
@@ -125,7 +125,7 @@ struct AddEditProviderView: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
 
-    init(provider: Provider?, onSaved: @escaping () -> Void) {
+    init(provider: Provider?, onSaved: @escaping (Provider) -> Void) {
         self.provider = provider
         self.onSaved = onSaved
         _name = State(initialValue: provider?.name ?? "")
@@ -208,12 +208,13 @@ struct AddEditProviderView: View {
         )
 
         do {
+            let saved: Provider
             if let provider {
-                _ = try await AppRepository.shared.updateProvider(id: provider.id, payload)
+                saved = try await AppRepository.shared.updateProvider(id: provider.id, payload)
             } else {
-                _ = try await AppRepository.shared.createProvider(payload)
+                saved = try await AppRepository.shared.createProvider(payload)
             }
-            onSaved()
+            onSaved(saved)
             dismiss()
         } catch {
             errorMessage = error.localizedDescription

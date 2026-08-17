@@ -122,11 +122,11 @@ private struct LocationRow: View {
 
 struct AddEditLocationView: View {
     let location: ChargingLocation?
-    let providers: [Provider]
     let onSaved: () -> Void
 
     @Environment(\.dismiss) private var dismiss
 
+    @State private var providers: [Provider]
     @State private var name: String
     @State private var latitude: String
     @State private var longitude: String
@@ -134,6 +134,7 @@ struct AddEditLocationView: View {
     @State private var defaultProviderId: String?
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var showingAddProviderSheet = false
 
     // Adresssuche (Forward-Geocoding)
     @State private var addressQuery: String = ""
@@ -145,9 +146,13 @@ struct AddEditLocationView: View {
     @StateObject private var locationProvider = CurrentLocationProvider()
     @State private var isLocating = false
 
+    /// Sentinel-Tag fuer den "Neuer Anbieter…"-Eintrag im Picker - eine echte Provider-ID
+    /// ist immer eine UUID und kollidiert damit nie mit diesem Wert.
+    private static let newProviderSentinel = "__new_provider__"
+
     init(location: ChargingLocation?, providers: [Provider], onSaved: @escaping () -> Void) {
         self.location = location
-        self.providers = providers
+        _providers = State(initialValue: providers)
         self.onSaved = onSaved
         _name = State(initialValue: location?.name ?? "")
         _latitude = State(initialValue: location.map { String(format: "%.6f", $0.latitude) } ?? "")
@@ -263,6 +268,13 @@ struct AddEditLocationView: View {
                         ForEach(providers) { provider in
                             Text(provider.name).tag(String?.some(provider.id))
                         }
+                        Label("Neuer Anbieter…", systemImage: "plus").tag(String?.some(Self.newProviderSentinel))
+                    }
+                    .onChange(of: defaultProviderId) { _, newValue in
+                        if newValue == Self.newProviderSentinel {
+                            defaultProviderId = location?.defaultProviderId
+                            showingAddProviderSheet = true
+                        }
                     }
                 }
 
@@ -282,6 +294,12 @@ struct AddEditLocationView: View {
                         Task { await save() }
                     }
                     .disabled(isSaving || !canSave)
+                }
+            }
+            .sheet(isPresented: $showingAddProviderSheet) {
+                AddEditProviderView(provider: nil) { newProvider in
+                    providers.append(newProvider)
+                    defaultProviderId = newProvider.id
                 }
             }
         }
