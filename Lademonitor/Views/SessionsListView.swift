@@ -90,7 +90,7 @@ struct SessionsListView: View {
                 FilterSheetView()
             }
             .sheet(isPresented: $showingAddSheet) {
-                AddEditSessionView(vehicles: vehicles, providers: providers, session: nil) {
+                AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: nil) {
                     Task { await load() }
                 }
             }
@@ -216,10 +216,18 @@ private struct SessionRow: View {
                 // auto-importierte Sessions ohne freien Ortstext.
                 let place = session.geocodedPlace ?? locationName
                 let subtitle = [vehicleName, providerName, place].compactMap { $0 }.joined(separator: " · ")
-                if !subtitle.isEmpty {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                let hasCoordinates = session.latitude != nil && session.longitude != nil
+                if !subtitle.isEmpty || hasCoordinates {
+                    HStack(spacing: 3) {
+                        if !subtitle.isEmpty {
+                            Text(subtitle)
+                        }
+                        if hasCoordinates {
+                            Image(systemName: "mappin.circle.fill")
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
                 if !detailsLine.isEmpty {
                     Text(detailsLine)

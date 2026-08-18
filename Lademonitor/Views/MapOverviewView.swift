@@ -1,8 +1,9 @@
 import SwiftUI
 import MapKit
 
-/// Uebersichts-Karte (3. Tab): zeigt alle bekannten Ladeorte und alle
-/// Ladevorgaenge mit eigenen Koordinaten gemeinsam auf einer Standard-Apple-Karte.
+/// Uebersichts-Karte (3. Tab): zeigt alle bekannten Ladeorte (inkl. Matching-Radius) und
+/// alle Ladevorgaenge mit eigenen Koordinaten gemeinsam auf einer Standard-Apple-Karte.
+/// Ladevorgaenge werden je nach aktuellem Zoom geclustert (siehe sessionClusters).
 struct MapOverviewView: View {
     @State private var locations: [ChargingLocation] = []
     @State private var sessions: [ChargingSession] = []
@@ -11,26 +12,39 @@ struct MapOverviewView: View {
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var cameraPosition: MapCameraPosition = .automatic
+    @State private var currentSpan = MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
     @State private var showLocations = true
     @State private var showSessions = true
     @State private var showingFilterSheet = false
     @ObservedObject private var sessionFilter = SessionFilter.shared
 
-    /// Tag der Map-Auswahl - wird nur als einmaliger Tap-Trigger genutzt, siehe
-    /// onChange unten (danach sofort wieder auf nil gesetzt).
+    /// Tag der Map-Auswahl fuer Ladeorte - wird nur als einmaliger Tap-Trigger genutzt,
+    /// siehe onChange unten (danach sofort wieder auf nil gesetzt). Ladevorgaenge laufen
+    /// NICHT mehr hierueber, da sie geclustert und per eigenem Button-Tap behandelt werden
+    /// (siehe handleClusterTap).
     private enum MapTag: Hashable {
         case location(String)
-        case session(String)
     }
     @State private var selectedTag: MapTag?
     @State private var locationToEdit: ChargingLocation?
     @State private var sessionToPreview: ChargingSession?
+    @State private var showingClusterList = false
+    @State private var clusterListSessions: [ChargingSession] = []
 
     private struct SessionPin: Identifiable {
         let id: String
         let coordinate: CLLocationCoordinate2D
         let label: String
         let needsReview: Bool
+    }
+
+    /// Eine oder mehrere raeumlich nahe beieinanderliegende Sessions, siehe sessionClusters.
+    private struct SessionCluster: Identifiable {
+        let id: String
+        let coordinate: CLLocationCoordinate2D
+        let pins: [SessionPin]
+        var count: Int { pins.count }
+        var needsReview: Bool { pins.contains(where: \.needsReview) }
     }
 
     private static let pinDateFormatter: DateFormatter = {
@@ -53,6 +67,34 @@ struct MapOverviewView: View {
         }
     }
 
+    /// Gruppiert Pins, die naeher beieinanderliegen als ein an den aktuellen Zoom
+    /// gekoppelter Schwellwert (einfaches Single-Linkage-Clustering, reicht fuer die
+    /// ueblichen Groessenordnungen eines persoenlichen Lade-Logs). Bei einem einzelnen
+    /// Mitglied entspricht das Cluster einem normalen Einzel-Pin.
+    private var sessionClusters: [SessionCluster] {
+        let threshold = max(currentSpan.latitudeDelta, currentSpan.longitudeDelta) * 0.06
+        var remaining = sessionPins
+        var clusters: [SessionCluster] = []
+        while let first = remaining.first {
+            var group = [first]
+            remaining.removeFirst()
+            remaining.removeAll { pin in
+                let close = abs(pin.coordinate.latitude - first.coordinate.latitude) < threshold
+                    && abs(pin.coordinate.longitude - first.coordinate.longitude) < threshold
+                if close { group.append(pin) }
+                return close
+            }
+            let avgLat = group.map(\.coordinate.latitude).reduce(0, +) / Double(group.count)
+            let avgLon = group.map(\.coordinate.longitude).reduce(0, +) / Double(group.count)
+            clusters.append(SessionCluster(
+                id: group.map(\.id).sorted().joined(separator: "|"),
+                coordinate: CLLocationCoordinate2D(latitude: avgLat, longitude: avgLon),
+                pins: group
+            ))
+        }
+        return clusters
+    }
+
     var body: some View {
         NavigationStack {
             Group {
@@ -70,24 +112,42 @@ struct MapOverviewView: View {
                     Map(position: $cameraPosition, selection: $selectedTag) {
                         if showLocations {
                             ForEach(locations) { location in
-                                Marker(
-                                    location.name,
-                                    systemImage: "bolt.car.fill",
-                                    coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-                                )
-                                .tint(.blue)
-                                .tag(MapTag.location(location.id))
+                                let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                                // Matching-Radius als Kreis, damit sichtbar wird, wie nah ein
+                                // Ladevorgang liegen muss, um automatisch diesem Ort zugeordnet
+                                // zu werden - vor dem Marker gezeichnet, damit der Pin oben liegt.
+                                MapCircle(center: coordinate, radius: Double(location.radiusM))
+                                    .foregroundStyle(.blue.opacity(0.12))
+                                    .stroke(.blue.opacity(0.5), lineWidth: 1)
+                                Marker(location.name, systemImage: "bolt.car.fill", coordinate: coordinate)
+                                    .tint(.blue)
+                                    .tag(MapTag.location(location.id))
                             }
                         }
                         if showSessions {
-                            ForEach(sessionPins) { pin in
-                                Marker(pin.label, systemImage: "bolt.fill", coordinate: pin.coordinate)
-                                    .tint(pin.needsReview ? .orange : .gray)
-                                    .tag(MapTag.session(pin.id))
+                            ForEach(sessionClusters) { cluster in
+                                Annotation(
+                                    cluster.count > 1 ? "\(cluster.count) Ladevorgänge" : (cluster.pins.first?.label ?? ""),
+                                    coordinate: cluster.coordinate
+                                ) {
+                                    Button {
+                                        handleClusterTap(cluster)
+                                    } label: {
+                                        if cluster.count > 1 {
+                                            ClusterBadge(count: cluster.count, needsReview: cluster.needsReview)
+                                        } else {
+                                            SessionPinBadge(needsReview: cluster.needsReview)
+                                        }
+                                    }
+                                    .buttonStyle(.plain)
+                                }
                             }
                         }
                     }
                     .mapStyle(.standard)
+                    .onMapCameraChange(frequency: .onEnd) { context in
+                        currentSpan = context.region.span
+                    }
                     .safeAreaInset(edge: .bottom) { legend }
                 }
             }
@@ -100,17 +160,14 @@ struct MapOverviewView: View {
             .sheet(isPresented: $showingFilterSheet) {
                 FilterSheetView()
             }
-            // Tap auf einen Marker: Ladeort -> direkt in den Bearbeiten-Dialog
-            // (derselbe wie unter Einstellungen -> Ladeorte), Ladevorgang -> in
-            // dieselbe Vorschau wie in der Ladevorgänge-Liste. selectedTag dient
-            // dabei nur als einmaliger Trigger, deshalb sofort wieder zuruecksetzen.
+            // Tap auf einen Ladeort-Marker -> direkt in den Bearbeiten-Dialog (derselbe wie
+            // unter Einstellungen -> Ladeorte). selectedTag dient dabei nur als einmaliger
+            // Trigger, deshalb sofort wieder zuruecksetzen.
             .onChange(of: selectedTag) { _, newValue in
                 guard let newValue else { return }
                 switch newValue {
                 case .location(let id):
                     locationToEdit = locations.first { $0.id == id }
-                case .session(let id):
-                    sessionToPreview = sessions.first { $0.id == id }
                 }
                 selectedTag = nil
             }
@@ -129,6 +186,50 @@ struct MapOverviewView: View {
                     Task { await load() }
                 }
             }
+            .sheet(isPresented: $showingClusterList) {
+                ClusterSessionListSheet(sessions: clusterListSessions, vehicles: vehicles, providers: providers) { session in
+                    showingClusterList = false
+                    sessionToPreview = session
+                }
+            }
+        }
+    }
+
+    /// Tap auf ein Cluster: bei genau einer Session direkt die Vorschau oeffnen. Bei
+    /// mehreren wird geprueft, ob sie geografisch tatsaechlich auseinanderliegen (dann
+    /// reinzoomen, bis sie einzeln sichtbar sind) oder praktisch am selben Punkt liegen
+    /// (z.B. mehrmals an derselben Wallbox geladen) - dann bringt weiteres Zoomen nichts,
+    /// stattdessen oeffnet sich eine Liste der betroffenen Ladevorgaenge.
+    private func handleClusterTap(_ cluster: SessionCluster) {
+        guard cluster.count > 1 else {
+            sessionToPreview = sessions.first { $0.id == cluster.pins[0].id }
+            return
+        }
+        let lats = cluster.pins.map { $0.coordinate.latitude }
+        let lons = cluster.pins.map { $0.coordinate.longitude }
+        let rawLatSpan = (lats.max() ?? 0) - (lats.min() ?? 0)
+        let rawLonSpan = (lons.max() ?? 0) - (lons.min() ?? 0)
+        // ~11m - innerhalb dieser Distanz gelten Punkte als "derselbe Ort", Zoomen wuerde
+        // sie nicht mehr sichtbar trennen.
+        let sameSpotEpsilon = 0.0001
+        if rawLatSpan < sameSpotEpsilon && rawLonSpan < sameSpotEpsilon {
+            clusterListSessions = cluster.pins.compactMap { pin in sessions.first { $0.id == pin.id } }
+            showingClusterList = true
+            return
+        }
+        let center = CLLocationCoordinate2D(
+            latitude: ((lats.max() ?? 0) + (lats.min() ?? 0)) / 2,
+            longitude: ((lons.max() ?? 0) + (lons.min() ?? 0)) / 2
+        )
+        let minZoomSpan = 0.001
+        withAnimation {
+            cameraPosition = .region(MKCoordinateRegion(
+                center: center,
+                span: MKCoordinateSpan(
+                    latitudeDelta: max(rawLatSpan * 2.5, minZoomSpan),
+                    longitudeDelta: max(rawLonSpan * 2.5, minZoomSpan)
+                )
+            ))
         }
     }
 
@@ -185,6 +286,43 @@ struct MapOverviewView: View {
             longitudeDelta: max((maxLon - minLon) * 1.4, 0.02)
         )
         cameraPosition = .region(MKCoordinateRegion(center: center, span: span))
+        // .onMapCameraChange feuert erst nach Nutzerinteraktion - ohne das hier direkt
+        // zu setzen, wuerde bis zur ersten Beruehrung der Karte mit einem viel zu groben
+        // Default-Span geclustert (siehe currentSpan-Initialwert oben).
+        currentSpan = span
+    }
+}
+
+/// Zahlen-Badge fuer ein Cluster mit mehreren Ladevorgaengen.
+private struct ClusterBadge: View {
+    let count: Int
+    let needsReview: Bool
+
+    var body: some View {
+        Text("\(count)")
+            .font(.caption.bold())
+            .foregroundStyle(.white)
+            .frame(minWidth: 28, minHeight: 28)
+            .background(needsReview ? Color.orange : Color.blue)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(.white, lineWidth: 2))
+            .shadow(radius: 2)
+    }
+}
+
+/// Pin fuer ein Cluster mit genau einer Session (visuell identisch zum frueheren Marker).
+private struct SessionPinBadge: View {
+    let needsReview: Bool
+
+    var body: some View {
+        Image(systemName: "bolt.fill")
+            .font(.caption2)
+            .foregroundStyle(.white)
+            .padding(6)
+            .background(needsReview ? Color.orange : Color.gray)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(.white, lineWidth: 1.5))
+            .shadow(radius: 2)
     }
 }
 
@@ -205,6 +343,64 @@ private struct LegendToggle: View {
                 .strikethrough(!isOn)
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// Liste der Ladevorgaenge eines Clusters, das geografisch nicht weiter auftrennbar ist
+/// (siehe handleClusterTap) - Antippen einer Zeile oeffnet die normale Detail-Vorschau.
+private struct ClusterSessionListSheet: View {
+    let sessions: [ChargingSession]
+    let vehicles: [Vehicle]
+    let providers: [Provider]
+    let onSelect: (ChargingSession) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .short
+        f.locale = Locale(identifier: "de_DE")
+        return f
+    }()
+
+    var body: some View {
+        NavigationStack {
+            List(sessions) { session in
+                Button {
+                    onSelect(session)
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(Self.dateFormatter.string(from: session.startTime))
+                                .font(.subheadline)
+                            let vehicleName = vehicles.first { $0.id == session.vehicleId }?.name
+                            let providerName = providers.first { $0.id == session.providerId }?.name
+                            let subtitle = [vehicleName, providerName].compactMap { $0 }.joined(separator: " · ")
+                            if !subtitle.isEmpty {
+                                Text(subtitle)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer()
+                        if let kwh = session.energyKwh {
+                            Text(String(format: "%.1f kWh", kwh))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .foregroundStyle(.primary)
+            }
+            .navigationTitle("\(sessions.count) Ladevorgänge")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Fertig") { dismiss() }
+                }
+            }
+        }
     }
 }
 

@@ -178,12 +178,16 @@ struct ChargingSessionPayload: Codable {
     var pricePerKwh: Double?
     var priceTotal: Double?
     var odometerKm: Int?
+    var latitude: Double?
+    var longitude: Double?
     var geocodedPlace: String?
     var notes: String?
     var needsReview: Bool?
 
     enum CodingKeys: String, CodingKey {
         case notes
+        case latitude
+        case longitude
         case vehicleId = "vehicle_id"
         case providerId = "provider_id"
         case startTime = "start_time"

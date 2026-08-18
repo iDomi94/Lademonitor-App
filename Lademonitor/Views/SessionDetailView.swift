@@ -143,7 +143,7 @@ struct SessionDetailView: View {
                 }
             }
             .sheet(isPresented: $showingEdit) {
-                AddEditSessionView(vehicles: vehicles, providers: providers, session: session) {
+                AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: session) {
                     onChanged()
                     dismiss()
                 }

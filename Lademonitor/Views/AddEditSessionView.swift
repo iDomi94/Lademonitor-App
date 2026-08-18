@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AddEditSessionView: View {
     let vehicles: [Vehicle]
+    let locations: [ChargingLocation]
     let session: ChargingSession?
     let onSaved: () -> Void
 
@@ -20,18 +21,31 @@ struct AddEditSessionView: View {
     @State private var priceTotal: String
     @State private var odometerKm: String
     @State private var geocodedPlace: String
+    @State private var latitude: String
+    @State private var longitude: String
 
     @State private var isSaving = false
     @State private var errorMessage: String?
     @State private var showingAddProviderSheet = false
 
+    // Adresssuche (Forward-Geocoding), analog AddEditLocationView
+    @State private var addressQuery: String = ""
+    @State private var searchResults: [GeocodeResult] = []
+    @State private var isSearching = false
+    @State private var searchMessage: String?
+
+    // Aktueller Standort (GPS)
+    @StateObject private var locationProvider = CurrentLocationProvider()
+    @State private var isLocating = false
+
     /// Sentinel-Tag fuer den "Neuer Anbieter…"-Eintrag im Picker - eine echte Provider-ID
     /// ist immer eine UUID und kollidiert damit nie mit diesem Wert.
     private static let newProviderSentinel = "__new_provider__"
 
-    init(vehicles: [Vehicle], providers: [Provider], session: ChargingSession?, onSaved: @escaping () -> Void) {
+    init(vehicles: [Vehicle], providers: [Provider], locations: [ChargingLocation] = [], session: ChargingSession?, onSaved: @escaping () -> Void) {
         self.vehicles = vehicles
         _providers = State(initialValue: providers)
+        self.locations = locations
         self.session = session
         self.onSaved = onSaved
 
@@ -47,6 +61,8 @@ struct AddEditSessionView: View {
         _priceTotal = State(initialValue: session?.priceTotal.map { String(format: "%.2f", $0) } ?? "")
         _odometerKm = State(initialValue: session?.odometerKm.map(String.init) ?? "")
         _geocodedPlace = State(initialValue: session?.geocodedPlace ?? "")
+        _latitude = State(initialValue: session?.latitude.map { String(format: "%.6f", $0) } ?? "")
+        _longitude = State(initialValue: session?.longitude.map { String(format: "%.6f", $0) } ?? "")
     }
 
     private var isEditing: Bool { session != nil }
@@ -143,6 +159,77 @@ struct AddEditSessionView: View {
                     }
                 }
 
+                Section {
+                    HStack {
+                        TextField("Adresse suchen", text: $addressQuery)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+                            .submitLabel(.search)
+                            .onSubmit { Task { await searchAddress() } }
+                        if isSearching {
+                            ProgressView()
+                        } else {
+                            Button {
+                                Task { await searchAddress() }
+                            } label: {
+                                Image(systemName: "magnifyingglass")
+                            }
+                            .buttonStyle(.borderless)
+                            .disabled(addressQuery.trimmingCharacters(in: .whitespaces).isEmpty)
+                        }
+                    }
+
+                    if let searchMessage {
+                        Text(searchMessage)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    ForEach(searchResults, id: \.self) { result in
+                        Button {
+                            select(result)
+                        } label: {
+                            Text(result.displayName)
+                                .font(.callout)
+                                .foregroundStyle(.primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+
+                    Button {
+                        Task { await useCurrentLocation() }
+                    } label: {
+                        HStack {
+                            Label("Aktueller Standort", systemImage: "location.fill")
+                            if isLocating {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(isLocating)
+
+                    if !locations.isEmpty {
+                        Menu {
+                            ForEach(locations) { location in
+                                Button(location.name) { selectLocation(location) }
+                            }
+                        } label: {
+                            Label("Von Ladeort übernehmen", systemImage: "mappin.and.ellipse")
+                        }
+                    }
+
+                    if !latitude.isEmpty || !longitude.isEmpty {
+                        LabeledContent("Koordinaten", value: "\(latitude), \(longitude)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text("Position")
+                } footer: {
+                    Text("Optional - damit der Ladevorgang auf der Karte erscheint. Ohne gesetzte Koordinaten taucht er dort nicht auf.")
+                }
+
                 if let errorMessage {
                     Section {
                         Text(errorMessage).foregroundStyle(.red)
@@ -170,6 +257,53 @@ struct AddEditSessionView: View {
         }
     }
 
+    private func searchAddress() async {
+        let query = addressQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return }
+        isSearching = true
+        searchMessage = nil
+        do {
+            let results = try await AppRepository.shared.forwardGeocode(query: query)
+            searchResults = results
+            if results.isEmpty {
+                searchMessage = "Keine Treffer. Bitte die Koordinaten manuell suchen oder \"Aktueller Standort\" verwenden."
+            }
+        } catch {
+            searchResults = []
+            searchMessage = "Suche fehlgeschlagen."
+        }
+        isSearching = false
+    }
+
+    private func select(_ result: GeocodeResult) {
+        latitude = String(format: "%.6f", result.latitude)
+        longitude = String(format: "%.6f", result.longitude)
+        addressQuery = result.displayName
+        searchResults = []
+        searchMessage = nil
+    }
+
+    private func selectLocation(_ location: ChargingLocation) {
+        latitude = String(format: "%.6f", location.latitude)
+        longitude = String(format: "%.6f", location.longitude)
+        addressQuery = location.name
+        searchResults = []
+        searchMessage = nil
+    }
+
+    private func useCurrentLocation() async {
+        isLocating = true
+        errorMessage = nil
+        do {
+            let coordinate = try await locationProvider.requestCurrentLocation()
+            latitude = String(format: "%.6f", coordinate.latitude)
+            longitude = String(format: "%.6f", coordinate.longitude)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLocating = false
+    }
+
     private func suggestPrice() {
         guard !isEditing, let providerId, let provider = providers.first(where: { $0.id == providerId }) else { return }
         guard pricePerKwh.isEmpty else { return }
@@ -194,6 +328,8 @@ struct AddEditSessionView: View {
             pricePerKwh: Double(pricePerKwh.replacingOccurrences(of: ",", with: ".")),
             priceTotal: Double(priceTotal.replacingOccurrences(of: ",", with: ".")),
             odometerKm: Int(odometerKm),
+            latitude: Double(latitude.replacingOccurrences(of: ",", with: ".")),
+            longitude: Double(longitude.replacingOccurrences(of: ",", with: ".")),
             geocodedPlace: geocodedPlace.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 ? nil : geocodedPlace.trimmingCharacters(in: .whitespacesAndNewlines),
             notes: nil,

@@ -274,6 +274,8 @@ final class SyncService: ObservableObject {
                     pricePerKwh: session.pricePerKwh,
                     priceTotal: session.priceTotal,
                     odometerKm: session.odometerKm,
+                    latitude: session.latitude,
+                    longitude: session.longitude,
                     geocodedPlace: session.geocodedPlace,
                     notes: session.notes,
                     needsReview: session.needsReview

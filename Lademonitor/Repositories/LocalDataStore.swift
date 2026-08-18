@@ -251,6 +251,8 @@ final class LocalDataStore {
             odometerKm: payload.odometerKm,
             priceTotal: payload.priceTotal,
             pricePerKwh: payload.pricePerKwh,
+            latitude: payload.latitude,
+            longitude: payload.longitude,
             geocodedPlace: payload.geocodedPlace,
             notes: payload.notes,
             source: "manual",
@@ -273,6 +275,8 @@ final class LocalDataStore {
         if let pricePerKwh = payload.pricePerKwh { session.pricePerKwh = pricePerKwh }
         if let priceTotal = payload.priceTotal { session.priceTotal = priceTotal }
         if let odometerKm = payload.odometerKm { session.odometerKm = odometerKm }
+        if let latitude = payload.latitude { session.latitude = latitude }
+        if let longitude = payload.longitude { session.longitude = longitude }
         if let geocodedPlace = payload.geocodedPlace { session.geocodedPlace = geocodedPlace }
         if let notes = payload.notes { session.notes = notes }
         if let needsReview = payload.needsReview { session.needsReview = needsReview }
