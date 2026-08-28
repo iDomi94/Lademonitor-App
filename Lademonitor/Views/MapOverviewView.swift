@@ -28,8 +28,15 @@ struct MapOverviewView: View {
     @State private var selectedTag: MapTag?
     @State private var locationToEdit: ChargingLocation?
     @State private var sessionToPreview: ChargingSession?
-    @State private var showingClusterList = false
-    @State private var clusterListSessions: [ChargingSession] = []
+
+    /// Kapselt die Ladevorgaenge eines anzuzeigenden Clusters als Identifiable, damit
+    /// .sheet(item:) verwendet werden kann – das vermeidet den SwiftUI-Timing-Bug,
+    /// bei dem der Sheet-Inhalt clusterListSessions vor dem Commit des State-Updates liest.
+    private struct ClusterListItem: Identifiable {
+        let id = UUID()
+        let sessions: [ChargingSession]
+    }
+    @State private var clusterListItem: ClusterListItem?
 
     private struct SessionPin: Identifiable {
         let id: String
@@ -186,9 +193,12 @@ struct MapOverviewView: View {
                     Task { await load() }
                 }
             }
-            .sheet(isPresented: $showingClusterList) {
-                ClusterSessionListSheet(sessions: clusterListSessions, vehicles: vehicles, providers: providers) { session in
-                    showingClusterList = false
+            // sheet(item:) statt sheet(isPresented:) + separater State-Variable, damit
+            // die Sessions atomar mit der Sheet-Praesentation uebergeben werden und kein
+            // SwiftUI-Timing-Bug zu einer leeren Liste fuehren kann.
+            .sheet(item: $clusterListItem) { item in
+                ClusterSessionListSheet(sessions: item.sessions, vehicles: vehicles, providers: providers) { session in
+                    clusterListItem = nil
                     sessionToPreview = session
                 }
             }
@@ -213,8 +223,8 @@ struct MapOverviewView: View {
         // sie nicht mehr sichtbar trennen.
         let sameSpotEpsilon = 0.0001
         if rawLatSpan < sameSpotEpsilon && rawLonSpan < sameSpotEpsilon {
-            clusterListSessions = cluster.pins.compactMap { pin in sessions.first { $0.id == pin.id } }
-            showingClusterList = true
+            let matched = cluster.pins.compactMap { pin in sessions.first { $0.id == pin.id } }
+            clusterListItem = ClusterListItem(sessions: matched)
             return
         }
         let center = CLLocationCoordinate2D(
