@@ -1,11 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject private var session = SessionManager.shared
     @ObservedObject private var settings = AppSettings.shared
     @ObservedObject private var syncService = SyncService.shared
-    @State private var isLoggingOut = false
-    @State private var showingServerSwitchConfirmation = false
     @State private var showingResetConfirmation = false
     @State private var resetErrorMessage: String?
 
@@ -18,60 +15,33 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    LabeledContent("Aktuell", value: settings.appMode == .localOnly ? "Nur lokal" : "Server")
-                    if settings.appMode == .localOnly {
-                        Button {
-                            showingServerSwitchConfirmation = true
-                        } label: {
-                            Label("Zu Server wechseln", systemImage: "network")
-                        }
-                    } else {
-                        Button {
-                            settings.appMode = .localOnly
-                        } label: {
-                            Label("Zu \"Nur lokal\" wechseln", systemImage: "iphone")
-                        }
+                Section("Verwaltung") {
+                    NavigationLink {
+                        LocationsSettingsView()
+                    } label: {
+                        Label("Ladeorte", systemImage: "mappin.and.ellipse")
                     }
-                } header: {
-                    Text("Modus")
-                } footer: {
-                    if settings.appMode == .localOnly {
-                        Text("Alle Daten liegen ausschließlich auf diesem Gerät.")
+                    NavigationLink {
+                        VehiclesSettingsView()
+                    } label: {
+                        Label("Fahrzeuge", systemImage: "car.fill")
+                    }
+                    NavigationLink {
+                        ProvidersSettingsView()
+                    } label: {
+                        Label("Anbieter", systemImage: "bolt.fill")
+                    }
+                }
+
+                Section("Server") {
+                    NavigationLink {
+                        ServerSettingsView()
+                    } label: {
+                        Label("Server & Verbindung", systemImage: "network")
                     }
                 }
 
                 if settings.appMode == .server {
-                    Section("Konto") {
-                        if let user = session.currentUser {
-                            LabeledContent("Angemeldet als", value: user.username)
-                        }
-                        Button(role: .destructive) {
-                            Task {
-                                isLoggingOut = true
-                                await session.logout()
-                                isLoggingOut = false
-                            }
-                        } label: {
-                            HStack {
-                                Text("Abmelden")
-                                if isLoggingOut {
-                                    Spacer()
-                                    ProgressView()
-                                }
-                            }
-                        }
-                        .disabled(isLoggingOut)
-                    }
-
-                    Section("Verbindung") {
-                        NavigationLink {
-                            ConnectionSettingsView()
-                        } label: {
-                            Label("Server & Verbindung", systemImage: "network")
-                        }
-                    }
-
                     Section {
                         if let lastSync = syncService.lastSyncDate {
                             LabeledContent("Zuletzt synchronisiert", value: Self.relativeFormatter.localizedString(for: lastSync, relativeTo: Date()))
@@ -103,24 +73,6 @@ struct SettingsView: View {
                     }
                 }
 
-                Section("Verwaltung") {
-                    NavigationLink {
-                        LocationsSettingsView()
-                    } label: {
-                        Label("Ladeorte", systemImage: "mappin.and.ellipse")
-                    }
-                    NavigationLink {
-                        VehiclesSettingsView()
-                    } label: {
-                        Label("Fahrzeuge", systemImage: "car.fill")
-                    }
-                    NavigationLink {
-                        ProvidersSettingsView()
-                    } label: {
-                        Label("Anbieter", systemImage: "bolt.fill")
-                    }
-                }
-
                 Section {
                     Button(role: .destructive) {
                         showingResetConfirmation = true
@@ -139,14 +91,6 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Einstellungen")
-            .alert("Zu Server wechseln?", isPresented: $showingServerSwitchConfirmation) {
-                Button("Wechseln", role: .destructive) {
-                    settings.appMode = .server
-                }
-                Button("Abbrechen", role: .cancel) {}
-            } message: {
-                Text("Nach der Anmeldung werden deine bisherigen lokalen Daten automatisch zum Server hochgeladen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln.")
-            }
             .alert("Alle lokalen Daten löschen?", isPresented: $showingResetConfirmation) {
                 Button("Löschen", role: .destructive) { resetAllData() }
                 Button("Abbrechen", role: .cancel) {}
@@ -169,9 +113,12 @@ struct SettingsView: View {
     }
 }
 
-/// Server-Adresse eintragen und Verbindung testen.
-struct ConnectionSettingsView: View {
-    @ObservedObject var settings = AppSettings.shared
+/// Unterseite: Modus, Konto (nur Server-Modus) und Server-Verbindung in einer Ansicht.
+struct ServerSettingsView: View {
+    @ObservedObject private var session = SessionManager.shared
+    @ObservedObject private var settings = AppSettings.shared
+    @State private var isLoggingOut = false
+    @State private var showingServerSwitchConfirmation = false
     @State private var testResult: TestResult?
     @State private var isTesting = false
 
@@ -182,6 +129,53 @@ struct ConnectionSettingsView: View {
 
     var body: some View {
         Form {
+            Section {
+                LabeledContent("Aktuell", value: settings.appMode == .localOnly ? "Nur lokal" : "Server")
+                if settings.appMode == .localOnly {
+                    Button {
+                        showingServerSwitchConfirmation = true
+                    } label: {
+                        Label("Zu Server wechseln", systemImage: "network")
+                    }
+                } else {
+                    Button {
+                        settings.appMode = .localOnly
+                    } label: {
+                        Label("Zu \"Nur lokal\" wechseln", systemImage: "iphone")
+                    }
+                }
+            } header: {
+                Text("Modus")
+            } footer: {
+                if settings.appMode == .localOnly {
+                    Text("Alle Daten liegen ausschließlich auf diesem Gerät.")
+                }
+            }
+
+            if settings.appMode == .server {
+                Section("Konto") {
+                    if let user = session.currentUser {
+                        LabeledContent("Angemeldet als", value: user.username)
+                    }
+                    Button(role: .destructive) {
+                        Task {
+                            isLoggingOut = true
+                            await session.logout()
+                            isLoggingOut = false
+                        }
+                    } label: {
+                        HStack {
+                            Text("Abmelden")
+                            if isLoggingOut {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(isLoggingOut)
+                }
+            }
+
             Section {
                 TextField("https://lademonitor.example.com", text: $settings.serverURLString)
                     .keyboardType(.URL)
@@ -226,7 +220,15 @@ struct ConnectionSettingsView: View {
                 }
             }
         }
-        .navigationTitle("Verbindung")
+        .navigationTitle("Server & Verbindung")
+        .alert("Zu Server wechseln?", isPresented: $showingServerSwitchConfirmation) {
+            Button("Wechseln", role: .destructive) {
+                settings.appMode = .server
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Nach der Anmeldung werden deine bisherigen lokalen Daten automatisch zum Server hochgeladen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln.")
+        }
     }
 
     private func testConnection() async {
@@ -239,6 +241,14 @@ struct ConnectionSettingsView: View {
         } catch {
             testResult = .failure(error.localizedDescription)
         }
+    }
+}
+
+// ConnectionSettingsView wird nicht mehr direkt verwendet, bleibt aber fuer
+// eventuelle externe Aufrufer erhalten und delegiert an ServerSettingsView.
+struct ConnectionSettingsView: View {
+    var body: some View {
+        ServerSettingsView()
     }
 }
 
