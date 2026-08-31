@@ -1,40 +1,76 @@
 {
-  "sourceLanguage": "de",
-  "strings": {
-    "NSLocationWhenInUseUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wird verwendet, um die Koordinaten deines aktuellen Standorts als Ladeort zu übernehmen."
+  "sourceLanguage" : "de",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Used to capture the coordinates of your current location as a charging location."
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor"
           }
         }
       }
     },
-    "NSLocalNetworkUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wird für die Verbindung zum Lademonitor-Server benötigt"
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Needed to connect to the Lademonitor server"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor"
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird für die Verbindung zum Lademonitor-Server benötigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needed to connect to the Lademonitor server"
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird verwendet, um die Koordinaten deines aktuellen Standorts als Ladeort zu übernehmen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Used to capture the coordinates of your current location as a charging location."
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
