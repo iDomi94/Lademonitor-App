@@ -5,12 +5,13 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 
 SwiftUI app for [Lademonitor](https://github.com/iDomi94/Lademonitor-Server) –
-a self-hosted charging session tracking app for an EV. The app is a
-pure REST client against the Lademonitor backend; there is no local
-data storage (no SwiftData/CoreData) – without a connection to your own
-server the app doesn't work, and that's intentional: the database lives
-centrally on the server, so the web UI and the app always show the same
-state.
+a charging session tracking app for an EV. The app supports two modes,
+chosen on first launch: a **local-only mode** (all data stays on the
+device via SwiftData, no server needed) and a **server mode** acting as a
+REST client against the self-hosted Lademonitor backend with bidirectional
+sync, so the web UI and the app always show the same state. The mode can
+be switched later at any time; local data can be uploaded to a server when
+switching.
 
 ## Features
 
@@ -24,7 +25,10 @@ state.
 
 ## Requirement
 
-A running [Lademonitor-Server](https://github.com/iDomi94/Lademonitor-Server)
+None in local-only mode – the app runs entirely offline on the device.
+
+For server mode, a running
+[Lademonitor-Server](https://github.com/iDomi94/Lademonitor-Server)
 (self-hosted, via Docker). On first launch, enter the server address
 (domain, e.g. `lademonitor.example.com` – `https://` is automatically added
 if no scheme is specified) as well as the username/password of an account
