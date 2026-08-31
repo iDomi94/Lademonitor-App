@@ -18,7 +18,7 @@ enum LocalGeocoder {
             let display = [name, address]
                 .compactMap { $0 }
                 .filter { !$0.isEmpty }
-            let joined = display.isEmpty ? "Unbekannter Ort" : display.joined(separator: " – ")
+            let joined = display.isEmpty ? String(localized: "Unbekannter Ort") : display.joined(separator: " – ")
             return GeocodeResult(
                 displayName: joined,
                 latitude: item.placemark.coordinate.latitude,

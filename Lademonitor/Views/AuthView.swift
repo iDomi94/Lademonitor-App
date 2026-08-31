@@ -99,7 +99,7 @@ struct AuthView: View {
     private func submit() async {
         errorMessage = nil
         if isRegistering && password != passwordConfirm {
-            errorMessage = "Die Passwörter stimmen nicht überein."
+            errorMessage = String(localized: "Die Passwörter stimmen nicht überein.")
             return
         }
         isSubmitting = true

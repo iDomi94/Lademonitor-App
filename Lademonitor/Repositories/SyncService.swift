@@ -80,7 +80,7 @@ final class SyncService: ObservableObject {
     private func performSync() async {
         guard AppSettings.shared.appMode == .server, SessionManager.shared.isAuthenticated else { return }
         guard NetworkMonitor.shared.isOnline else {
-            lastSyncError = "Offline – Änderungen werden gepuffert und beim nächsten Mal hochgeladen."
+            lastSyncError = String(localized: "Offline – Änderungen werden gepuffert und beim nächsten Mal hochgeladen.")
             return
         }
         isSyncing = true
@@ -148,7 +148,7 @@ final class SyncService: ObservableObject {
     /// statt entweder den ganzen Durchlauf abzubrechen oder die Zeile stumm fallenzulassen.
     private struct UnresolvedReferenceError: LocalizedError {
         let what: String
-        var errorDescription: String? { "Konnte \(what) nicht zuordnen." }
+        var errorDescription: String? { String(localized: "Konnte \(what) nicht zuordnen.") }
     }
 
     private func pushVehicles() async throws {
@@ -182,7 +182,7 @@ final class SyncService: ObservableObject {
                 }
                 vehicle.isDirty = false
             } catch {
-                itemErrors.append("Fahrzeug „\(vehicle.name)“: \(error.localizedDescription)")
+                itemErrors.append(String(localized: "Fahrzeug „\(vehicle.name)“: \(error.localizedDescription)"))
             }
         }
         try context.save()
@@ -211,7 +211,7 @@ final class SyncService: ObservableObject {
                 }
                 provider.isDirty = false
             } catch {
-                itemErrors.append("Anbieter „\(provider.name)“: \(error.localizedDescription)")
+                itemErrors.append(String(localized: "Anbieter „\(provider.name)“: \(error.localizedDescription)"))
             }
         }
         try context.save()
@@ -242,7 +242,7 @@ final class SyncService: ObservableObject {
                 location.defaultProviderId = resolvedProviderId
                 location.isDirty = false
             } catch {
-                itemErrors.append("Ladeort „\(location.name)“: \(error.localizedDescription)")
+                itemErrors.append(String(localized: "Ladeort „\(location.name)“: \(error.localizedDescription)"))
             }
         }
         try context.save()
@@ -290,7 +290,7 @@ final class SyncService: ObservableObject {
                 session.providerId = resolvedProviderId
                 session.isDirty = false
             } catch {
-                itemErrors.append("Ladevorgang vom \(session.startTime.formatted()): \(error.localizedDescription)")
+                itemErrors.append(String(localized: "Ladevorgang vom \(session.startTime.formatted()): \(error.localizedDescription)"))
             }
         }
         try context.save()
@@ -309,7 +309,7 @@ final class SyncService: ObservableObject {
             predicate: #Predicate { $0.serverId == ref || $0.localId == uuid }
         )).first
         guard let resolved = vehicle?.serverId else {
-            throw UnresolvedReferenceError(what: "Fahrzeug")
+            throw UnresolvedReferenceError(what: String(localized: "Fahrzeug"))
         }
         return resolved
     }

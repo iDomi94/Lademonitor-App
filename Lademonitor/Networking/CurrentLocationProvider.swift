@@ -17,11 +17,11 @@ final class CurrentLocationProvider: NSObject, ObservableObject, CLLocationManag
         var errorDescription: String? {
             switch self {
             case .denied:
-                return "Standortzugriff nicht erlaubt. Bitte in den iOS-Einstellungen unter „Datenschutz → Ortungsdienste“ aktivieren."
+                return String(localized: "Standortzugriff nicht erlaubt. Bitte in den iOS-Einstellungen unter „Datenschutz → Ortungsdienste“ aktivieren.")
             case .busy:
-                return "Es läuft bereits eine Standortabfrage."
+                return String(localized: "Es läuft bereits eine Standortabfrage.")
             case .failed(let message):
-                return "Standort konnte nicht ermittelt werden: \(message)"
+                return String(localized: "Standort konnte nicht ermittelt werden: \(message)")
             }
         }
     }
@@ -83,7 +83,7 @@ final class CurrentLocationProvider: NSObject, ObservableObject, CLLocationManag
             if let coordinate {
                 finish(.success(coordinate))
             } else {
-                finish(.failure(LocationError.failed("Keine Position empfangen.")))
+                finish(.failure(LocationError.failed(String(localized: "Keine Position empfangen."))))
             }
         }
     }

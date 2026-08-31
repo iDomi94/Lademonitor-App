@@ -58,7 +58,7 @@ struct MapOverviewView: View {
         let f = DateFormatter()
         f.dateStyle = .short
         f.timeStyle = .short
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         return f
     }()
 
@@ -134,7 +134,7 @@ struct MapOverviewView: View {
                         if showSessions {
                             ForEach(sessionClusters) { cluster in
                                 Annotation(
-                                    cluster.count > 1 ? "\(cluster.count) Ladevorgänge" : (cluster.pins.first?.label ?? ""),
+                                    cluster.count > 1 ? String(localized: "\(cluster.count) Ladevorgänge") : (cluster.pins.first?.label ?? ""),
                                     coordinate: cluster.coordinate
                                 ) {
                                     Button {
@@ -246,8 +246,8 @@ struct MapOverviewView: View {
     /// Antippbare Legende: tippen blendet die jeweilige Marker-Gruppe auf der Karte aus/ein.
     private var legend: some View {
         HStack(spacing: 12) {
-            LegendToggle(title: "Ladeorte", systemImage: "bolt.car.fill", color: .blue, isOn: $showLocations)
-            LegendToggle(title: "Ladevorgänge", systemImage: "bolt.fill", color: .gray, isOn: $showSessions)
+            LegendToggle(title: String(localized: "Ladeorte"), systemImage: "bolt.car.fill", color: .blue, isOn: $showLocations)
+            LegendToggle(title: String(localized: "Ladevorgänge"), systemImage: "bolt.fill", color: .gray, isOn: $showSessions)
         }
         .font(.caption)
         .padding(.horizontal, 12)
@@ -259,7 +259,7 @@ struct MapOverviewView: View {
 
     private func load() async {
         guard AppSettings.shared.isReadyForDataAccess else {
-            errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
+            errorMessage = String(localized: "Bitte zuerst die Server-Adresse in den Einstellungen eintragen.")
             return
         }
         isLoading = true
@@ -370,7 +370,7 @@ private struct ClusterSessionListSheet: View {
         let f = DateFormatter()
         f.dateStyle = .medium
         f.timeStyle = .short
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         return f
     }()
 

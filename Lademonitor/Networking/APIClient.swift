@@ -10,15 +10,15 @@ enum APIError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notConfigured:
-            return "Keine Server-URL konfiguriert. Bitte in den Einstellungen eintragen."
+            return String(localized: "Keine Server-URL konfiguriert. Bitte in den Einstellungen eintragen.")
         case .invalidResponse:
-            return "Ungültige Antwort vom Server."
+            return String(localized: "Ungültige Antwort vom Server.")
         case .server(let code, let message):
-            return "Serverfehler (\(code)): \(message)"
+            return String(localized: "Serverfehler (\(code)): \(message)")
         case .decoding(let err):
-            return "Antwort konnte nicht gelesen werden: \(err.localizedDescription)"
+            return String(localized: "Antwort konnte nicht gelesen werden: \(err.localizedDescription)")
         case .network(let err):
-            return "Verbindung fehlgeschlagen: \(err.localizedDescription)"
+            return String(localized: "Verbindung fehlgeschlagen: \(err.localizedDescription)")
         }
     }
 }

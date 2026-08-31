@@ -13,7 +13,7 @@ struct DashboardView: View {
     private static let kmFormatter: NumberFormatter = {
         let f = NumberFormatter()
         f.numberStyle = .decimal
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         f.maximumFractionDigits = 0
         return f
     }()
@@ -47,13 +47,13 @@ struct DashboardView: View {
                 } else if let stats {
                     // Kennzahlen-Grid
                     LazyVGrid(columns: columns, spacing: 12) {
-                        StatCard(label: "Ladevorgänge", value: "\(stats.totalSessions)")
-                        StatCard(label: "Gesamt kWh", value: String(format: "%.1f kWh", stats.totalKwh))
-                        StatCard(label: "Gesamtkosten", value: String(format: "%.2f €", stats.totalCost))
-                        StatCard(label: "Ø Preis/kWh", value: stats.avgPricePerKwh.map { String(format: "%.3f €", $0) } ?? "–")
-                        StatCard(label: "Ø Verbrauch/100km", value: stats.avgConsumptionKwhPer100km.map { String(format: "%.1f kWh", $0) } ?? "–")
-                        StatCard(label: "Preis/100km", value: stats.pricePer100km.map { String(format: "%.2f €", $0) } ?? "–")
-                        StatCard(label: "Gefahrene Kilometer", value: stats.totalKmDriven.map { kmString($0) } ?? "–")
+                        StatCard(label: String(localized: "Ladevorgänge"), value: "\(stats.totalSessions)")
+                        StatCard(label: String(localized: "Gesamt kWh"), value: String(format: "%.1f kWh", stats.totalKwh))
+                        StatCard(label: String(localized: "Gesamtkosten"), value: String(format: "%.2f €", stats.totalCost))
+                        StatCard(label: String(localized: "Ø Preis/kWh"), value: stats.avgPricePerKwh.map { String(format: "%.3f €", $0) } ?? "–")
+                        StatCard(label: String(localized: "Ø Verbrauch/100km"), value: stats.avgConsumptionKwhPer100km.map { String(format: "%.1f kWh", $0) } ?? "–")
+                        StatCard(label: String(localized: "Preis/100km"), value: stats.pricePer100km.map { String(format: "%.2f €", $0) } ?? "–")
+                        StatCard(label: String(localized: "Gefahrene Kilometer"), value: stats.totalKmDriven.map { kmString($0) } ?? "–")
                     }
                     .padding()
 
@@ -135,7 +135,7 @@ struct DashboardView: View {
 
     private func load() async {
         guard AppSettings.shared.isReadyForDataAccess else {
-            errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
+            errorMessage = String(localized: "Bitte zuerst die Server-Adresse in den Einstellungen eintragen.")
             return
         }
         isLoading = true
@@ -223,6 +223,10 @@ private struct ProviderPieChartsSection: View {
     let providers: [ProviderStat]
 
     private static let palette: [Color] = [.blue, .orange, .green, .purple, .red, .teal, .pink, .indigo]
+    /// Lokalisierte Anzeige-Bezeichnung fuer die zusammengefasste "Sonstige"-Slice
+    /// (siehe entries). Als eigene Konstante gehalten, damit Erzeugung und der
+    /// Grau-Farbvergleich in colorRange immer denselben (lokalisierten) Wert nutzen.
+    private static let otherLabel = String(localized: "Andere")
 
     /// Grouping-Logik:
     /// 1. "Ohne Anbieter" herausfiltern
@@ -241,28 +245,28 @@ private struct ProviderPieChartsSection: View {
 
         let otherKwh  = otherItems.reduce(0.0) { $0 + $1.kwh }
         let otherCost = otherItems.reduce(0.0) { $0 + $1.cost }
-        return Array(top) + [(name: "Andere", kwh: otherKwh, cost: otherCost)]
+        return Array(top) + [(name: Self.otherLabel, kwh: otherKwh, cost: otherCost)]
     }
 
     private var colorDomain: [String] { entries.map(\.name) }
 
     private var colorRange: [Color] {
         entries.enumerated().map { (i, e) in
-            e.name == "Andere" ? .gray : Self.palette[i % Self.palette.count]
+            e.name == Self.otherLabel ? .gray : Self.palette[i % Self.palette.count]
         }
     }
 
     var body: some View {
         VStack(spacing: 16) {
             ProviderPieChart(
-                title: "kWh pro Anbieter",
+                title: String(localized: "kWh pro Anbieter"),
                 data: entries.map { ($0.name, $0.kwh) },
                 unit: "kWh",
                 colorDomain: colorDomain,
                 colorRange: colorRange
             )
             ProviderPieChart(
-                title: "Bezahlt pro Anbieter",
+                title: String(localized: "Bezahlt pro Anbieter"),
                 data: entries.map { ($0.name, $0.cost) },
                 unit: "€",
                 colorDomain: colorDomain,

@@ -26,16 +26,16 @@ struct ModeSelectionView: View {
                 VStack(spacing: 16) {
                     ModeOptionCard(
                         icon: "iphone",
-                        title: "Nur lokal auf diesem Gerät",
-                        description: "Alle Daten bleiben ausschließlich auf diesem iPhone. Kein Server, keine automatische Erkennung über Home Assistant, keine Synchronisation zwischen Geräten. Du kannst später jederzeit zu einem Server wechseln und alle lokalen Daten hochladen."
+                        title: String(localized: "Nur lokal auf diesem Gerät"),
+                        description: String(localized: "Alle Daten bleiben ausschließlich auf diesem iPhone. Kein Server, keine automatische Erkennung über Home Assistant, keine Synchronisation zwischen Geräten. Du kannst später jederzeit zu einem Server wechseln und alle lokalen Daten hochladen.")
                     ) {
                         settings.appMode = .localOnly
                     }
 
                     ModeOptionCard(
                         icon: "network",
-                        title: "Mit eigenem Server verbinden",
-                        description: "Daten liegen zentral auf deinem Lademonitor-Server, inkl. automatischer Ladevorgangs-Erkennung über Home Assistant und Zugriff vom Web-UI aus."
+                        title: String(localized: "Mit eigenem Server verbinden"),
+                        description: String(localized: "Daten liegen zentral auf deinem Lademonitor-Server, inkl. automatischer Ladevorgangs-Erkennung über Home Assistant und Zugriff vom Web-UI aus.")
                     ) {
                         settings.appMode = .server
                     }

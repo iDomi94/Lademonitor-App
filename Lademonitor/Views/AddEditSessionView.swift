@@ -114,8 +114,8 @@ struct AddEditSessionView: View {
                 Section("Akkustand") {
                     Toggle("SoC-Werte angeben", isOn: $socEnabled.animation())
                     if socEnabled {
-                        SoCSlider(title: "Start", value: $socStartValue, tint: .orange)
-                        SoCSlider(title: "Ende", value: $socEndValue, tint: .green)
+                        SoCSlider(title: String(localized: "Start"), value: $socStartValue, tint: .orange)
+                        SoCSlider(title: String(localized: "Ende"), value: $socEndValue, tint: .green)
                     }
                 }
 
@@ -266,11 +266,11 @@ struct AddEditSessionView: View {
             let results = try await AppRepository.shared.forwardGeocode(query: query)
             searchResults = results
             if results.isEmpty {
-                searchMessage = "Keine Treffer. Bitte die Koordinaten manuell suchen oder \"Aktueller Standort\" verwenden."
+                searchMessage = String(localized: "Keine Treffer. Bitte die Koordinaten manuell suchen oder \"Aktueller Standort\" verwenden.")
             }
         } catch {
             searchResults = []
-            searchMessage = "Suche fehlgeschlagen."
+            searchMessage = String(localized: "Suche fehlgeschlagen.")
         }
         isSearching = false
     }

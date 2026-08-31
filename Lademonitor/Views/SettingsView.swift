@@ -8,7 +8,7 @@ struct SettingsView: View {
 
     private static let relativeFormatter: RelativeDateTimeFormatter = {
         let f = RelativeDateTimeFormatter()
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         return f
     }()
 
@@ -130,7 +130,7 @@ struct ServerSettingsView: View {
     var body: some View {
         Form {
             Section {
-                LabeledContent("Aktuell", value: settings.appMode == .localOnly ? "Nur lokal" : "Server")
+                LabeledContent("Aktuell", value: settings.appMode == .localOnly ? String(localized: "Nur lokal") : String(localized: "Server"))
                 if settings.appMode == .localOnly {
                     Button {
                         showingServerSwitchConfirmation = true
@@ -237,7 +237,7 @@ struct ServerSettingsView: View {
         defer { isTesting = false }
         do {
             let ok = try await APIClient.shared.checkHealth()
-            testResult = ok ? .success : .failure("Server antwortet, aber Status ist nicht \"ok\".")
+            testResult = ok ? .success : .failure(String(localized: "Server antwortet, aber Status ist nicht \"ok\"."))
         } catch {
             testResult = .failure(error.localizedDescription)
         }

@@ -109,7 +109,7 @@ struct SessionsListView: View {
 
     private func load() async {
         guard AppSettings.shared.isReadyForDataAccess else {
-            errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
+            errorMessage = String(localized: "Bitte zuerst die Server-Adresse in den Einstellungen eintragen.")
             return
         }
         isLoading = true
@@ -165,14 +165,14 @@ private struct SessionRow: View {
         let f = DateFormatter()
         f.dateStyle = .medium
         f.timeStyle = .short
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         return f
     }()
 
     private static let kmFormatter: NumberFormatter = {
         let f = NumberFormatter()
         f.numberStyle = .decimal
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         f.maximumFractionDigits = 0
         return f
     }()
@@ -182,11 +182,11 @@ private struct SessionRow: View {
         var parts: [String] = []
         switch (session.socStart, session.socEnd) {
         case let (start?, end?):
-            parts.append("SoC \(start) → \(end) %")
+            parts.append(String(localized: "SoC \(start) → \(end) %"))
         case let (start?, nil):
-            parts.append("SoC ab \(start) %")
+            parts.append(String(localized: "SoC ab \(start) %"))
         case let (nil, end?):
-            parts.append("SoC bis \(end) %")
+            parts.append(String(localized: "SoC bis \(end) %"))
         default:
             break
         }

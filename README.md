@@ -1,5 +1,7 @@
 # Lademonitor App
 
+**Sprache:** Deutsch | [English](README.en.md)
+
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 
 SwiftUI-App für [Lademonitor](https://github.com/iDomi94/Lademonitor-Server) –

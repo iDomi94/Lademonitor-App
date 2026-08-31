@@ -16,13 +16,13 @@ enum FilterPreset: CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .last7Days: return "Letzte 7 Tage"
-        case .last30Days: return "Letzte 30 Tage"
-        case .last90Days: return "Letzte 90 Tage"
-        case .lastMonth: return "Letzter Monat"
-        case .monthToDate: return "Monat bis jetzt"
-        case .yearToDate: return "Jahr bis jetzt"
-        case .lastYear: return "Letztes Jahr"
+        case .last7Days: return String(localized: "Letzte 7 Tage")
+        case .last30Days: return String(localized: "Letzte 30 Tage")
+        case .last90Days: return String(localized: "Letzte 90 Tage")
+        case .lastMonth: return String(localized: "Letzter Monat")
+        case .monthToDate: return String(localized: "Monat bis jetzt")
+        case .yearToDate: return String(localized: "Jahr bis jetzt")
+        case .lastYear: return String(localized: "Letztes Jahr")
         }
     }
 

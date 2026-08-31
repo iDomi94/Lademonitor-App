@@ -6,7 +6,7 @@ enum LocalStoreError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .notFound: return "Eintrag wurde nicht gefunden."
+        case .notFound: return String(localized: "Eintrag wurde nicht gefunden.")
         }
     }
 }

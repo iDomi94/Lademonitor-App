@@ -65,7 +65,7 @@ struct VehiclesSettingsView: View {
 
     private func load() async {
         guard AppSettings.shared.isReadyForDataAccess else {
-            errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
+            errorMessage = String(localized: "Bitte zuerst die Server-Adresse in den Einstellungen eintragen.")
             return
         }
         isLoading = true

@@ -13,9 +13,9 @@ enum SessionSource: String, Codable {
 
     var displayName: String {
         switch self {
-        case .manual: return "Manuell"
-        case .automatic: return "Automatisch"
-        case .importSource: return "Import"
+        case .manual: return String(localized: "Manuell")
+        case .automatic: return String(localized: "Automatisch")
+        case .importSource: return String(localized: "Import")
         }
     }
 }
@@ -87,26 +87,26 @@ enum ConsumptionMethod: String {
 
     var shortLabel: String {
         switch self {
-        case .fullChargeInterval: return "Exakt (Vollladung)"
-        case .socCorrected: return "SoC-korrigiert"
-        case .naive: return "Einfach (ohne SoC)"
-        case .estimatedEnergy: return "Geschätzte Energie"
-        case .unavailable: return "Nicht verfügbar"
+        case .fullChargeInterval: return String(localized: "Exakt (Vollladung)")
+        case .socCorrected: return String(localized: "SoC-korrigiert")
+        case .naive: return String(localized: "Einfach (ohne SoC)")
+        case .estimatedEnergy: return String(localized: "Geschätzte Energie")
+        case .unavailable: return String(localized: "Nicht verfügbar")
         }
     }
 
     var explanation: String {
         switch self {
         case .fullChargeInterval:
-            return "Exakter Wert aus einem Vollladungs-Intervall – der genaueste Fall (Goldstandard)."
+            return String(localized: "Exakter Wert aus einem Vollladungs-Intervall – der genaueste Fall (Goldstandard).")
         case .socCorrected:
-            return "SoC-korrigiert auf Basis einer gemessenen kWh-Angabe."
+            return String(localized: "SoC-korrigiert auf Basis einer gemessenen kWh-Angabe.")
         case .naive:
-            return "Einfache kWh/km-Rechnung ohne SoC-Korrektur (keine SoC-Werte verfügbar)."
+            return String(localized: "Einfache kWh/km-Rechnung ohne SoC-Korrektur (keine SoC-Werte verfügbar).")
         case .estimatedEnergy:
-            return "Basiert auf einer geschätzten Energiemenge statt eines gemessenen kWh-Werts – Fehler können sich hier häufen."
+            return String(localized: "Basiert auf einer geschätzten Energiemenge statt eines gemessenen kWh-Werts – Fehler können sich hier häufen.")
         case .unavailable:
-            return "Keine Verbrauchsberechnung möglich (z. B. erster Ladevorgang oder fehlender Kilometerstand)."
+            return String(localized: "Keine Verbrauchsberechnung möglich (z. B. erster Ladevorgang oder fehlender Kilometerstand).")
         }
     }
 }
@@ -322,9 +322,10 @@ struct MonthlyStat: Codable, Identifiable {
         case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
     }
 
-    /// Wandelt das Server-Format "YYYY-MM" (z.B. "2026-08") in einen deutschen
-    /// Klartext um (z.B. "August 2026"), passend zur Darstellung im Web-UI.
-    /// Faellt bei unerwartetem Format auf den Rohwert zurueck.
+    /// Wandelt das Server-Format "YYYY-MM" (z.B. "2026-08") in einen an die
+    /// aktuelle App-Sprache angepassten Klartext um (z.B. "August 2026" bzw.
+    /// "August 2026" / "August 2026" fuer Englisch), passend zur Darstellung
+    /// im Web-UI. Faellt bei unerwartetem Format auf den Rohwert zurueck.
     var displayMonth: String {
         let parts = month.split(separator: "-")
         guard parts.count == 2,
@@ -332,14 +333,16 @@ struct MonthlyStat: Codable, Identifiable {
               (1...12).contains(monthIndex) else {
             return month
         }
-        let names = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-                     "Juli", "August", "September", "Oktober", "November", "Dezember"]
+        let names = DateFormatter().standaloneMonthSymbols ?? []
+        guard names.count == 12 else { return month }
         return "\(names[monthIndex - 1]) \(parts[0])"
     }
 
     /// Kurze Variante fuer Diagramm-Achsen, z.B. "Aug '26". Eindeutig, weil
     /// Jahr-Kuerzel enthalten ist (kein Merge bei gleichen Monatsnamen aus
-    /// verschiedenen Jahren).
+    /// verschiedenen Jahren). Nutzt die kurzen Monatsnamen der aktuellen
+    /// App-Sprache (Locale.current), damit die Achsenbeschriftung mit der
+    /// UI-Sprache mitgeht.
     var shortMonth: String {
         let parts = month.split(separator: "-")
         guard parts.count == 2,
@@ -347,8 +350,8 @@ struct MonthlyStat: Codable, Identifiable {
               (1...12).contains(monthIndex) else {
             return month
         }
-        let names = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
-                     "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
+        let names = DateFormatter().shortStandaloneMonthSymbols ?? []
+        guard names.count == 12 else { return month }
         let yearSuffix = parts[0].suffix(2)
         return "\(names[monthIndex - 1]) '\(yearSuffix)"
     }

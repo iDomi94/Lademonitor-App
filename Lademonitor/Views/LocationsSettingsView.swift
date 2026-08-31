@@ -69,7 +69,7 @@ struct LocationsSettingsView: View {
 
     private func load() async {
         guard AppSettings.shared.isReadyForDataAccess else {
-            errorMessage = "Bitte zuerst die Server-Adresse in den Einstellungen eintragen."
+            errorMessage = String(localized: "Bitte zuerst die Server-Adresse in den Einstellungen eintragen.")
             return
         }
         isLoading = true
@@ -107,7 +107,7 @@ private struct LocationRow: View {
                     .font(.body)
                 let detail = [
                     String(format: "%.5f, %.5f", location.latitude, location.longitude),
-                    "Radius \(location.radiusM) m",
+                    String(localized: "Radius \(location.radiusM) m"),
                     providerName
                 ].compactMap { $0 }.joined(separator: " · ")
                 Text(detail)
@@ -314,11 +314,11 @@ struct AddEditLocationView: View {
             let results = try await AppRepository.shared.forwardGeocode(query: query)
             searchResults = results
             if results.isEmpty {
-                searchMessage = "Keine Treffer. Bitte die Koordinaten unten manuell eintragen."
+                searchMessage = String(localized: "Keine Treffer. Bitte die Koordinaten unten manuell eintragen.")
             }
         } catch {
             searchResults = []
-            searchMessage = "Suche fehlgeschlagen. Bitte die Koordinaten unten manuell eintragen."
+            searchMessage = String(localized: "Suche fehlgeschlagen. Bitte die Koordinaten unten manuell eintragen.")
         }
         isSearching = false
     }

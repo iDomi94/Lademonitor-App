@@ -25,7 +25,7 @@ struct SessionDetailView: View {
         let f = DateFormatter()
         f.dateStyle = .full
         f.timeStyle = .short
-        f.locale = Locale(identifier: "de_DE")
+        f.locale = Locale.current
         return f
     }()
 
@@ -36,9 +36,9 @@ struct SessionDetailView: View {
 
     private var socText: String {
         switch (session.socStart, session.socEnd) {
-        case let (start?, end?): return "\(start) → \(end) %"
-        case let (start?, nil): return "ab \(start) %"
-        case let (nil, end?): return "bis \(end) %"
+        case let (start?, end?): return String(localized: "\(start) → \(end) %")
+        case let (start?, nil): return String(localized: "ab \(start) %")
+        case let (nil, end?): return String(localized: "bis \(end) %")
         default: return "–"
         }
     }
@@ -52,7 +52,7 @@ struct SessionDetailView: View {
                             center: coordinate,
                             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                         ))) {
-                            Marker(locationName ?? session.geocodedPlace ?? "Ladevorgang", coordinate: coordinate)
+                            Marker(locationName ?? session.geocodedPlace ?? String(localized: "Ladevorgang"), coordinate: coordinate)
                         }
                         .frame(height: 200)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -80,7 +80,7 @@ struct SessionDetailView: View {
                     if let kwh = session.energyKwh {
                         LabeledContent(
                             "kWh",
-                            value: String(format: "%.2f kWh", kwh) + (session.energyIsEstimated ? " (geschätzt)" : "")
+                            value: String(format: "%.2f kWh", kwh) + (session.energyIsEstimated ? String(localized: " (geschätzt)") : "")
                         )
                     }
                     if let odo = session.odometerKm {
@@ -104,7 +104,7 @@ struct SessionDetailView: View {
 
                 Section("Quelle") {
                     LabeledContent("Erfasst als", value: session.source.displayName)
-                    LabeledContent("Status", value: session.needsReview ? "Zu prüfen" : "Geprüft")
+                    LabeledContent("Status", value: session.needsReview ? String(localized: "Zu prüfen") : String(localized: "Geprüft"))
                 }
 
                 if let errorMessage {
