@@ -18,6 +18,11 @@ struct MapOverviewView: View {
     @State private var showingFilterSheet = false
     @ObservedObject private var sessionFilter = SessionFilter.shared
 
+    // Aktueller Standort (GPS) fuer den "Auf meinen Standort zoomen"-Button.
+    @StateObject private var locationProvider = CurrentLocationProvider()
+    @State private var isLocating = false
+    @State private var locationErrorMessage: String?
+
     /// Tag der Map-Auswahl fuer Ladeorte - wird nur als einmaliger Tap-Trigger genutzt,
     /// siehe onChange unten (danach sofort wieder auf nil gesetzt). Ladevorgaenge laufen
     /// NICHT mehr hierueber, da sie geclustert und per eigenem Button-Tap behandelt werden
@@ -117,6 +122,9 @@ struct MapOverviewView: View {
                     ContentUnavailableView("Keine Standorte vorhanden", systemImage: "map")
                 } else {
                     Map(position: $cameraPosition, selection: $selectedTag) {
+                        // Blauer Punkt fuer die eigene Position - erscheint erst, sobald
+                        // die Ortungsberechtigung erteilt ist (siehe zoomToUserLocation).
+                        UserAnnotation()
                         if showLocations {
                             ForEach(locations) { location in
                                 let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
@@ -155,7 +163,18 @@ struct MapOverviewView: View {
                     .onMapCameraChange(frequency: .onEnd) { context in
                         currentSpan = context.region.span
                     }
-                    .safeAreaInset(edge: .bottom) { legend }
+                    // Legende mittig, Standort-Button rechts daneben - beide im selben
+                    // Bottom-Inset, damit sie sich nie ueberlappen und der Button oberhalb
+                    // der Home-Indicator-Zone bleibt.
+                    .safeAreaInset(edge: .bottom) {
+                        ZStack(alignment: .bottomTrailing) {
+                            legend
+                                .frame(maxWidth: .infinity)
+                            locateButton
+                                .padding(.trailing, 12)
+                                .padding(.bottom, 8)
+                        }
+                    }
                 }
             }
             .navigationTitle("Karte")
@@ -166,6 +185,14 @@ struct MapOverviewView: View {
             .refreshable { await load() }
             .sheet(isPresented: $showingFilterSheet) {
                 FilterSheetView()
+            }
+            .alert("Standort", isPresented: Binding(
+                get: { locationErrorMessage != nil },
+                set: { if !$0 { locationErrorMessage = nil } }
+            )) {
+                Button("OK", role: .cancel) { locationErrorMessage = nil }
+            } message: {
+                Text(locationErrorMessage ?? "")
             }
             // Tap auf einen Ladeort-Marker -> direkt in den Bearbeiten-Dialog (derselbe wie
             // unter Einstellungen -> Ladeorte). selectedTag dient dabei nur als einmaliger
@@ -241,6 +268,48 @@ struct MapOverviewView: View {
                 )
             ))
         }
+    }
+
+    /// Standard-Kartenbutton unten rechts: zentriert die Karte auf die eigene Position.
+    private var locateButton: some View {
+        Button {
+            Task { await zoomToUserLocation() }
+        } label: {
+            Group {
+                if isLocating {
+                    ProgressView()
+                } else {
+                    Image(systemName: "location.fill")
+                        .font(.system(size: 17, weight: .medium))
+                }
+            }
+            .frame(width: 44, height: 44)
+            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .shadow(radius: 2, y: 1)
+        }
+        .buttonStyle(.plain)
+        .disabled(isLocating)
+        .accessibilityLabel("Auf aktuellen Standort zoomen")
+    }
+
+    /// Fragt die aktuelle Position an (inkl. Berechtigungsdialog beim ersten Mal) und
+    /// faehrt die Kamera darauf. Fehler landen in einem eigenen Alert, damit die
+    /// geladenen Kartendaten sichtbar bleiben.
+    private func zoomToUserLocation() async {
+        isLocating = true
+        do {
+            let coordinate = try await locationProvider.requestCurrentLocation()
+            let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            withAnimation {
+                cameraPosition = .region(MKCoordinateRegion(center: coordinate, span: span))
+            }
+            // Wie in fitCamera: Clustering-Schwelle direkt mitziehen, da
+            // .onMapCameraChange erst nach einer Nutzerinteraktion feuert.
+            currentSpan = span
+        } catch {
+            locationErrorMessage = error.localizedDescription
+        }
+        isLocating = false
     }
 
     /// Antippbare Legende: tippen blendet die jeweilige Marker-Gruppe auf der Karte aus/ein.

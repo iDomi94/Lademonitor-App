@@ -562,6 +562,23 @@
         }
       }
     },
+    "Auf aktuellen Standort zoomen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf aktuellen Standort zoomen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom to current location"
+          }
+        }
+      }
+    },
     "Automatisch" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2415,6 +2432,23 @@
         }
       }
     },
+    "OK" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
     "Offline – Änderungen werden gepuffert und beim nächsten Mal hochgeladen." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3023,6 +3057,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Default Provider"
+          }
+        }
+      }
+    },
+    "Standort" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
           }
         }
       }
