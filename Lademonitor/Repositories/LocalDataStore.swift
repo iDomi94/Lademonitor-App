@@ -271,7 +271,16 @@ final class LocalDataStore {
         if let chargingType = payload.chargingType { session.chargingType = chargingType.rawValue }
         if let socStart = payload.socStart { session.socStart = socStart }
         if let socEnd = payload.socEnd { session.socEnd = socEnd }
-        if let energyKwh = payload.energyKwh { session.energyKwh = energyKwh }
+        if let energyKwh = payload.energyKwh {
+            // Korrigierte Energiemenge (z.B. aus der App des Ladeanbieters abgelesen)
+            // ist nicht mehr geschaetzt - identisch zur Regel in update_session() im
+            // Backend: nur eine tatsaechliche Wertaenderung zaehlt als Korrektur,
+            // reines Oeffnen + Speichern laesst das Flag stehen.
+            if session.energyIsEstimated, session.energyKwh.map({ abs(energyKwh - $0) > 1e-6 }) ?? true {
+                session.energyIsEstimated = false
+            }
+            session.energyKwh = energyKwh
+        }
         if let pricePerKwh = payload.pricePerKwh { session.pricePerKwh = pricePerKwh }
         if let priceTotal = payload.priceTotal { session.priceTotal = priceTotal }
         if let odometerKm = payload.odometerKm { session.odometerKm = odometerKm }
