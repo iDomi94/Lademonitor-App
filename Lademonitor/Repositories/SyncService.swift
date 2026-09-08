@@ -24,6 +24,15 @@ final class SyncService: ObservableObject {
     @Published private(set) var lastSyncDate: Date?
     @Published private(set) var lastSyncError: String?
 
+    /// Steuert den Dialog "Was soll mit den Daten auf diesem Geraet passieren?".
+    /// Liegt hier und nicht in der AuthView, weil die in dem Moment schon
+    /// verschwunden ist: `completeAuthentication` setzt `isAuthenticated`, und
+    /// ContentView schaltet sofort auf die Haupt-App um - ein Alert an der
+    /// AuthView wuerde nie erscheinen. Praesentiert wird er deshalb von
+    /// ContentView, die in beiden Zustaenden existiert.
+    @Published var pendingLocalDataDecision = false
+    @Published private(set) var pendingLocalDataSummary = ""
+
     private let minAutoSyncInterval: TimeInterval = 10
     private var inFlightTask: Task<Void, Never>?
     private var networkObservation: AnyCancellable?
@@ -77,10 +86,98 @@ final class SyncService: ObservableObject {
         set { UserDefaults.standard.set(newValue, forKey: "lastSyncedUserId") }
     }
 
+    // MARK: - Umgang mit lokalen Daten beim Anmelden
+
+    /// Was mit den bereits auf dem Geraet liegenden Daten geschehen soll, wenn
+    /// sich jemand an einem Konto anmeldet, mit dem dieses Geraet noch nie
+    /// synchronisiert hat.
+    enum LocalDataDecision: Equatable {
+        /// In das jetzt angemeldete Konto hochladen (bisheriges Verhalten).
+        case upload
+        /// Vom Geraet loeschen und stattdessen den Stand des Kontos laden.
+        case discard
+    }
+
+    /// Ob vor dem ersten Sync eine Entscheidung des Nutzers noetig ist.
+    ///
+    /// Ohne diese Abfrage wanderten die lokalen Daten immer stillschweigend in
+    /// das gerade angemeldete Konto - beim Wechsel von Konto A zu Konto B also
+    /// auch A's Ladeorte samt GPS-Koordinaten der Wohnadresse. Genau davor
+    /// schuetzt serverseitig die Pro-Nutzer-Trennung, und die soll die App
+    /// nicht aus Versehen unterlaufen.
+    ///
+    /// Gefragt wird nur, wenn es wirklich etwas zu entscheiden gibt: im
+    /// Server-Modus, mit vorhandenen lokalen Daten, und wenn dieses Geraet mit
+    /// GENAU DIESEM Konto noch nie synchronisiert hat. Eine normale
+    /// Wiederanmeldung am gewohnten Konto fragt also nichts.
+    func needsLocalDataDecision() -> Bool {
+        guard AppSettings.shared.appMode == .server,
+              let userId = SessionManager.shared.currentUser?.id,
+              lastSyncedUserId != userId,
+              let hasData = try? LocalDataStore.shared.hasAnyData(), hasData
+        else { return false }
+        return true
+    }
+
+    /// Nach erfolgreicher Anmeldung aufzurufen. Ob synchronisiert oder zuerst
+    /// gefragt wird, entscheidet die Sperre in performSync() - hier steht
+    /// deshalb nur der normale Anstoss.
+    func startAfterLogin() {
+        Task { await syncNow() }
+    }
+
+    /// Setzt die Entscheidung um und synchronisiert anschliessend.
+    ///
+    /// Beide Zweige vermerken das Konto als "gesehen" - erst dadurch laesst die
+    /// Sperre in performSync() den folgenden Sync ueberhaupt durch.
+    func applyLocalDataDecision(_ decision: LocalDataDecision) async {
+        pendingLocalDataDecision = false
+        switch decision {
+        case .upload:
+            // Genau das, was frueher automatisch beim ersten Sync passierte:
+            // alle Zeilen auf "frisch lokal, muss gepusht werden" setzen. Setzt
+            // nebenbei lastSyncedUserId.
+            resetSyncStateIfAccountChanged()
+        case .discard:
+            do {
+                try LocalDataStore.shared.resetAllData()
+                // Das Konto als "schon gesehen" vermerken, BEVOR synchronisiert
+                // wird: sonst liefe beim naechsten Durchlauf die
+                // Kontowechsel-Erkennung auf den frisch heruntergeladenen
+                // Server-Daten und markierte sie als lokal geaendert.
+                lastSyncedUserId = SessionManager.shared.currentUser?.id
+            } catch {
+                lastSyncError = error.localizedDescription
+                return
+            }
+        }
+        await syncNow()
+    }
+
+    /// Abbruch im Dialog: wieder abmelden. Sonst stuende man angemeldet da,
+    /// ohne dass die Frage beantwortet ist - und der naechste beliebige Sync
+    /// (Tab-Wechsel, Netz wieder da) wuerde sie stillschweigend mit
+    /// "hochladen" beantworten. Die lokalen Daten bleiben unangetastet.
+    func cancelLocalDataDecision() async {
+        pendingLocalDataDecision = false
+        await SessionManager.shared.logout()
+    }
+
     private func performSync() async {
         guard AppSettings.shared.appMode == .server, SessionManager.shared.isAuthenticated else { return }
         guard NetworkMonitor.shared.isOnline else {
             lastSyncError = String(localized: "Offline – Änderungen werden gepuffert und beim nächsten Mal hochgeladen.")
+            return
+        }
+        // Sperre gegen den stillen Weg: auch ein Sync, der NICHT ueber
+        // startAfterLogin() kommt (App-Neustart nach abgebrochener Anmeldung,
+        // Netz-Wiederkehr, Tab-Wechsel), darf die Frage nicht stillschweigend
+        // mit "hochladen" beantworten. Stattdessen wird sie hier gestellt.
+        // applyLocalDataDecision() vermerkt das Konto in beiden Zweigen als
+        // gesehen, sodass der darauf folgende Sync hier durchkommt.
+        if needsLocalDataDecision() {
+            pendingLocalDataSummary = (try? LocalDataStore.shared.localDataSummary()) ?? ""
+            pendingLocalDataDecision = true
             return
         }
         isSyncing = true

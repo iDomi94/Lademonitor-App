@@ -30,6 +30,11 @@ switching.
   section stays hidden
 - "Forgot password": the app requests the link, the new password is then set
   through the link in the email, in a browser
+- When you sign in to an account this device has never synced with, and data is
+  already stored locally, **the app asks first**: upload it, or delete it from
+  the device. Previously it silently went into whichever account you had just
+  signed in to – on an account switch that included your own charging locations
+  and their coordinates. Nothing is ever deleted on the server
 
 ## Requirement
 

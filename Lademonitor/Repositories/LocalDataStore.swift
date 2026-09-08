@@ -28,6 +28,33 @@ final class LocalDataStore {
     /// Aenderungen verloren - bereits synchronisierte Daten bleiben auf dem Server und
     /// koennen per Pull zurueckgeholt werden (siehe SettingsView, das nach dem Reset im
     /// Server-Modus direkt einen Sync anstoesst).
+    /// Ob ueberhaupt lokale Daten vorliegen - inklusive der zum Loeschen
+    /// vorgemerkten Zeilen, denn auch die haetten beim Kontowechsel eine
+    /// Auswirkung (siehe SyncService.resetSyncState). Wird gebraucht, um beim
+    /// Anmelden nur dann nach dem Umgang mit lokalen Daten zu fragen, wenn es
+    /// wirklich etwas zu entscheiden gibt.
+    func hasAnyData() throws -> Bool {
+        if try context.fetchCount(FetchDescriptor<LocalChargingSession>()) > 0 { return true }
+        if try context.fetchCount(FetchDescriptor<LocalVehicle>()) > 0 { return true }
+        if try context.fetchCount(FetchDescriptor<LocalProvider>()) > 0 { return true }
+        if try context.fetchCount(FetchDescriptor<LocalChargingLocation>()) > 0 { return true }
+        return false
+    }
+
+    /// Kurzfassung fuer die Abfrage beim Anmelden ("3 Fahrzeuge, 128 Ladevorgaenge").
+    func localDataSummary() throws -> String {
+        let vehicles = try context.fetchCount(FetchDescriptor<LocalVehicle>())
+        let providers = try context.fetchCount(FetchDescriptor<LocalProvider>())
+        let locations = try context.fetchCount(FetchDescriptor<LocalChargingLocation>())
+        let sessions = try context.fetchCount(FetchDescriptor<LocalChargingSession>())
+        var parts: [String] = []
+        if vehicles > 0 { parts.append(String(localized: "\(vehicles) Fahrzeuge")) }
+        if providers > 0 { parts.append(String(localized: "\(providers) Anbieter")) }
+        if locations > 0 { parts.append(String(localized: "\(locations) Ladeorte")) }
+        if sessions > 0 { parts.append(String(localized: "\(sessions) Ladevorgänge")) }
+        return parts.joined(separator: ", ")
+    }
+
     func resetAllData() throws {
         try context.delete(model: LocalChargingSession.self)
         try context.delete(model: LocalChargingLocation.self)

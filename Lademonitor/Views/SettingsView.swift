@@ -232,7 +232,7 @@ struct ServerSettingsView: View {
             }
             Button("Abbrechen", role: .cancel) {}
         } message: {
-            Text("Nach der Anmeldung werden deine bisherigen lokalen Daten automatisch zum Server hochgeladen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln.")
+            Text("Nach der Anmeldung wirst du gefragt, ob deine bisherigen lokalen Daten in das Konto hochgeladen oder vom Gerät gelöscht werden sollen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln.")
         }
     }
 

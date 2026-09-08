@@ -29,6 +29,11 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   gegen einen älteren Server bleibt der Bereich ausgeblendet
 - „Passwort vergessen“: die App fordert den Link an, gesetzt wird das neue
   Passwort über den Link in der Mail im Browser
+- Meldest du dich an einem Konto an, mit dem dieses Gerät noch nie
+  synchronisiert hat, und liegen schon Daten auf dem Gerät, **fragt die App
+  nach**: hochladen oder vom Gerät löschen. Vorher wanderten sie stillschweigend
+  in das gerade angemeldete Konto – beim Kontowechsel also auch die eigenen
+  Ladeorte samt Koordinaten. Auf dem Server wird dabei nie etwas gelöscht
 
 ## Voraussetzung
 
