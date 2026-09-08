@@ -55,32 +55,22 @@ final class SessionManager: ObservableObject {
         currentUser = user
     }
 
-    /// Eigenes Passwort aendern - und danach sofort neu anmelden.
+    /// Eigenes Passwort aendern.
     ///
-    /// Der Server verwirft beim Wechsel ALLE Sitzungen des Nutzers (damit eine
-    /// womoeglich uebernommene Sitzung nicht weiterlaeuft) und stellt eine neue
-    /// nur als Cookie fuer die Web-Oberflaeche aus. Die Antwort ist 204 ohne
-    /// Inhalt - dieser Bearer-Client bekommt also keinen neuen Token und waere
-    /// beim naechsten Aufruf abgemeldet. Da das neue Passwort hier ohnehin
-    /// vorliegt, holt die App sich den frischen Token selbst.
+    /// Der Server verwirft dabei ALLE Sitzungen des Nutzers - damit eine
+    /// womoeglich uebernommene Sitzung nicht weiterlaeuft - und stellt sofort
+    /// eine neue aus, deren Token er seit Version 0.14.1 mitliefert. Der wird
+    /// hier direkt uebernommen: die App bleibt angemeldet, ohne sich ein
+    /// zweites Mal anmelden zu muessen.
     ///
-    /// Schlaegt nur die Neuanmeldung fehl, ist das Passwort trotzdem schon
-    /// geaendert - dann wird die Sitzung verworfen und der Login-Screen zeigt
-    /// den Fehler, statt eine tote Sitzung vorzutaeuschen.
+    /// Andere Geraete (Home Assistant, weitere Installationen) sind danach
+    /// abgemeldet und brauchen einen neuen Zugang - darauf weist die
+    /// Konto-Ansicht hin.
     func changePassword(currentPassword: String, newPassword: String) async throws {
-        guard let username = currentUser?.username else {
-            throw APIError.notConfigured
-        }
-        try await APIClient.shared.changePassword(
+        let response = try await APIClient.shared.changePassword(
             currentPassword: currentPassword, newPassword: newPassword
         )
-        do {
-            let response = try await APIClient.shared.login(identifier: username, password: newPassword)
-            completeAuthentication(response)
-        } catch {
-            clearLocalSession()
-            throw error
-        }
+        completeAuthentication(response)
     }
 
     private func clearLocalSession() {

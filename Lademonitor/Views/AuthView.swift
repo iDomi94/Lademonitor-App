@@ -144,9 +144,13 @@ struct AuthView: View {
                 response = try await APIClient.shared.login(identifier: trimmedIdentifier, password: password)
             }
             SessionManager.shared.completeAuthentication(response)
-            // Migration lokaler Daten (falls vorhanden) ist kein Sonderfall, sondern
-            // einfach der erste normale Sync-Durchlauf - siehe SyncService.
-            Task { await SyncService.shared.syncNow() }
+            // Liegen schon Daten auf dem Geraet und ist dieses Konto hier neu,
+            // fragt startAfterLogin() zuerst nach, statt sie ungefragt in das
+            // gerade angemeldete Konto zu schieben (der Dialog haengt an
+            // ContentView, siehe SyncService.pendingLocalDataDecision).
+            // Sonst ist die Uebernahme lokaler Daten kein Sonderfall, sondern
+            // einfach der erste normale Sync-Durchlauf.
+            SyncService.shared.startAfterLogin()
         } catch let APIError.server(_, message) {
             // Server liefert die Fehlerursache im Klartext (z.B. "Nutzername oder Passwort falsch").
             errorMessage = message
