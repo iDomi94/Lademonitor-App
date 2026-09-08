@@ -42,6 +42,47 @@ final class SessionManager: ObservableObject {
         currentUser = try? await APIClient.shared.fetchMe()
     }
 
+    /// Nutzer neu vom Server holen - z.B. nachdem die Adresse in einem anderen
+    /// Client bestaetigt wurde.
+    func reloadCurrentUser() async {
+        guard isAuthenticated else { return }
+        currentUser = try? await APIClient.shared.fetchMe()
+    }
+
+    /// Von den Konto-Einstellungen aufgerufen, wenn ein Endpunkt den
+    /// aktualisierten Nutzer zurueckgibt (Adresse, Benachrichtigungen).
+    func applyUpdatedUser(_ user: AuthUser) {
+        currentUser = user
+    }
+
+    /// Eigenes Passwort aendern - und danach sofort neu anmelden.
+    ///
+    /// Der Server verwirft beim Wechsel ALLE Sitzungen des Nutzers (damit eine
+    /// womoeglich uebernommene Sitzung nicht weiterlaeuft) und stellt eine neue
+    /// nur als Cookie fuer die Web-Oberflaeche aus. Die Antwort ist 204 ohne
+    /// Inhalt - dieser Bearer-Client bekommt also keinen neuen Token und waere
+    /// beim naechsten Aufruf abgemeldet. Da das neue Passwort hier ohnehin
+    /// vorliegt, holt die App sich den frischen Token selbst.
+    ///
+    /// Schlaegt nur die Neuanmeldung fehl, ist das Passwort trotzdem schon
+    /// geaendert - dann wird die Sitzung verworfen und der Login-Screen zeigt
+    /// den Fehler, statt eine tote Sitzung vorzutaeuschen.
+    func changePassword(currentPassword: String, newPassword: String) async throws {
+        guard let username = currentUser?.username else {
+            throw APIError.notConfigured
+        }
+        try await APIClient.shared.changePassword(
+            currentPassword: currentPassword, newPassword: newPassword
+        )
+        do {
+            let response = try await APIClient.shared.login(identifier: username, password: newPassword)
+            completeAuthentication(response)
+        } catch {
+            clearLocalSession()
+            throw error
+        }
+    }
+
     private func clearLocalSession() {
         KeychainStore.shared.deleteToken()
         currentUser = nil

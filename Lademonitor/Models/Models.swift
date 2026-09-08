@@ -251,17 +251,64 @@ struct LocationPayload: Codable {
 }
 
 /// Ein angemeldeter Nutzer (aus der Auth-Response bzw. /api/auth/me).
+/// Haeufigkeit der Sammelmeldung ueber zu pruefende Ladevorgaenge.
+/// Rohwerte kleingeschrieben wie vom Server geliefert (models.ReviewDigestFrequency).
+enum ReviewDigestFrequency: String, Codable, CaseIterable, Identifiable {
+    case off
+    case daily
+    case weekly
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .off: return String(localized: "Aus")
+        case .daily: return String(localized: "Täglich")
+        case .weekly: return String(localized: "Wöchentlich")
+        }
+    }
+}
+
 struct AuthUser: Codable, Identifiable, Hashable {
     let id: String
     let username: String
     let isAdmin: Bool
     let createdAt: Date?
 
+    // Ab Server 0.14.0. ALLE neuen Felder sind optional, damit eine aktualisierte
+    // App weiterhin gegen einen aelteren Server laeuft - waeren sie
+    // nicht-optional, wuerde schon das Decodieren der Login-Antwort scheitern
+    // und die Anmeldung komplett unmoeglich machen.
+    let email: String?
+    let emailVerifiedAt: Date?
+    let language: String?
+    let notifyBackupFailed: Bool?
+    let notifyMyskodaError: Bool?
+    let notifyMonthlyReport: Bool?
+    let notifyNewRegistration: Bool?
+    let reviewDigest: ReviewDigestFrequency?
+
     enum CodingKeys: String, CodingKey {
-        case id, username
+        case id, username, email, language
         case isAdmin = "is_admin"
         case createdAt = "created_at"
+        case emailVerifiedAt = "email_verified_at"
+        case notifyBackupFailed = "notify_backup_failed"
+        case notifyMyskodaError = "notify_myskoda_error"
+        case notifyMonthlyReport = "notify_monthly_report"
+        case notifyNewRegistration = "notify_new_registration"
+        case reviewDigest = "review_digest"
     }
+
+    /// Ob die hinterlegte Adresse bestaetigt ist. Nur eine bestaetigte Adresse
+    /// kann serverseitig ein Passwort zuruecksetzen.
+    var isEmailVerified: Bool { emailVerifiedAt != nil }
+
+    /// Ob der Server die Kontofunktionen aus 0.14.0 ueberhaupt kennt. Ein
+    /// aelterer Server liefert `review_digest` nicht mit - dann werden die
+    /// entsprechenden Bereiche in den Einstellungen gar nicht erst angezeigt,
+    /// statt Knoepfe anzubieten, die mit 404 antworten.
+    var supportsAccountFeatures: Bool { reviewDigest != nil }
 }
 
 /// Antwort von /api/auth/login und /api/auth/register.
@@ -270,10 +317,67 @@ struct AuthResponse: Codable {
     let user: AuthUser
 }
 
-/// Request-Body fuer Login und Registrierung.
+/// Request-Body fuer den Login. Das Feld heisst serverseitig weiterhin
+/// `username`, nimmt aber auch die E-Mail-Adresse an.
 struct AuthCredentials: Codable {
     let username: String
     let password: String
+}
+
+/// Request-Body fuer die Registrierung - wie AuthCredentials, plus optionaler
+/// Adresse. Bewusst eine eigene Struct: bei `nil` soll das Feld gar nicht erst
+/// im JSON auftauchen, was mit einem gemeinsamen Typ ein `encodeIfPresent`
+/// erzwingen wuerde.
+struct RegisterCredentials: Codable {
+    let username: String
+    let password: String
+    let email: String?
+}
+
+/// Body fuer PUT /api/auth/password.
+struct PasswordChangePayload: Codable {
+    let currentPassword: String
+    let newPassword: String
+
+    enum CodingKeys: String, CodingKey {
+        case currentPassword = "current_password"
+        case newPassword = "new_password"
+    }
+}
+
+/// Body fuer PUT /api/auth/email. `email == nil` entfernt die Adresse.
+/// Das aktuelle Passwort verlangt der Server: wer die Adresse aendern kann,
+/// kann anschliessend das Passwort zuruecksetzen lassen.
+struct EmailUpdatePayload: Codable {
+    let email: String?
+    let currentPassword: String
+
+    enum CodingKeys: String, CodingKey {
+        case email
+        case currentPassword = "current_password"
+    }
+}
+
+/// Body fuer PUT /api/auth/notifications - der Server erwartet alle Felder.
+struct NotificationSettingsPayload: Codable {
+    let notifyBackupFailed: Bool
+    let notifyMyskodaError: Bool
+    let notifyMonthlyReport: Bool
+    let notifyNewRegistration: Bool
+    let reviewDigest: ReviewDigestFrequency
+
+    enum CodingKeys: String, CodingKey {
+        case notifyBackupFailed = "notify_backup_failed"
+        case notifyMyskodaError = "notify_myskoda_error"
+        case notifyMonthlyReport = "notify_monthly_report"
+        case notifyNewRegistration = "notify_new_registration"
+        case reviewDigest = "review_digest"
+    }
+}
+
+/// Body fuer POST /api/auth/password-reset/request. Nutzername ODER Adresse.
+struct PasswordResetRequestPayload: Codable {
+    let identifier: String
 }
 
 /// Ein Treffer der Adresssuche (Forward-Geocoding) vom Backend.
