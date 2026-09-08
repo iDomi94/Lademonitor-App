@@ -43,8 +43,9 @@ if no scheme is specified) as well as the username or email address and the
 password of an account registered on the server.
 
 **Note:** Resetting or changing the password signs out every device on the
-server. After a change made in the app's own settings it signs back in
-automatically; after a reset via the email link a fresh login is required.
+server. After a change made in the app's own settings this app stays signed in
+(the server returns the new token directly, from server 0.14.1); after a reset
+via the email link a fresh login is required.
 
 ## Project structure
 

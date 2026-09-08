@@ -42,9 +42,9 @@ falls kein Schema angegeben ist) sowie Nutzername oder E-Mail-Adresse und das
 Passwort eines auf dem Server registrierten Kontos eingeben.
 
 **Hinweis:** Wird das Passwort zurückgesetzt oder geändert, meldet der Server
-alle Geräte ab. Die App meldet sich nach einer Änderung in den eigenen
-Einstellungen sofort automatisch neu an; nach einem Zurücksetzen über den
-Mail-Link ist eine neue Anmeldung nötig.
+alle Geräte ab. Bei einer Änderung in den eigenen Einstellungen bleibt diese App
+angemeldet (der Server liefert den neuen Zugang direkt mit, ab Server 0.14.1);
+nach einem Zurücksetzen über den Mail-Link ist eine neue Anmeldung nötig.
 
 ## Projektstruktur
 

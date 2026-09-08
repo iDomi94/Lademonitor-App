@@ -177,16 +177,18 @@ final class APIClient {
 
     // MARK: - Konto (Server ab 0.14.0)
 
-    /// Aendert das eigene Passwort. Der Server verwirft dabei ALLE Sitzungen des
-    /// Nutzers - auch die eigene. Er stellt zwar sofort eine neue aus, aber nur
-    /// als Cookie fuer die Web-Oberflaeche; die Antwort ist 204 ohne Inhalt, ein
-    /// Bearer-Client bekommt also keinen neuen Token. Deshalb meldet sich die App
-    /// im Anschluss selbst neu an (siehe SessionManager.changePassword).
-    func changePassword(currentPassword: String, newPassword: String) async throws {
+    /// Aendert das eigene Passwort und gibt den neuen Zugang zurueck.
+    ///
+    /// Der Server verwirft dabei ALLE Sitzungen des Nutzers - auch die eigene -
+    /// und stellt sofort eine neue aus. Seit Server 0.14.1 liefert er den neuen
+    /// Token in der Antwort mit (wie Login und Registrierung); vorher gab es nur
+    /// ein Cookie fuer die Web-Oberflaeche und ein Bearer-Client musste sich mit
+    /// dem neuen Passwort ein zweites Mal anmelden.
+    func changePassword(currentPassword: String, newPassword: String) async throws -> AuthResponse {
         let body = try JSONEncoder().encode(
             PasswordChangePayload(currentPassword: currentPassword, newPassword: newPassword)
         )
-        try await sendNoContent(try makeRequest(path: "/api/auth/password", method: "PUT", body: body))
+        return try await send(try makeRequest(path: "/api/auth/password", method: "PUT", body: body))
     }
 
     /// Setzt oder entfernt (`email == nil`) die eigene Adresse. Eine geaenderte

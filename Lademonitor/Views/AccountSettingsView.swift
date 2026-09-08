@@ -166,7 +166,7 @@ struct AccountSettingsView: View {
         } header: {
             Text("Passwort ändern")
         } footer: {
-            Text("Mindestens 8 Zeichen. Beim Ändern meldet der Server alle Geräte ab – diese App meldet sich sofort automatisch neu an, Home Assistant und andere Geräte brauchen aber einen neuen Zugang.")
+            Text("Mindestens 8 Zeichen. Beim Ändern meldet der Server alle Geräte ab – diese App bleibt angemeldet, Home Assistant und andere Geräte brauchen aber einen neuen Zugang.")
         }
     }
 
