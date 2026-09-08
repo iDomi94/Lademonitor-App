@@ -19,9 +19,16 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
 - Ladevorgänge ansehen, anlegen und bearbeiten
 - Fahrzeuge, Ladeanbieter und bekannte Ladeorte verwalten
 - Verbrauchsanzeige (kWh/100km) pro Ladevorgang
-- Login/Registrierung gegen den eigenen Server, Token sicher im iOS-Keychain
-  (Server-Adresse selbst ist keine sensible Information und liegt in
-  UserDefaults)
+- Login/Registrierung gegen den eigenen Server – wahlweise mit Nutzername
+  **oder** E-Mail-Adresse. Token sicher im iOS-Keychain (die Server-Adresse
+  selbst ist keine sensible Information und liegt in UserDefaults)
+- Konto-Einstellungen: E-Mail-Adresse hinterlegen und bestätigen, eigenes
+  Passwort ändern, Benachrichtigungen des Servers ein-/ausschalten
+  (fehlgeschlagenes Backup, MyŠkoda-Fehler, Monatsbericht, Sammelmeldung über
+  zu prüfende Ladevorgänge). Braucht Lademonitor-Server 0.14.0 oder neuer –
+  gegen einen älteren Server bleibt der Bereich ausgeblendet
+- „Passwort vergessen“: die App fordert den Link an, gesetzt wird das neue
+  Passwort über den Link in der Mail im Browser
 
 ## Voraussetzung
 
@@ -31,8 +38,13 @@ Für den Server-Modus ein laufender
 [Lademonitor-Server](https://github.com/iDomi94/Lademonitor-Server)
 (selbstgehostet, per Docker). Beim ersten Start der App die Server-Adresse
 (Domain, z.B. `lademonitor.example.com` – `https://` wird automatisch ergänzt
-falls kein Schema angegeben ist) sowie Nutzername/Passwort eines auf dem
-Server registrierten Kontos eingeben.
+falls kein Schema angegeben ist) sowie Nutzername oder E-Mail-Adresse und das
+Passwort eines auf dem Server registrierten Kontos eingeben.
+
+**Hinweis:** Wird das Passwort zurückgesetzt oder geändert, meldet der Server
+alle Geräte ab. Die App meldet sich nach einer Änderung in den eigenen
+Einstellungen sofort automatisch neu an; nach einem Zurücksetzen über den
+Mail-Link ist eine neue Anmeldung nötig.
 
 ## Projektstruktur
 
@@ -46,7 +58,9 @@ Lademonitor/
     SessionManager.swift       - Login-/Session-State
     CurrentLocationProvider.swift
   Views/                       - Dashboard, SessionsList, AddEditSession,
-                                  Vehicles-/Providers-/LocationsSettings, Auth
+                                  Vehicles-/Providers-/LocationsSettings, Auth,
+                                  AccountSettings (E-Mail, Passwort,
+                                  Benachrichtigungen)
 ```
 
 ## Build

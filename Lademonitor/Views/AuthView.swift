@@ -6,20 +6,28 @@ struct AuthView: View {
     @ObservedObject private var settings = AppSettings.shared
 
     @State private var isRegistering = false
-    @State private var username = ""
+    @State private var identifier = ""
+    @State private var email = ""
     @State private var password = ""
     @State private var passwordConfirm = ""
     @State private var isSubmitting = false
     @State private var errorMessage: String?
+    @State private var showingForgotPassword = false
 
-    private var trimmedUsername: String { username.trimmingCharacters(in: .whitespaces) }
+    private var trimmedIdentifier: String { identifier.trimmingCharacters(in: .whitespaces) }
+    private var trimmedEmail: String { email.trimmingCharacters(in: .whitespaces) }
 
     private var canSubmit: Bool {
-        guard settings.isConfigured,
-              trimmedUsername.count >= 3,
-              password.count >= 8 else { return false }
-        if isRegistering { return password == passwordConfirm }
-        return true
+        guard settings.isConfigured, password.count >= 8 else { return false }
+        if isRegistering {
+            // Beim Registrieren ist die Eingabe der Nutzername - Mindestlaenge 3
+            // wie serverseitig.
+            return trimmedIdentifier.count >= 3 && password == passwordConfirm
+        }
+        // Beim Anmelden darf es auch eine E-Mail-Adresse sein; die kann kuerzer
+        // als drei Zeichen ohnehin nicht sein, aber die Nutzernamen-Regel gilt
+        // hier nicht - der Server entscheidet.
+        return !trimmedIdentifier.isEmpty
     }
 
     var body: some View {
@@ -37,9 +45,16 @@ struct AuthView: View {
                 }
 
                 Section {
-                    TextField("Nutzername", text: $username)
+                    TextField(isRegistering ? "Nutzername" : "Nutzername oder E-Mail", text: $identifier)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                        .keyboardType(isRegistering ? .default : .emailAddress)
+                    if isRegistering {
+                        TextField("E-Mail-Adresse (optional)", text: $email)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .keyboardType(.emailAddress)
+                    }
                     SecureField("Passwort", text: $password)
                     if isRegistering {
                         SecureField("Passwort wiederholen", text: $passwordConfirm)
@@ -48,7 +63,9 @@ struct AuthView: View {
                     Text(isRegistering ? "Registrieren" : "Anmelden")
                 } footer: {
                     if isRegistering {
-                        Text("Nutzername mindestens 3 Zeichen, Passwort mindestens 8 Zeichen.")
+                        Text("Nutzername mindestens 3 Zeichen, Passwort mindestens 8 Zeichen. Ohne E-Mail-Adresse funktioniert alles wie bisher – nur „Passwort vergessen“ und Benachrichtigungen dann nicht.")
+                    } else {
+                        Text("Du kannst dich mit deinem Nutzernamen oder deiner E-Mail-Adresse anmelden.")
                     }
                 }
 
@@ -80,6 +97,14 @@ struct AuthView: View {
                         }
                     }
                     .font(.footnote)
+
+                    if !isRegistering {
+                        Button("Passwort vergessen?") {
+                            showingForgotPassword = true
+                        }
+                        .font(.footnote)
+                        .disabled(!settings.isConfigured)
+                    }
                 }
 
                 Section {
@@ -93,6 +118,9 @@ struct AuthView: View {
                 }
             }
             .navigationTitle("Lademonitor")
+            .sheet(isPresented: $showingForgotPassword) {
+                ForgotPasswordView(initialIdentifier: trimmedIdentifier)
+            }
         }
     }
 
@@ -107,9 +135,13 @@ struct AuthView: View {
         do {
             let response: AuthResponse
             if isRegistering {
-                response = try await APIClient.shared.register(username: trimmedUsername, password: password)
+                response = try await APIClient.shared.register(
+                    username: trimmedIdentifier,
+                    password: password,
+                    email: trimmedEmail.isEmpty ? nil : trimmedEmail
+                )
             } else {
-                response = try await APIClient.shared.login(username: trimmedUsername, password: password)
+                response = try await APIClient.shared.login(identifier: trimmedIdentifier, password: password)
             }
             SessionManager.shared.completeAuthentication(response)
             // Migration lokaler Daten (falls vorhanden) ist kein Sonderfall, sondern
@@ -119,6 +151,95 @@ struct AuthView: View {
             // Server liefert die Fehlerursache im Klartext (z.B. "Nutzername oder Passwort falsch").
             errorMessage = message
         } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}
+
+/// Fordert einen Link zum Zuruecksetzen an.
+///
+/// Das eigentliche Setzen des Passworts passiert bewusst NICHT in der App,
+/// sondern ueber den Link in der Mail im Browser: der Token gehoert in genau
+/// eine Hand, und die Web-Seite dafuer existiert bereits. Die App stoesst nur
+/// den Versand an.
+struct ForgotPasswordView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var identifier: String
+    @State private var isSubmitting = false
+    @State private var didSubmit = false
+    @State private var errorMessage: String?
+
+    /// Uebernimmt, was im Anmeldeformular schon steht - wer gerade erfolglos
+    /// versucht hat sich anzumelden, soll es nicht noch einmal tippen.
+    init(initialIdentifier: String) {
+        _identifier = State(initialValue: initialIdentifier)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                if didSubmit {
+                    Section {
+                        Label("Wenn es dazu ein Konto mit bestätigter E-Mail-Adresse gibt, ist die Nachricht unterwegs.", systemImage: "envelope.badge")
+                    } footer: {
+                        Text("Schau auch im Spam-Ordner nach. Den Link öffnest du im Browser – dort setzt du das neue Passwort.")
+                    }
+                } else {
+                    Section {
+                        TextField("Nutzername oder E-Mail", text: $identifier)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .keyboardType(.emailAddress)
+                    } footer: {
+                        Text("Wir schicken einen Link zum Zurücksetzen. Er gilt eine Stunde und lässt sich nur einmal verwenden.")
+                    }
+
+                    if let errorMessage {
+                        Section { Text(errorMessage).foregroundStyle(.red) }
+                    }
+
+                    Section {
+                        Button {
+                            Task { await submit() }
+                        } label: {
+                            HStack {
+                                Text("Link anfordern")
+                                if isSubmitting {
+                                    Spacer()
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(isSubmitting || identifier.trimmingCharacters(in: .whitespaces).isEmpty)
+                    } footer: {
+                        Text("Achtung: Beim Zurücksetzen werden alle angemeldeten Geräte abgemeldet – auch diese App und eine eventuelle Home-Assistant-Anbindung.")
+                    }
+                }
+            }
+            .navigationTitle("Passwort vergessen")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(didSubmit ? "Fertig" : "Abbrechen") { dismiss() }
+                }
+            }
+        }
+    }
+
+    private func submit() async {
+        errorMessage = nil
+        isSubmitting = true
+        defer { isSubmitting = false }
+        do {
+            try await APIClient.shared.requestPasswordReset(
+                identifier: identifier.trimmingCharacters(in: .whitespaces)
+            )
+            // Der Server antwortet immer gleich, egal ob es das Konto gibt -
+            // also darf auch die App hier nichts unterscheiden.
+            didSubmit = true
+        } catch {
+            // Nur echte Verbindungs-/Serverfehler landen hier; ein unbekanntes
+            // Konto sieht fuer den Client wie ein Erfolg aus.
             errorMessage = error.localizedDescription
         }
     }

@@ -69,9 +69,26 @@ final class APIClient {
         return e
     }
 
+    /// Baut einen Request auf einen Pfad, der auch einen Query-String enthalten darf.
+    ///
+    /// `appendingPathComponent` behandelt sein Argument als EINEN Pfadbestandteil
+    /// und prozentkodiert alles, was darin nicht erlaubt ist - aus
+    /// "/api/sessions?vehicle_id=x" wird also ".../api/sessions%3Fvehicle_id=x",
+    /// und der Server sieht einen unbekannten Pfad statt eines Filters. Deshalb
+    /// wird ein "?" hier vorher abgetrennt und ueber URLComponents als echter
+    /// Query gesetzt.
     private func makeRequest(path: String, method: String = "GET", body: Data? = nil, authenticated: Bool = true) throws -> URLRequest {
         guard let base = AppSettings.shared.serverURL else { throw APIError.notConfigured }
-        let url = base.appendingPathComponent(path)
+        let parts = path.split(separator: "?", maxSplits: 1, omittingEmptySubsequences: false)
+        var url = base.appendingPathComponent(String(parts[0]))
+        if parts.count > 1, !parts[1].isEmpty {
+            guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                throw APIError.invalidResponse
+            }
+            components.percentEncodedQuery = String(parts[1])
+            guard let combined = components.url else { throw APIError.invalidResponse }
+            url = combined
+        }
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -135,13 +152,18 @@ final class APIClient {
 
     // MARK: - Auth
 
-    func register(username: String, password: String) async throws -> AuthResponse {
-        let body = try JSONEncoder().encode(AuthCredentials(username: username, password: password))
+    func register(username: String, password: String, email: String? = nil) async throws -> AuthResponse {
+        let body = try JSONEncoder().encode(
+            RegisterCredentials(username: username, password: password, email: email)
+        )
         return try await send(try makeRequest(path: "/api/auth/register", method: "POST", body: body, authenticated: false))
     }
 
-    func login(username: String, password: String) async throws -> AuthResponse {
-        let body = try JSONEncoder().encode(AuthCredentials(username: username, password: password))
+    /// `identifier` ist Nutzername ODER E-Mail-Adresse. Das JSON-Feld heisst
+    /// serverseitig weiterhin `username` (siehe schemas.LoginRequest) - der Name
+    /// wurde bewusst nicht geaendert, damit bestehende Clients weiterlaufen.
+    func login(identifier: String, password: String) async throws -> AuthResponse {
+        let body = try JSONEncoder().encode(AuthCredentials(username: identifier, password: password))
         return try await send(try makeRequest(path: "/api/auth/login", method: "POST", body: body, authenticated: false))
     }
 
@@ -151,6 +173,51 @@ final class APIClient {
 
     func fetchMe() async throws -> AuthUser {
         try await send(try makeRequest(path: "/api/auth/me"))
+    }
+
+    // MARK: - Konto (Server ab 0.14.0)
+
+    /// Aendert das eigene Passwort. Der Server verwirft dabei ALLE Sitzungen des
+    /// Nutzers - auch die eigene. Er stellt zwar sofort eine neue aus, aber nur
+    /// als Cookie fuer die Web-Oberflaeche; die Antwort ist 204 ohne Inhalt, ein
+    /// Bearer-Client bekommt also keinen neuen Token. Deshalb meldet sich die App
+    /// im Anschluss selbst neu an (siehe SessionManager.changePassword).
+    func changePassword(currentPassword: String, newPassword: String) async throws {
+        let body = try JSONEncoder().encode(
+            PasswordChangePayload(currentPassword: currentPassword, newPassword: newPassword)
+        )
+        try await sendNoContent(try makeRequest(path: "/api/auth/password", method: "PUT", body: body))
+    }
+
+    /// Setzt oder entfernt (`email == nil`) die eigene Adresse. Eine geaenderte
+    /// Adresse gilt danach als unbestaetigt; der Server verschickt automatisch
+    /// einen Bestaetigungslink, sofern der Mailversand eingerichtet ist.
+    func updateEmail(_ email: String?, currentPassword: String) async throws -> AuthUser {
+        let body = try JSONEncoder().encode(
+            EmailUpdatePayload(email: email, currentPassword: currentPassword)
+        )
+        return try await send(try makeRequest(path: "/api/auth/email", method: "PUT", body: body))
+    }
+
+    func resendEmailVerification() async throws {
+        try await sendNoContent(try makeRequest(path: "/api/auth/email/verify/resend", method: "POST"))
+    }
+
+    func updateNotifications(_ payload: NotificationSettingsPayload) async throws -> AuthUser {
+        let body = try JSONEncoder().encode(payload)
+        return try await send(try makeRequest(path: "/api/auth/notifications", method: "PUT", body: body))
+    }
+
+    /// Fordert einen Link zum Zuruecksetzen an. Der Server antwortet BEWUSST
+    /// immer mit 204 - auch bei unbekanntem Konto, fehlender oder unbestaetigter
+    /// Adresse. Jede Unterscheidung waere ein Verzeichnis aller Nutzernamen und
+    /// Adressen dieses Servers. Die App darf daraus also nichts ableiten und
+    /// zeigt in jedem Fall dieselbe Meldung.
+    func requestPasswordReset(identifier: String) async throws {
+        let body = try JSONEncoder().encode(PasswordResetRequestPayload(identifier: identifier))
+        try await sendNoContent(
+            try makeRequest(path: "/api/auth/password-reset/request", method: "POST", body: body, authenticated: false)
+        )
     }
 
     // MARK: - Health
@@ -226,8 +293,22 @@ final class APIClient {
     // MARK: - Geocoding
 
     /// Freitext-Adresssuche (Forward-Geocoding). Leeres Array = keine Treffer.
-    /// URL wird ueber URLComponents gebaut, damit der Query-Text korrekt
-    /// prozentkodiert wird (makeRequest wuerde ein "?" im Pfad falsch encodieren).
+    ///
+    /// Baut den Request ueber URLComponents, damit der Suchtext korrekt
+    /// prozentkodiert wird, haengt den Auth-Token aber wie ueberall sonst
+    /// explizit an. Der Endpunkt liegt hinter der Anmeldepflicht (in main.py
+    /// haengt an jedem Router ein `Depends(get_current_user)`).
+    ///
+    /// Ohne den Header funktionierte der Aufruf zwar meistens trotzdem - der
+    /// Server setzt beim Login zusaetzlich ein `session_token`-Cookie, und
+    /// `URLSession.shared` schickt Cookies automatisch mit. Genau das ist das
+    /// Problem: die Adresssuche haengt dann als einziger Aufruf an einem
+    /// impliziten Nebenweg statt am Token aus dem Keychain. Sie faellt aus,
+    /// sobald der Cookie-Speicher leer ist (Neuinstallation, aus einem Backup
+    /// wiederhergestellte App), und die 401-Behandlung in `validate` greift
+    /// nicht, weil die nur bei gesetztem Authorization-Header anschlaegt - eine
+    /// serverseitig beendete Sitzung erschiene hier also als nackter
+    /// "Serverfehler (401)", statt zurueck zum Login zu fuehren.
     func forwardGeocode(query: String) async throws -> [GeocodeResult] {
         guard let base = AppSettings.shared.serverURL else { throw APIError.notConfigured }
         guard var components = URLComponents(
@@ -240,6 +321,9 @@ final class APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = KeychainStore.shared.readToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
         request.timeoutInterval = 15
         return try await send(request)
     }

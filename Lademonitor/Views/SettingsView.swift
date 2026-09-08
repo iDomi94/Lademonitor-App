@@ -157,6 +157,11 @@ struct ServerSettingsView: View {
                     if let user = session.currentUser {
                         LabeledContent("Angemeldet als", value: user.username)
                     }
+                    NavigationLink {
+                        AccountSettingsView()
+                    } label: {
+                        Label("E-Mail, Passwort & Benachrichtigungen", systemImage: "person.crop.circle")
+                    }
                     Button(role: .destructive) {
                         Task {
                             isLoggingOut = true

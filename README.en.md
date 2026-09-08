@@ -19,9 +19,17 @@ switching.
 - View, create, and edit charging sessions
 - Manage vehicles, charging providers, and known charging locations
 - Consumption display (kWh/100km) per charging session
-- Login/registration against your own server, token stored securely in the
-  iOS Keychain (the server address itself is not sensitive information and
-  is stored in UserDefaults)
+- Login/registration against your own server – with either your username
+  **or** your email address. Token stored securely in the iOS Keychain (the
+  server address itself is not sensitive information and is stored in
+  UserDefaults)
+- Account settings: store and confirm an email address, change your own
+  password, and toggle the server's notifications (failed backup, MyŠkoda
+  errors, monthly report, digest of charging sessions awaiting review).
+  Requires Lademonitor-Server 0.14.0 or newer – against an older server the
+  section stays hidden
+- "Forgot password": the app requests the link, the new password is then set
+  through the link in the email, in a browser
 
 ## Requirement
 
@@ -31,8 +39,12 @@ For server mode, a running
 [Lademonitor-Server](https://github.com/iDomi94/Lademonitor-Server)
 (self-hosted, via Docker). On first launch, enter the server address
 (domain, e.g. `lademonitor.example.com` – `https://` is automatically added
-if no scheme is specified) as well as the username/password of an account
-registered on the server.
+if no scheme is specified) as well as the username or email address and the
+password of an account registered on the server.
+
+**Note:** Resetting or changing the password signs out every device on the
+server. After a change made in the app's own settings it signs back in
+automatically; after a reset via the email link a fresh login is required.
 
 ## Project structure
 
@@ -46,7 +58,9 @@ Lademonitor/
     SessionManager.swift       - Login/session state
     CurrentLocationProvider.swift
   Views/                       - Dashboard, SessionsList, AddEditSession,
-                                  Vehicles-/Providers-/LocationsSettings, Auth
+                                  Vehicles-/Providers-/LocationsSettings, Auth,
+                                  AccountSettings (email, password,
+                                  notifications)
 ```
 
 ## Build
