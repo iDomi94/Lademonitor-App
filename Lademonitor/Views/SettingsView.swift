@@ -189,7 +189,11 @@ struct ServerSettingsView: View {
             } header: {
                 Text("Server-Adresse")
             } footer: {
-                Text("Domain deines Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt.")
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Domain deines Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt.")
+                    Text("Selbst gehostet oder künftig auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt.")
+                    Link("Quellcode auf GitHub", destination: URL(string: "https://github.com/iDomi94/Lademonitor-Server")!)
+                }
             }
 
             if !settings.isConfigured {

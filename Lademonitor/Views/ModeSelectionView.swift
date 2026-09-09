@@ -35,7 +35,8 @@ struct ModeSelectionView: View {
                     ModeOptionCard(
                         icon: "network",
                         title: String(localized: "Mit eigenem Server verbinden"),
-                        description: String(localized: "Daten liegen zentral auf deinem Lademonitor-Server, inkl. automatischer Ladevorgangs-Erkennung über Home Assistant und Zugriff vom Web-UI aus.")
+                        description: String(localized: "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder – in Kürze – auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."),
+                        link: (String(localized: "Quellcode auf GitHub"), URL(string: "https://github.com/iDomi94/Lademonitor-Server")!)
                     ) {
                         settings.appMode = .server
                     }
@@ -54,31 +55,42 @@ private struct ModeOptionCard: View {
     let icon: String
     let title: String
     let description: String
+    var link: (title: String, url: URL)? = nil
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            HStack(alignment: .top, spacing: 16) {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(.blue)
-                    .frame(width: 32)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-                    Text(description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.leading)
+        VStack(alignment: .leading, spacing: 8) {
+            Button(action: action) {
+                HStack(alignment: .top, spacing: 16) {
+                    Image(systemName: icon)
+                        .font(.title2)
+                        .foregroundStyle(.blue)
+                        .frame(width: 32)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Text(description)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.leading)
+                    }
+                    Spacer()
                 }
-                Spacer()
             }
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .buttonStyle(.plain)
+
+            if let link {
+                Link(destination: link.url) {
+                    Text(link.title)
+                }
+                .font(.caption)
+                .padding(.leading, 48)
+            }
         }
-        .buttonStyle(.plain)
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 

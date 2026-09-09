@@ -766,19 +766,19 @@
         }
       }
     },
-    "Daten liegen zentral auf deinem Lademonitor-Server, inkl. automatischer Ladevorgangs-Erkennung über Home Assistant und Zugriff vom Web-UI aus." : {
+    "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder – in Kürze – auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daten liegen zentral auf deinem Lademonitor-Server, inkl. automatischer Ladevorgangs-Erkennung über Home Assistant und Zugriff vom Web-UI aus."
+            "value" : "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder – in Kürze – auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data is stored centrally on your Lademonitor server, including automatic charging session detection via Home Assistant and access from the web UI."
+            "value" : "Data lives centrally on a Lademonitor server instead of just on the device: automatic charging session detection via Home Assistant, access from the web UI too, and every device shows the same state. Self-hosted (open source, via Docker) or – coming soon – on the public server at lademonitor.cloud, which takes care of operation, updates, and backups for you."
           }
         }
       }
@@ -2721,6 +2721,23 @@
         }
       }
     },
+    "Quellcode auf GitHub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quellcode auf GitHub"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source Code on GitHub"
+          }
+        }
+      }
+    },
     "Radius %lld m" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2785,6 +2802,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Already have an account? Sign In"
+          }
+        }
+      }
+    },
+    "Selbst gehostet oder künftig auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selbst gehostet oder künftig auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Self-hosted, or in the future on the public server at lademonitor.cloud, which takes care of operation, updates, and backups for you."
           }
         }
       }
