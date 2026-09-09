@@ -35,7 +35,7 @@ struct ModeSelectionView: View {
                     ModeOptionCard(
                         icon: "network",
                         title: String(localized: "Mit eigenem Server verbinden"),
-                        description: String(localized: "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder – in Kürze – auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."),
+                        description: String(localized: "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."),
                         link: (String(localized: "Quellcode auf GitHub"), URL(string: "https://github.com/iDomi94/Lademonitor-Server")!)
                     ) {
                         settings.appMode = .server

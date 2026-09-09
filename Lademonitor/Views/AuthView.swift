@@ -17,6 +17,10 @@ struct AuthView: View {
     private var trimmedIdentifier: String { identifier.trimmingCharacters(in: .whitespaces) }
     private var trimmedEmail: String { email.trimmingCharacters(in: .whitespaces) }
 
+    private var hostingBinding: Binding<AppSettings.ServerHosting> {
+        Binding(get: { settings.serverHosting }, set: { settings.serverHosting = $0 })
+    }
+
     private var canSubmit: Bool {
         guard settings.isConfigured, password.count >= 8 else { return false }
         if isRegistering {
@@ -34,16 +38,29 @@ struct AuthView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("https://lademonitor.example.com", text: $settings.serverURLString)
-                        .keyboardType(.URL)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
+                    Picker("Hosting", selection: hostingBinding) {
+                        ForEach(AppSettings.ServerHosting.allCases) { choice in
+                            Text(choice.label).tag(choice)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    if settings.serverHosting == .selfHosted {
+                        TextField("https://lademonitor.example.com", text: $settings.serverURLString)
+                            .keyboardType(.URL)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                    }
                 } header: {
                     Text("Server-Adresse")
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Domain deines Lademonitor-Servers. Ein „https://“ wird automatisch ergänzt, falls du es weglässt.")
-                        Text("Selbst gehostet oder künftig auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt.")
+                        switch settings.serverHosting {
+                        case .selfHosted:
+                            Text("Domain deines eigenen Lademonitor-Servers. Ein „https://“ wird automatisch ergänzt, falls du es weglässt.")
+                        case .cloud:
+                            Text("Läuft auf lademonitor.cloud – Betrieb, Updates und Backups übernimmt der Betreiber für dich.")
+                        }
                         Link("Quellcode auf GitHub", destination: URL(string: "https://github.com/iDomi94/Lademonitor-Server")!)
                     }
                 }

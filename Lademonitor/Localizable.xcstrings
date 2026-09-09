@@ -18,6 +18,43 @@
         }
       }
     },
+    "– keiner –" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "– keiner –"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "– none –"
+          }
+        }
+      }
+    },
+    "„%@“ wird gelöscht." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ wird gelöscht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” will be deleted."
+          }
+        }
+      }
+    },
+    "„Hochladen“ fügt sie dem Konto %@ hinzu. „Vom Gerät löschen“ entfernt sie hier und lädt stattdessen den Stand dieses Kontos – auf dem Server wird dabei nichts gelöscht. „Abbrechen“ meldet dich wieder ab und lässt alles unverändert." : {
+
+    },
     "%@ %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -69,23 +106,6 @@
         }
       }
     },
-    "%lld Ladevorgänge" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Ladevorgänge"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Charging Sessions"
-          }
-        }
-      }
-    },
     "%lld → %lld %%" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -99,6 +119,32 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld → %lld %%"
+          }
+        }
+      }
+    },
+    "%lld Anbieter" : {
+
+    },
+    "%lld Fahrzeuge" : {
+
+    },
+    "%lld Ladeorte" : {
+
+    },
+    "%lld Ladevorgänge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladevorgänge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Charging Sessions"
           }
         }
       }
@@ -120,19 +166,19 @@
         }
       }
     },
-    "AC / DC-Aufteilung" : {
+    "ab %lld %%" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AC / DC-Aufteilung"
+            "value" : "ab %lld %%"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AC / DC Split"
+            "value" : "from %lld %%"
           }
         }
       }
@@ -171,6 +217,26 @@
         }
       }
     },
+    "AC / DC-Aufteilung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AC / DC-Aufteilung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AC / DC Split"
+          }
+        }
+      }
+    },
+    "Achtung: Beim Zurücksetzen werden alle angemeldeten Geräte abgemeldet – auch diese App und eine eventuelle Home-Assistant-Anbindung." : {
+
+    },
     "Achtung: Dabei werden auch ALLE zugehörigen Ladevorgänge dieses Fahrzeugs unwiderruflich gelöscht." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -187,6 +253,12 @@
           }
         }
       }
+    },
+    "Admin" : {
+
+    },
+    "Adresse speichern" : {
+
     },
     "Adresse suchen" : {
       "extractionState" : "manual",
@@ -324,6 +396,9 @@
         }
       }
     },
+    "Aktuelles Passwort" : {
+
+    },
     "Alle Daten bleiben ausschließlich auf diesem iPhone. Kein Server, keine automatische Erkennung über Home Assistant, keine Synchronisation zwischen Geräten. Du kannst später jederzeit zu einem Server wechseln und alle lokalen Daten hochladen." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -426,6 +501,23 @@
         }
       }
     },
+    "Anbieter „%@“: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anbieter „%@“: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Provider “%@”: %@"
+          }
+        }
+      }
+    },
     "Anbieter & Typ" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -477,23 +569,6 @@
         }
       }
     },
-    "Anbieter „%@“: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anbieter „%@“: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Provider “%@”: %@"
-          }
-        }
-      }
-    },
     "Andere" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -510,6 +585,26 @@
           }
         }
       }
+    },
+    "Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes are uploaded automatically, even after a brief connection loss. \"Sync Now\" triggers this manually."
+          }
+        }
+      }
+    },
+    "Angemeldet" : {
+
     },
     "Angemeldet als" : {
       "extractionState" : "manual",
@@ -596,6 +691,15 @@
         }
       }
     },
+    "Auf diesem Gerät liegen bereits Daten." : {
+
+    },
+    "Auf diesem Gerät liegen bereits: %@." : {
+
+    },
+    "Aus" : {
+
+    },
     "Automatisch" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -612,6 +716,26 @@
           }
         }
       }
+    },
+    "automatisch, falls leer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "automatisch, falls leer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "automatic if empty"
+          }
+        }
+      }
+    },
+    "Backup fehlgeschlagen" : {
+
     },
     "Basiert auf einer geschätzten Energiemenge statt eines gemessenen kWh-Werts – Fehler können sich hier häufen." : {
       "extractionState" : "manual",
@@ -647,6 +771,9 @@
         }
       }
     },
+    "Benachrichtigungen" : {
+
+    },
     "Bestätigen" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -663,6 +790,15 @@
           }
         }
       }
+    },
+    "Bestätigt" : {
+
+    },
+    "Bestätigungsmail erneut senden" : {
+
+    },
+    "Bestätigungsmail verschickt." : {
+
     },
     "Bevor du einen Ladevorgang erfassen kannst, musst du mindestens ein Fahrzeug anlegen." : {
       "extractionState" : "manual",
@@ -711,6 +847,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "To"
+          }
+        }
+      }
+    },
+    "bis %lld %%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis %lld %%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "to %lld %%"
           }
         }
       }
@@ -783,19 +936,19 @@
         }
       }
     },
-    "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder – in Kürze – auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt." : {
+    "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder – in Kürze – auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."
+            "value" : "Daten liegen zentral auf einem Lademonitor-Server statt nur auf dem Gerät: automatische Ladevorgangs-Erkennung über Home Assistant, Zugriff auch vom Web-UI aus, alle Geräte zeigen denselben Stand. Selbst gehostet (Open Source, per Docker) oder auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data lives centrally on a Lademonitor server instead of just on the device: automatic charging session detection via Home Assistant, access from the web UI too, and every device shows the same state. Self-hosted (open source, via Docker) or – coming soon – on the public server at lademonitor.cloud, which takes care of operation, updates, and backups for you."
+            "value" : "Data lives centrally on a Lademonitor server instead of just on the device: automatic charging session detection via Home Assistant, access from the web UI too, and every device shows the same state. Self-hosted (open source, via Docker) or on the public server at lademonitor.cloud, which takes care of operation, updates, and backups for you."
           }
         }
       }
@@ -817,22 +970,8 @@
         }
       }
     },
-    "Die Passwörter stimmen nicht überein." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Passwörter stimmen nicht überein."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The passwords do not match."
-          }
-        }
-      }
+    "Dein Server unterstützt diese Funktionen noch nicht. Sie brauchen Lademonitor-Server 0.14.0 oder neuer." : {
+
     },
     "Die externe ID ist nach dem Anlegen nicht mehr änderbar." : {
       "extractionState" : "manual",
@@ -847,6 +986,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The external ID can no longer be changed after creation."
+          }
+        }
+      }
+    },
+    "Die Passwörter stimmen nicht überein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Passwörter stimmen nicht überein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The passwords do not match."
           }
         }
       }
@@ -868,39 +1024,54 @@
         }
       }
     },
-    "Domain deines Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt." : {
+    "diesem Konto" : {
+
+    },
+    "Domain deines eigenen Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Domain deines Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt."
+            "value" : "Domain deines eigenen Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Domain of your Lademonitor server. An \"https://\" is added automatically if you omit it."
+            "value" : "Domain of your own Lademonitor server. An \"https://\" is added automatically if you omit it."
           }
         }
       }
     },
-    "Domain deines Lademonitor-Servers. Ein „https://“ wird automatisch ergänzt, falls du es weglässt." : {
+    "Domain deines eigenen Lademonitor-Servers. Ein „https://“ wird automatisch ergänzt, falls du es weglässt." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Domain deines Lademonitor-Servers. Ein „https://“ wird automatisch ergänzt, falls du es weglässt."
+            "value" : "Domain deines eigenen Lademonitor-Servers. Ein „https://“ wird automatisch ergänzt, falls du es weglässt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Domain of your Lademonitor server. An \"https://\" is added automatically if you omit it."
+            "value" : "Domain of your own Lademonitor server. An \"https://\" is added automatically if you omit it."
           }
         }
       }
+    },
+    "Du kannst dich mit deinem Nutzernamen oder deiner E-Mail-Adresse anmelden." : {
+
+    },
+    "E-Mail-Adresse" : {
+
+    },
+    "E-Mail-Adresse (optional)" : {
+
+    },
+    "E-Mail, Passwort & Benachrichtigungen" : {
+
     },
     "Eigener Zeitraum" : {
       "extractionState" : "manual",
@@ -1140,6 +1311,23 @@
         }
       }
     },
+    "Fahrzeug „%@“: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrzeug „%@“: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vehicle “%@”: %@"
+          }
+        }
+      }
+    },
     "Fahrzeug & Zeit" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1204,23 +1392,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete Vehicle?"
-          }
-        }
-      }
-    },
-    "Fahrzeug „%@“: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fahrzeug „%@“: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vehicle “%@”: %@"
           }
         }
       }
@@ -1429,6 +1600,26 @@
         }
       }
     },
+    "Gespeichert." : {
+
+    },
+    "https://lademonitor.example.com" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://lademonitor.example.com"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://lademonitor.example.com"
+          }
+        }
+      }
+    },
     "Import" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1442,6 +1633,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import"
+          }
+        }
+      }
+    },
+    "In dieses Konto hochladen" : {
+
+    },
+    "inaktiv" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "inaktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "inactive"
           }
         }
       }
@@ -1786,6 +1997,74 @@
         }
       }
     },
+    "kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh"
+          }
+        }
+      }
+    },
+    "kWh pro Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh pro Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh per Provider"
+          }
+        }
+      }
+    },
+    "kWh pro Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh pro Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh per Month"
+          }
+        }
+      }
+    },
+    "kWh/100km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh/100km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh/100km"
+          }
+        }
+      }
+    },
     "Lade Statistiken…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1854,6 +2133,23 @@
         }
       }
     },
+    "Ladeort „%@“: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladeort „%@“: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging location “%@”: %@"
+          }
+        }
+      }
+    },
     "Ladeort bearbeiten" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1884,23 +2180,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete Charging Location?"
-          }
-        }
-      }
-    },
-    "Ladeort „%@“: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ladeort „%@“: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Charging location “%@”: %@"
           }
         }
       }
@@ -1973,19 +2252,19 @@
         }
       }
     },
-    "Letzte 30 Tage" : {
+    "Länge (lon)" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Letzte 30 Tage"
+            "value" : "Länge (lon)"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Last 30 Days"
+            "value" : "Longitude (lon)"
           }
         }
       }
@@ -2003,6 +2282,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last 7 Days"
+          }
+        }
+      }
+    },
+    "Letzte 30 Tage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte 30 Tage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last 30 Days"
           }
         }
       }
@@ -2058,22 +2354,8 @@
         }
       }
     },
-    "Länge (lon)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Länge (lon)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Longitude (lon)"
-          }
-        }
-      }
+    "Link anfordern" : {
+
     },
     "Löschen" : {
       "extractionState" : "manual",
@@ -2177,6 +2459,9 @@
         }
       }
     },
+    "Mindestens 8 Zeichen. Beim Ändern meldet der Server alle Geräte ab – diese App bleibt angemeldet, Home Assistant und andere Geräte brauchen aber einen neuen Zugang." : {
+
+    },
     "Mit eigenem Server verbinden" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2262,6 +2547,12 @@
         }
       }
     },
+    "Monatsbericht" : {
+
+    },
+    "MyŠkoda-Fehler oder Key-Ablauf" : {
+
+    },
     "Nach der Anmeldung werden deine bisherigen lokalen Daten automatisch zum Server hochgeladen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2278,6 +2569,9 @@
           }
         }
       }
+    },
+    "Nach der Anmeldung wirst du gefragt, ob deine bisherigen lokalen Daten in das Konto hochgeladen oder vom Gerät gelöscht werden sollen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln." : {
+
     },
     "Name" : {
       "extractionState" : "manual",
@@ -2312,6 +2606,9 @@
           }
         }
       }
+    },
+    "Neue Registrierung" : {
+
     },
     "Neuer Anbieter" : {
       "extractionState" : "manual",
@@ -2398,6 +2695,12 @@
         }
       }
     },
+    "Neues Passwort" : {
+
+    },
+    "Neues Passwort wiederholen" : {
+
+    },
     "Nicht verfügbar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2431,6 +2734,9 @@
           }
         }
       }
+    },
+    "Noch nicht bestätigt" : {
+
     },
     "Noch nicht synchronisiert" : {
       "extractionState" : "manual",
@@ -2534,19 +2840,42 @@
         }
       }
     },
-    "OK" : {
+    "Nutzername mindestens 3 Zeichen, Passwort mindestens 8 Zeichen. Ohne E-Mail-Adresse funktioniert alles wie bisher – nur „Passwort vergessen“ und Benachrichtigungen dann nicht." : {
+
+    },
+    "Nutzername oder E-Mail" : {
+
+    },
+    "Ø Preis/kWh" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OK"
+            "value" : "Ø Preis/kWh"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OK"
+            "value" : "Ø Price/kWh"
+          }
+        }
+      }
+    },
+    "Ø Verbrauch/100km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø Verbrauch/100km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø Consumption/100km"
           }
         }
       }
@@ -2581,6 +2910,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No server, all data stays on this device."
+          }
+        }
+      }
+    },
+    "OK" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "optional" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "optional"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "optional"
           }
         }
       }
@@ -2652,6 +3015,18 @@
           }
         }
       }
+    },
+    "Passwort ändern" : {
+
+    },
+    "Passwort geändert." : {
+
+    },
+    "Passwort vergessen" : {
+
+    },
+    "Passwort vergessen?" : {
+
     },
     "Passwort wiederholen" : {
       "extractionState" : "manual",
@@ -2806,23 +3181,6 @@
         }
       }
     },
-    "Quelle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quelle"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Source"
-          }
-        }
-      }
-    },
     "Quellcode auf GitHub" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2840,19 +3198,19 @@
         }
       }
     },
-    "Radius %lld m" : {
+    "Quelle" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Radius %lld m"
+            "value" : "Quelle"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Radius %lld m"
+            "value" : "Source"
           }
         }
       }
@@ -2874,6 +3232,23 @@
         }
       }
     },
+    "Radius %lld m" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radius %lld m"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radius %lld m"
+          }
+        }
+      }
+    },
     "Registrieren" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2890,6 +3265,12 @@
           }
         }
       }
+    },
+    "Rolle" : {
+
+    },
+    "Schau auch im Spam-Ordner nach. Den Link öffnest du im Browser – dort setzt du das neue Passwort." : {
+
     },
     "Schon ein Konto? Anmelden" : {
       "extractionState" : "manual",
@@ -2908,19 +3289,70 @@
         }
       }
     },
-    "Selbst gehostet oder künftig auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt." : {
+    "Hosting" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selbst gehostet oder künftig auf dem öffentlichen Server unter lademonitor.cloud, der dir Betrieb, Updates und Backups abnimmt."
+            "value" : "Hosting"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Self-hosted, or in the future on the public server at lademonitor.cloud, which takes care of operation, updates, and backups for you."
+            "value" : "Hosting"
+          }
+        }
+      }
+    },
+    "Lademonitor-Cloud" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor-Cloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor Cloud"
+          }
+        }
+      }
+    },
+    "Läuft auf lademonitor.cloud – Betrieb, Updates und Backups übernimmt der Betreiber für dich." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läuft auf lademonitor.cloud – Betrieb, Updates und Backups übernimmt der Betreiber für dich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runs on lademonitor.cloud – the operator takes care of operation, updates, and backups for you."
+          }
+        }
+      }
+    },
+    "Selbst gehostet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selbst gehostet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Self-hosted"
           }
         }
       }
@@ -3078,23 +3510,6 @@
         }
       }
     },
-    "SoC-Werte angeben" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SoC-Werte angeben"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter SoC Values"
-          }
-        }
-      }
-    },
     "SoC-korrigiert" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3125,6 +3540,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SoC-corrected based on a measured kWh value."
+          }
+        }
+      }
+    },
+    "SoC-Werte angeben" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SoC-Werte angeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter SoC Values"
           }
         }
       }
@@ -3350,6 +3782,9 @@
         }
       }
     },
+    "Täglich" : {
+
+    },
     "Technik" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3366,6 +3801,9 @@
           }
         }
       }
+    },
+    "Trage oben eine E-Mail-Adresse ein, damit Benachrichtigungen ankommen können. Zusätzlich muss auf dem Server ein SMTP-Zugang eingerichtet sein." : {
+
     },
     "Trage zuerst deine Server-Adresse ein, um loszulegen." : {
       "extractionState" : "manual",
@@ -3503,6 +3941,9 @@
         }
       }
     },
+    "Vom Gerät löschen" : {
+
+    },
     "Von" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3537,6 +3978,9 @@
         }
       }
     },
+    "Was soll mit den Daten auf diesem Gerät passieren?" : {
+
+    },
     "Wechseln" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3554,6 +3998,9 @@
         }
       }
     },
+    "Wenn es dazu ein Konto mit bestätigter E-Mail-Adresse gibt, ist die Nachricht unterwegs." : {
+
+    },
     "Wie möchtest du die App nutzen?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3567,6 +4014,69 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "How would you like to use the app?"
+          }
+        }
+      }
+    },
+    "Wir schicken einen Link zum Zurücksetzen. Er gilt eine Stunde und lässt sich nur einmal verwenden." : {
+
+    },
+    "Wird für „Passwort vergessen“ und für Benachrichtigungen gebraucht. Leer lassen entfernt die Adresse. Das Passwort ist eine Sicherheitsabfrage: wer die Adresse ändern kann, kann anschließend das Passwort zurücksetzen lassen. Eine geänderte Adresse muss erneut bestätigt werden – bis dahin kann sie kein Passwort zurücksetzen." : {
+
+    },
+    "Wird per E-Mail verschickt. Setzt voraus, dass auf dem Server ein SMTP-Zugang eingerichtet ist." : {
+
+    },
+    "Wöchentlich" : {
+
+    },
+    "z.B. 8.299507" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z.B. 8.299507"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 8.299507"
+          }
+        }
+      }
+    },
+    "z.B. 48.153770" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z.B. 48.153770"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 48.153770"
+          }
+        }
+      }
+    },
+    "z.B. enyaq" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z.B. enyaq"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. enyaq"
           }
         }
       }
@@ -3605,6 +4115,26 @@
         }
       }
     },
+    "Zu prüfen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu prüfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needs Review"
+          }
+        }
+      }
+    },
+    "Zu prüfende Ladevorgänge" : {
+
+    },
     "Zu Server wechseln" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3639,23 +4169,6 @@
         }
       }
     },
-    "Zu prüfen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zu prüfen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Needs Review"
-          }
-        }
-      }
-    },
     "Zuletzt synchronisiert" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3669,312 +4182,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last Synced"
-          }
-        }
-      }
-    },
-    "ab %lld %%" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ab %lld %%"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "from %lld %%"
-          }
-        }
-      }
-    },
-    "automatisch, falls leer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "automatisch, falls leer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "automatic if empty"
-          }
-        }
-      }
-    },
-    "bis %lld %%" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "bis %lld %%"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "to %lld %%"
-          }
-        }
-      }
-    },
-    "https://lademonitor.example.com" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://lademonitor.example.com"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://lademonitor.example.com"
-          }
-        }
-      }
-    },
-    "inaktiv" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "inaktiv"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "inactive"
-          }
-        }
-      }
-    },
-    "kWh" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh"
-          }
-        }
-      }
-    },
-    "kWh pro Anbieter" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh pro Anbieter"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh per Provider"
-          }
-        }
-      }
-    },
-    "kWh pro Monat" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh pro Monat"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh per Month"
-          }
-        }
-      }
-    },
-    "kWh/100km" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh/100km"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "kWh/100km"
-          }
-        }
-      }
-    },
-    "optional" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "optional"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "optional"
-          }
-        }
-      }
-    },
-    "z.B. 48.153770" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "z.B. 48.153770"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e.g. 48.153770"
-          }
-        }
-      }
-    },
-    "z.B. 8.299507" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "z.B. 8.299507"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e.g. 8.299507"
-          }
-        }
-      }
-    },
-    "z.B. enyaq" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "z.B. enyaq"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e.g. enyaq"
-          }
-        }
-      }
-    },
-    "Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changes are uploaded automatically, even after a brief connection loss. \"Sync Now\" triggers this manually."
-          }
-        }
-      }
-    },
-    "Ø Preis/kWh" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ø Preis/kWh"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ø Price/kWh"
-          }
-        }
-      }
-    },
-    "Ø Verbrauch/100km" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ø Verbrauch/100km"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ø Consumption/100km"
-          }
-        }
-      }
-    },
-    "– keiner –" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "– keiner –"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "– none –"
-          }
-        }
-      }
-    },
-    "„%@“ wird gelöscht." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "„%@“ wird gelöscht."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“%@” will be deleted."
           }
         }
       }

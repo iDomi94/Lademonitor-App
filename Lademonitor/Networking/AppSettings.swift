@@ -8,6 +8,46 @@ import Combine
 final class AppSettings: ObservableObject {
     static let shared = AppSettings()
 
+    /// Der von uns betriebene oeffentliche Server - Alternative zum Selbsthosten,
+    /// siehe ServerHosting weiter unten.
+    static let cloudServerURLString = "https://lademonitor.cloud"
+
+    /// Auswahl in der Server-Adresse-Sektion (AuthView/ServerSettingsView): entweder
+    /// eine frei eingetragene eigene Domain, oder fest lademonitor.cloud. Kein
+    /// eigener Speicherzustand - leitet sich rein aus serverURLString ab, damit
+    /// es keine zwei Wahrheiten geben kann (z.B. nach einem App-Update oder wenn
+    /// jemand die URL manuell auf lademonitor.cloud tippt statt den Picker zu nutzen).
+    enum ServerHosting: String, CaseIterable, Identifiable {
+        case selfHosted
+        case cloud
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .selfHosted: return String(localized: "Selbst gehostet")
+            case .cloud: return String(localized: "Lademonitor-Cloud")
+            }
+        }
+    }
+
+    var serverHosting: ServerHosting {
+        get { serverURLString == Self.cloudServerURLString ? .cloud : .selfHosted }
+        set {
+            switch newValue {
+            case .cloud:
+                serverURLString = Self.cloudServerURLString
+            case .selfHosted:
+                // Nur zuruecksetzen, wenn tatsaechlich noch die Cloud-URL drinsteht -
+                // sonst wuerde ein Tippfehler-Tap auf "Selbst gehostet" eine bereits
+                // eingetragene eigene Domain versehentlich leeren.
+                if serverURLString == Self.cloudServerURLString {
+                    serverURLString = ""
+                }
+            }
+        }
+    }
+
     @Published var serverURLString: String {
         didSet { UserDefaults.standard.set(serverURLString, forKey: "serverURL") }
     }
