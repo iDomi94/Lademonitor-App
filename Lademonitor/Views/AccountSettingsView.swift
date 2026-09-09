@@ -32,6 +32,12 @@ struct AccountSettingsView: View {
     @State private var isSavingNotifications = false
     @State private var notificationStatus: StatusMessage?
 
+    // Konto löschen
+    @State private var deletePassword = ""
+    @State private var isDeletingAccount = false
+    @State private var deleteStatus: StatusMessage?
+    @State private var showingDeleteConfirmation = false
+
     /// Kleine Rueckmeldung unter einem Abschnitt - Erfolg gruen, Fehler rot.
     private struct StatusMessage {
         let text: String
@@ -65,6 +71,7 @@ struct AccountSettingsView: View {
                     emailSection(user: user)
                     passwordSection
                     notificationsSection(user: user)
+                    deleteAccountSection
                 } else {
                     Section {
                         Label("Dein Server unterstützt diese Funktionen noch nicht. Sie brauchen Lademonitor-Server 0.14.0 oder neuer.", systemImage: "info.circle")
@@ -216,6 +223,50 @@ struct AccountSettingsView: View {
         }
     }
 
+    // MARK: - Konto löschen
+
+    @ViewBuilder
+    private var deleteAccountSection: some View {
+        Section {
+            SecureField("Aktuelles Passwort", text: $deletePassword)
+
+            Button(role: .destructive) {
+                showingDeleteConfirmation = true
+            } label: {
+                HStack {
+                    Text("Konto endgültig löschen")
+                    if isDeletingAccount {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(deletePassword.isEmpty || isDeletingAccount)
+
+            if let deleteStatus {
+                Text(deleteStatus.text)
+                    .font(.footnote)
+                    .foregroundStyle(deleteStatus.isError ? .red : .green)
+            }
+        } header: {
+            Text("Konto löschen")
+        } footer: {
+            Text("Löscht dein Konto und alle deine Daten auf dem Server unwiderruflich: Fahrzeuge, Ladevorgänge, Anbieter, Ladeorte sowie deine MyŠkoda- und Backup-Konfiguration. Home Assistant und andere Geräte werden dabei ebenfalls abgemeldet.")
+        }
+        .confirmationDialog(
+            "Konto wirklich unwiderruflich löschen?",
+            isPresented: $showingDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Konto löschen", role: .destructive) {
+                Task { await deleteAccount() }
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Alle deine Daten auf dem Server werden dabei gelöscht. Das lässt sich nicht rückgängig machen.")
+        }
+    }
+
     // MARK: - Aktionen
 
     private func load() async {
@@ -279,6 +330,24 @@ struct AccountSettingsView: View {
             passwordStatus = StatusMessage(text: String(localized: "Passwort geändert."), isError: false)
         } catch {
             passwordStatus = StatusMessage(text: error.localizedDescription, isError: true)
+        }
+    }
+
+    private func deleteAccount() async {
+        deleteStatus = nil
+        isDeletingAccount = true
+        defer { isDeletingAccount = false }
+        do {
+            try await session.deleteAccount(currentPassword: deletePassword)
+            // Ab hier ist session.isAuthenticated false und ContentView
+            // schaltet von selbst zurueck - kein manueller Dismiss noetig.
+        } catch let APIError.server(statusCode, _) where statusCode == 404 {
+            deleteStatus = StatusMessage(
+                text: String(localized: "Dein Server unterstützt diese Funktion noch nicht. Du brauchst Lademonitor-Server 0.16.0 oder neuer."),
+                isError: true
+            )
+        } catch {
+            deleteStatus = StatusMessage(text: error.localizedDescription, isError: true)
         }
     }
 

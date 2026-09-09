@@ -205,6 +205,13 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/auth/email/verify/resend", method: "POST"))
     }
 
+    /// Loescht das eigene Konto unwiderruflich, inkl. aller eigenen Daten auf
+    /// dem Server (Fahrzeuge, Ladevorgaenge, Anbieter, Ladeorte, ...).
+    func deleteAccount(currentPassword: String) async throws {
+        let body = try JSONEncoder().encode(AccountDeletePayload(currentPassword: currentPassword))
+        try await sendNoContent(try makeRequest(path: "/api/auth/me", method: "DELETE", body: body))
+    }
+
     func updateNotifications(_ payload: NotificationSettingsPayload) async throws -> AuthUser {
         let body = try JSONEncoder().encode(payload)
         return try await send(try makeRequest(path: "/api/auth/notifications", method: "PUT", body: body))

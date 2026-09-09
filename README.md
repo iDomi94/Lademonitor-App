@@ -35,6 +35,21 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   in das gerade angemeldete Konto – beim Kontowechsel also auch die eigenen
   Ladeorte samt Koordinaten. Auf dem Server wird dabei nie etwas gelöscht
 
+## Einsatzmöglichkeiten
+
+- **Standalone lokal:** läuft komplett offline auf dem Gerät, kein Server nötig
+  (siehe Local-Only-Modus oben)
+- **Selbst gehostet:** eigener
+  [Lademonitor-Server](https://github.com/iDomi94/Lademonitor-Server), Open
+  Source und per Docker betrieben – volle Kontrolle über die eigenen Daten
+- **Öffentlicher Server** (in Kürze unter `lademonitor.cloud`): kein eigener
+  Serverbetrieb nötig, Updates und Backups übernimmt der Betreiber, sofort
+  startklar ohne Docker/Domain-Setup
+
+Server-Modus (selbst gehostet oder öffentlich) bringt zusätzlich automatische
+Ladevorgangs-Erkennung über Home Assistant sowie Zugriff vom Web-UI aus, mit
+bidirektionaler Synchronisierung zwischen App, Web-UI und weiteren Geräten.
+
 ## Voraussetzung
 
 Im Local-Only-Modus keine – die App läuft komplett offline auf dem Gerät.

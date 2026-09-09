@@ -36,6 +36,21 @@ switching.
   signed in to – on an account switch that included your own charging locations
   and their coordinates. Nothing is ever deleted on the server
 
+## Deployment options
+
+- **Standalone locally:** runs entirely offline on the device, no server
+  needed (see local-only mode above)
+- **Self-hosted:** your own
+  [Lademonitor-Server](https://github.com/iDomi94/Lademonitor-Server), open
+  source and run via Docker – full control over your own data
+- **Public server** (coming soon at `lademonitor.cloud`): no server operation
+  of your own, updates and backups are handled by the operator, ready to go
+  instantly without a Docker/domain setup
+
+Server mode (self-hosted or public) additionally provides automatic charging
+session detection via Home Assistant and access from the web UI, with
+bidirectional synchronization between the app, web UI, and other devices.
+
 ## Requirement
 
 None in local-only mode – the app runs entirely offline on the device.
