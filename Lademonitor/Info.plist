@@ -7,6 +7,17 @@
 		<string>de</string>
 		<string>en</string>
 	</array>
+	<!-- Server-Modus verbindet sich mit einer beim ersten Start frei eingegebenen
+	     Server-Adresse (siehe AppSettings.swift/ModeSelectionView.swift) - i.d.R.
+	     ein selbstgehosteter Lademonitor-Server im eigenen Heimnetz (Unraid,
+	     Home-Assistant-Add-on), haeufig ohne eigenes TLS-Zertifikat und teils nur
+	     per HTTP statt HTTPS erreichbar (siehe Lademonitor-Server-README, Docker-
+	     Standardfall http://<ip>:8111 ohne Reverse Proxy). Domain und Schema sind
+	     erst zur Laufzeit bekannt, eine ATS-Ausnahme fuer eine feste Domain oder
+	     "nur LAN" (NSAllowsLocalNetworking) deckt das nicht ab - deshalb bewusst
+	     NSAllowsArbitraryLoads statt einer engeren Ausnahme. Fuer die App-Review-
+	     Notizen: das ist kein Interesse an unverschluesseltem Traffic im
+	     Allgemeinen, sondern Voraussetzung fuer "mit eigenem Server verbinden". -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
