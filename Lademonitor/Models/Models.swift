@@ -358,6 +358,17 @@ struct EmailUpdatePayload: Codable {
     }
 }
 
+/// Body fuer DELETE /api/auth/me. Wie bei /email und /password verlangt der
+/// Server das aktuelle Passwort - ein gestohlener Bearer-Token allein darf
+/// das Konto nicht vernichten koennen.
+struct AccountDeletePayload: Codable {
+    let currentPassword: String
+
+    enum CodingKeys: String, CodingKey {
+        case currentPassword = "current_password"
+    }
+}
+
 /// Body fuer PUT /api/auth/notifications - der Server erwartet alle Felder.
 struct NotificationSettingsPayload: Codable {
     let notifyBackupFailed: Bool

@@ -73,6 +73,15 @@ final class SessionManager: ObservableObject {
         completeAuthentication(response)
     }
 
+    /// Eigenes Konto unwiderruflich loeschen, inkl. aller eigenen Daten auf
+    /// dem Server. Ein falsches Passwort (403) wirft weiter, ohne lokal etwas
+    /// zu veraendern - erst nach bestaetigtem Erfolg lokal aufraeumen wie
+    /// beim Logout.
+    func deleteAccount(currentPassword: String) async throws {
+        try await APIClient.shared.deleteAccount(currentPassword: currentPassword)
+        clearLocalSession()
+    }
+
     private func clearLocalSession() {
         KeychainStore.shared.deleteToken()
         currentUser = nil

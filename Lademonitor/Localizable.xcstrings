@@ -358,6 +358,23 @@
         }
       }
     },
+    "Alle deine Daten auf dem Server werden dabei gelöscht. Das lässt sich nicht rückgängig machen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle deine Daten auf dem Server werden dabei gelöscht. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All your data on the server will be deleted. This cannot be undone."
+          }
+        }
+      }
+    },
     "Alle lokalen Daten löschen?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -779,6 +796,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data lives centrally on a Lademonitor server instead of just on the device: automatic charging session detection via Home Assistant, access from the web UI too, and every device shows the same state. Self-hosted (open source, via Docker) or – coming soon – on the public server at lademonitor.cloud, which takes care of operation, updates, and backups for you."
+          }
+        }
+      }
+    },
+    "Dein Server unterstützt diese Funktion noch nicht. Du brauchst Lademonitor-Server 0.16.0 oder neuer." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Server unterstützt diese Funktion noch nicht. Du brauchst Lademonitor-Server 0.16.0 oder neuer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your server doesn't support this feature yet. You need Lademonitor-Server 0.16.0 or newer."
           }
         }
       }
@@ -1650,6 +1684,57 @@
         }
       }
     },
+    "Konto endgültig löschen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto endgültig löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently Delete Account"
+          }
+        }
+      }
+    },
+    "Konto löschen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        }
+      }
+    },
+    "Konto wirklich unwiderruflich löschen?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto wirklich unwiderruflich löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently delete your account?"
+          }
+        }
+      }
+    },
     "Koordinaten" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2003,6 +2088,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete"
+          }
+        }
+      }
+    },
+    "Löscht dein Konto und alle deine Daten auf dem Server unwiderruflich: Fahrzeuge, Ladevorgänge, Anbieter, Ladeorte sowie deine MyŠkoda- und Backup-Konfiguration. Home Assistant und andere Geräte werden dabei ebenfalls abgemeldet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löscht dein Konto und alle deine Daten auf dem Server unwiderruflich: Fahrzeuge, Ladevorgänge, Anbieter, Ladeorte sowie deine MyŠkoda- und Backup-Konfiguration. Home Assistant und andere Geräte werden dabei ebenfalls abgemeldet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanently deletes your account and all your data on the server: vehicles, charging sessions, providers, locations, and your MyŠkoda and backup configuration. Home Assistant and other devices are signed out as well."
           }
         }
       }
