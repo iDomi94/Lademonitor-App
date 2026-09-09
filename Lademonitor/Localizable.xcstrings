@@ -53,7 +53,21 @@
       }
     },
     "„Hochladen“ fügt sie dem Konto %@ hinzu. „Vom Gerät löschen“ entfernt sie hier und lädt stattdessen den Stand dieses Kontos – auf dem Server wird dabei nichts gelöscht. „Abbrechen“ meldet dich wieder ab und lässt alles unverändert." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Hochladen“ fügt sie dem Konto %@ hinzu. „Vom Gerät löschen“ entfernt sie hier und lädt stattdessen den Stand dieses Kontos – auf dem Server wird dabei nichts gelöscht. „Abbrechen“ meldet dich wieder ab und lässt alles unverändert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Upload” adds them to the account %@. “Delete from device” removes them here and loads that account's state instead – nothing is deleted on the server. “Cancel” signs you out again and leaves everything unchanged."
+          }
+        }
+      }
     },
     "%@ %@" : {
       "extractionState" : "manual",
@@ -124,13 +138,55 @@
       }
     },
     "%lld Anbieter" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Providers"
+          }
+        }
+      }
     },
     "%lld Fahrzeuge" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Fahrzeuge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Vehicles"
+          }
+        }
+      }
     },
     "%lld Ladeorte" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladeorte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Charging Locations"
+          }
+        }
+      }
     },
     "%lld Ladevorgänge" : {
       "extractionState" : "manual",
@@ -235,7 +291,21 @@
       }
     },
     "Achtung: Beim Zurücksetzen werden alle angemeldeten Geräte abgemeldet – auch diese App und eine eventuelle Home-Assistant-Anbindung." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achtung: Beim Zurücksetzen werden alle angemeldeten Geräte abgemeldet – auch diese App und eine eventuelle Home-Assistant-Anbindung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warning: Resetting signs out all logged-in devices – including this app and any Home Assistant connection."
+          }
+        }
+      }
     },
     "Achtung: Dabei werden auch ALLE zugehörigen Ladevorgänge dieses Fahrzeugs unwiderruflich gelöscht." : {
       "extractionState" : "manual",
@@ -255,10 +325,38 @@
       }
     },
     "Admin" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admin"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Admin"
+          }
+        }
+      }
     },
     "Adresse speichern" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse speichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Address"
+          }
+        }
+      }
     },
     "Adresse suchen" : {
       "extractionState" : "manual",
@@ -397,7 +495,21 @@
       }
     },
     "Aktuelles Passwort" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelles Passwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Password"
+          }
+        }
+      }
     },
     "Alle Daten bleiben ausschließlich auf diesem iPhone. Kein Server, keine automatische Erkennung über Home Assistant, keine Synchronisation zwischen Geräten. Du kannst später jederzeit zu einem Server wechseln und alle lokalen Daten hochladen." : {
       "extractionState" : "manual",
@@ -604,7 +716,21 @@
       }
     },
     "Angemeldet" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angemeldet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed In"
+          }
+        }
+      }
     },
     "Angemeldet als" : {
       "extractionState" : "manual",
@@ -692,13 +818,55 @@
       }
     },
     "Auf diesem Gerät liegen bereits Daten." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf diesem Gerät liegen bereits Daten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is already data on this device."
+          }
+        }
+      }
     },
     "Auf diesem Gerät liegen bereits: %@." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf diesem Gerät liegen bereits: %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device already has: %@."
+          }
+        }
+      }
     },
     "Aus" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
     },
     "Automatisch" : {
       "extractionState" : "manual",
@@ -735,7 +903,21 @@
       }
     },
     "Backup fehlgeschlagen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup fehlgeschlagen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup Failed"
+          }
+        }
+      }
     },
     "Basiert auf einer geschätzten Energiemenge statt eines gemessenen kWh-Werts – Fehler können sich hier häufen." : {
       "extractionState" : "manual",
@@ -772,7 +954,21 @@
       }
     },
     "Benachrichtigungen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benachrichtigungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
     },
     "Bestätigen" : {
       "extractionState" : "manual",
@@ -792,13 +988,55 @@
       }
     },
     "Bestätigt" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmed"
+          }
+        }
+      }
     },
     "Bestätigungsmail erneut senden" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätigungsmail erneut senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resend Confirmation Email"
+          }
+        }
+      }
     },
     "Bestätigungsmail verschickt." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätigungsmail verschickt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmation email sent."
+          }
+        }
+      }
     },
     "Bevor du einen Ladevorgang erfassen kannst, musst du mindestens ein Fahrzeug anlegen." : {
       "extractionState" : "manual",
@@ -971,7 +1209,21 @@
       }
     },
     "Dein Server unterstützt diese Funktionen noch nicht. Sie brauchen Lademonitor-Server 0.14.0 oder neuer." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Server unterstützt diese Funktionen noch nicht. Sie brauchen Lademonitor-Server 0.14.0 oder neuer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your server doesn't support these features yet. You need Lademonitor-Server 0.14.0 or newer."
+          }
+        }
+      }
     },
     "Die externe ID ist nach dem Anlegen nicht mehr änderbar." : {
       "extractionState" : "manual",
@@ -1025,7 +1277,21 @@
       }
     },
     "diesem Konto" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "diesem Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this account"
+          }
+        }
+      }
     },
     "Domain deines eigenen Lademonitor-Servers. Ein \"https://\" wird automatisch ergänzt, falls du es weglässt." : {
       "extractionState" : "manual",
@@ -1062,16 +1328,72 @@
       }
     },
     "Du kannst dich mit deinem Nutzernamen oder deiner E-Mail-Adresse anmelden." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kannst dich mit deinem Nutzernamen oder deiner E-Mail-Adresse anmelden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can sign in with your username or your email address."
+          }
+        }
+      }
     },
     "E-Mail-Adresse" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Adresse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email Address"
+          }
+        }
+      }
     },
     "E-Mail-Adresse (optional)" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Adresse (optional)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email Address (Optional)"
+          }
+        }
+      }
     },
     "E-Mail, Passwort & Benachrichtigungen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail, Passwort & Benachrichtigungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email, Password & Notifications"
+          }
+        }
+      }
     },
     "Eigener Zeitraum" : {
       "extractionState" : "manual",
@@ -1601,7 +1923,21 @@
       }
     },
     "Gespeichert." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeichert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved."
+          }
+        }
+      }
     },
     "https://lademonitor.example.com" : {
       "extractionState" : "manual",
@@ -1638,7 +1974,21 @@
       }
     },
     "In dieses Konto hochladen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In dieses Konto hochladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload to This Account"
+          }
+        }
+      }
     },
     "inaktiv" : {
       "extractionState" : "manual",
@@ -2355,7 +2705,21 @@
       }
     },
     "Link anfordern" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link anfordern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request Link"
+          }
+        }
+      }
     },
     "Löschen" : {
       "extractionState" : "manual",
@@ -2460,7 +2824,21 @@
       }
     },
     "Mindestens 8 Zeichen. Beim Ändern meldet der Server alle Geräte ab – diese App bleibt angemeldet, Home Assistant und andere Geräte brauchen aber einen neuen Zugang." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindestens 8 Zeichen. Beim Ändern meldet der Server alle Geräte ab – diese App bleibt angemeldet, Home Assistant und andere Geräte brauchen aber einen neuen Zugang."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At least 8 characters. Changing it signs out all devices on the server – this app stays signed in, but Home Assistant and other devices will need a new login."
+          }
+        }
+      }
     },
     "Mit eigenem Server verbinden" : {
       "extractionState" : "manual",
@@ -2548,10 +2926,38 @@
       }
     },
     "Monatsbericht" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatsbericht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly Report"
+          }
+        }
+      }
     },
     "MyŠkoda-Fehler oder Key-Ablauf" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MyŠkoda-Fehler oder Key-Ablauf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MyŠkoda Errors or Key Expiry"
+          }
+        }
+      }
     },
     "Nach der Anmeldung werden deine bisherigen lokalen Daten automatisch zum Server hochgeladen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln." : {
       "extractionState" : "manual",
@@ -2571,7 +2977,21 @@
       }
     },
     "Nach der Anmeldung wirst du gefragt, ob deine bisherigen lokalen Daten in das Konto hochgeladen oder vom Gerät gelöscht werden sollen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach der Anmeldung wirst du gefragt, ob deine bisherigen lokalen Daten in das Konto hochgeladen oder vom Gerät gelöscht werden sollen. Du kannst jederzeit in den Einstellungen zurück zu \"Nur lokal\" wechseln."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After signing in you'll be asked whether to upload your existing local data to the account or delete it from the device. You can switch back to \"Local only\" at any time in Settings."
+          }
+        }
+      }
     },
     "Name" : {
       "extractionState" : "manual",
@@ -2608,7 +3028,21 @@
       }
     },
     "Neue Registrierung" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Registrierung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Registration"
+          }
+        }
+      }
     },
     "Neuer Anbieter" : {
       "extractionState" : "manual",
@@ -2696,10 +3130,38 @@
       }
     },
     "Neues Passwort" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Passwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Password"
+          }
+        }
+      }
     },
     "Neues Passwort wiederholen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Passwort wiederholen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat New Password"
+          }
+        }
+      }
     },
     "Nicht verfügbar" : {
       "extractionState" : "manual",
@@ -2736,7 +3198,21 @@
       }
     },
     "Noch nicht bestätigt" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht bestätigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Yet Confirmed"
+          }
+        }
+      }
     },
     "Noch nicht synchronisiert" : {
       "extractionState" : "manual",
@@ -2841,10 +3317,38 @@
       }
     },
     "Nutzername mindestens 3 Zeichen, Passwort mindestens 8 Zeichen. Ohne E-Mail-Adresse funktioniert alles wie bisher – nur „Passwort vergessen“ und Benachrichtigungen dann nicht." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzername mindestens 3 Zeichen, Passwort mindestens 8 Zeichen. Ohne E-Mail-Adresse funktioniert alles wie bisher – nur „Passwort vergessen“ und Benachrichtigungen dann nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Username at least 3 characters, password at least 8 characters. Without an email address everything else works as before – just “Forgot password” and notifications won't."
+          }
+        }
+      }
     },
     "Nutzername oder E-Mail" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzername oder E-Mail"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Username or Email"
+          }
+        }
+      }
     },
     "Ø Preis/kWh" : {
       "extractionState" : "manual",
@@ -3017,16 +3521,72 @@
       }
     },
     "Passwort ändern" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Password"
+          }
+        }
+      }
     },
     "Passwort geändert." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort geändert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password changed."
+          }
+        }
+      }
     },
     "Passwort vergessen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort vergessen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot Password"
+          }
+        }
+      }
     },
     "Passwort vergessen?" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort vergessen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot password?"
+          }
+        }
+      }
     },
     "Passwort wiederholen" : {
       "extractionState" : "manual",
@@ -3267,10 +3827,38 @@
       }
     },
     "Rolle" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rolle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Role"
+          }
+        }
+      }
     },
     "Schau auch im Spam-Ordner nach. Den Link öffnest du im Browser – dort setzt du das neue Passwort." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schau auch im Spam-Ordner nach. Den Link öffnest du im Browser – dort setzt du das neue Passwort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Also check your spam folder. You'll open the link in your browser – that's where you set the new password."
+          }
+        }
+      }
     },
     "Schon ein Konto? Anmelden" : {
       "extractionState" : "manual",
@@ -3783,7 +4371,21 @@
       }
     },
     "Täglich" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täglich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
     },
     "Technik" : {
       "extractionState" : "manual",
@@ -3803,7 +4405,21 @@
       }
     },
     "Trage oben eine E-Mail-Adresse ein, damit Benachrichtigungen ankommen können. Zusätzlich muss auf dem Server ein SMTP-Zugang eingerichtet sein." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trage oben eine E-Mail-Adresse ein, damit Benachrichtigungen ankommen können. Zusätzlich muss auf dem Server ein SMTP-Zugang eingerichtet sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter an email address above so notifications can be delivered. An SMTP account must also be configured on the server."
+          }
+        }
+      }
     },
     "Trage zuerst deine Server-Adresse ein, um loszulegen." : {
       "extractionState" : "manual",
@@ -3942,7 +4558,21 @@
       }
     },
     "Vom Gerät löschen" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vom Gerät löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete From Device"
+          }
+        }
+      }
     },
     "Von" : {
       "extractionState" : "manual",
@@ -3979,7 +4609,21 @@
       }
     },
     "Was soll mit den Daten auf diesem Gerät passieren?" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was soll mit den Daten auf diesem Gerät passieren?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What should happen to the data on this device?"
+          }
+        }
+      }
     },
     "Wechseln" : {
       "extractionState" : "manual",
@@ -3999,7 +4643,21 @@
       }
     },
     "Wenn es dazu ein Konto mit bestätigter E-Mail-Adresse gibt, ist die Nachricht unterwegs." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn es dazu ein Konto mit bestätigter E-Mail-Adresse gibt, ist die Nachricht unterwegs."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If there's an account with a confirmed email address for this, the message is on its way."
+          }
+        }
+      }
     },
     "Wie möchtest du die App nutzen?" : {
       "extractionState" : "manual",
@@ -4019,16 +4677,72 @@
       }
     },
     "Wir schicken einen Link zum Zurücksetzen. Er gilt eine Stunde und lässt sich nur einmal verwenden." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wir schicken einen Link zum Zurücksetzen. Er gilt eine Stunde und lässt sich nur einmal verwenden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We'll send a reset link. It's valid for one hour and can only be used once."
+          }
+        }
+      }
     },
     "Wird für „Passwort vergessen“ und für Benachrichtigungen gebraucht. Leer lassen entfernt die Adresse. Das Passwort ist eine Sicherheitsabfrage: wer die Adresse ändern kann, kann anschließend das Passwort zurücksetzen lassen. Eine geänderte Adresse muss erneut bestätigt werden – bis dahin kann sie kein Passwort zurücksetzen." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird für „Passwort vergessen“ und für Benachrichtigungen gebraucht. Leer lassen entfernt die Adresse. Das Passwort ist eine Sicherheitsabfrage: wer die Adresse ändern kann, kann anschließend das Passwort zurücksetzen lassen. Eine geänderte Adresse muss erneut bestätigt werden – bis dahin kann sie kein Passwort zurücksetzen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needed for “Forgot password” and for notifications. Leaving it empty removes the address. The password is a security check: whoever can change the address could then reset the password. A changed address must be confirmed again – until then it can't be used to reset a password."
+          }
+        }
+      }
     },
     "Wird per E-Mail verschickt. Setzt voraus, dass auf dem Server ein SMTP-Zugang eingerichtet ist." : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird per E-Mail verschickt. Setzt voraus, dass auf dem Server ein SMTP-Zugang eingerichtet ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent by email. Requires an SMTP account configured on the server."
+          }
+        }
+      }
     },
     "Wöchentlich" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wöchentlich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        }
+      }
     },
     "z.B. 8.299507" : {
       "extractionState" : "manual",
@@ -4133,7 +4847,21 @@
       }
     },
     "Zu prüfende Ladevorgänge" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu prüfende Ladevorgänge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions to Review"
+          }
+        }
+      }
     },
     "Zu Server wechseln" : {
       "extractionState" : "manual",
