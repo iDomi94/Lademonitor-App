@@ -25,5 +25,11 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Wird verwendet, um die Koordinaten deines aktuellen Standorts als Ladeort zu übernehmen.</string>
+	<!-- Nur Standard-TLS/HTTPS via URLSession (Betriebssystem-Verschluesselung),
+	     keine eigene Krypto-Implementierung - qualifiziert fuer die Export-
+	     Ausnahme, spart den manuellen Dialog bei jedem TestFlight-/App-Store-
+	     Upload in App Store Connect. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
