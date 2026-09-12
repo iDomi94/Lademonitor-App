@@ -1,5 +1,6 @@
 import SwiftUI
 import MapKit
+import CoreLocation
 
 /// Read-only Vorschau eines Ladevorgangs (Antippen in der Liste oeffnet erst
 /// diese Ansicht statt direkt den Bearbeiten-Dialog). Bietet von hier aus

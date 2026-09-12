@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 struct LocationsSettingsView: View {
     @State private var locations: [ChargingLocation] = []

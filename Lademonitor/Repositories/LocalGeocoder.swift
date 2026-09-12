@@ -1,5 +1,6 @@
 import Foundation
 import MapKit
+import CoreLocation
 
 /// Ersatz fuer APIClient.forwardGeocode() im Local-Only-Modus: die Server-Route
 /// proxied zu OSM-Nominatim (bewusste Ausnahme von "kein Cloud-Dienst" im Server-

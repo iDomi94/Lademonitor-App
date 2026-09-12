@@ -1,5 +1,6 @@
 import SwiftUI
 import MapKit
+import CoreLocation
 
 /// Uebersichts-Karte (3. Tab): zeigt alle bekannten Ladeorte (inkl. Matching-Radius) und
 /// alle Ladevorgaenge mit eigenen Koordinaten gemeinsam auf einer Standard-Apple-Karte.
