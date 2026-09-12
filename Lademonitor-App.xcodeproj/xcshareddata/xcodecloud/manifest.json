@@ -1,0 +1,9 @@
+{
+  "id" : "c8467847-a02f-4772-8765-eb28f38eedda",
+  "targets" : [
+    {
+      "id" : "69dd22a9-5de6-452c-9aad-b4a0311ac692",
+      "name" : "Lademonitor"
+    }
+  ]
+}
