@@ -11,9 +11,17 @@ struct ModeSelectionView: View {
             VStack(spacing: 32) {
                 Spacer()
 
-                Image(systemName: "bolt.car.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(.blue)
+                // Bewusst die gerundete Kachel (= das App-Icon) statt des queren
+                // Zeichens aus der Web-Kopfleiste: dieser Screen folgt dem
+                // Hell/Dunkel-Modus des Systems, und die graue Silhouette mit
+                // gruenem Kabel ist fuer dunklen Grund gezeichnet. Die Kachel
+                // bringt ihren eigenen Grund mit und sitzt in beiden Modi richtig.
+                // Dekorativ: der Schriftzug direkt darunter traegt den Namen schon.
+                Image("LogoMark")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 96, height: 96)
+                    .accessibilityHidden(true)
 
                 VStack(spacing: 8) {
                     Text("Lademonitor")
