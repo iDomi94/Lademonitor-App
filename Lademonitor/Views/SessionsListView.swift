@@ -11,11 +11,21 @@ struct SessionsListView: View {
     @State private var showingNoVehicleAlert = false
     @State private var showingAddVehicleSheet = false
     @State private var showingFilterSheet = false
-    @State private var selectedSession: ChargingSession?
+    /// Nur die ID wird gehalten, damit nach einem Reload (z.B. nach Bestaetigen)
+    /// automatisch die frische Session-Instanz aus `sessions` angezeigt wird statt
+    /// eines veralteten Snapshots.
+    @State private var selectedSessionID: ChargingSession.ID?
     @ObservedObject private var sessionFilter = SessionFilter.shared
 
+    /// Auf dem iPad zeigt die Master-Detail-Ansicht das Detail direkt neben der
+    /// Liste; auf dem iPhone wird die Detailspalte beim Antippen eingeblendet
+    /// (NavigationSplitView faltet sich dort automatisch zu einem Stack zusammen).
+    private var selectedSession: ChargingSession? {
+        sessions.first { $0.id == selectedSessionID }
+    }
+
     var body: some View {
-        NavigationStack {
+        NavigationSplitView {
             Group {
                 if let errorMessage {
                     ContentUnavailableView {
@@ -31,7 +41,7 @@ struct SessionsListView: View {
                     List {
                         ForEach(sessions) { session in
                             Button {
-                                selectedSession = session
+                                selectedSessionID = session.id
                             } label: {
                                 SessionRow(
                                     session: session,
@@ -94,17 +104,21 @@ struct SessionsListView: View {
                     Task { await load() }
                 }
             }
-            .sheet(item: $selectedSession) { session in
+        } detail: {
+            if let selectedSession {
                 SessionDetailView(
-                    session: session,
+                    session: selectedSession,
                     vehicles: vehicles,
                     providers: providers,
-                    locations: locations
-                ) {
-                    Task { await load() }
-                }
+                    locations: locations,
+                    onChanged: { Task { await load() } },
+                    onClose: { selectedSessionID = nil }
+                )
+            } else {
+                ContentUnavailableView("Ladevorgang auswählen", systemImage: "bolt.fill")
             }
         }
+        .navigationSplitViewStyle(.balanced)
     }
 
     private func load() async {

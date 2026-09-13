@@ -212,13 +212,15 @@ struct MapOverviewView: View {
                 }
             }
             .sheet(item: $sessionToPreview) { session in
-                SessionDetailView(
-                    session: session,
-                    vehicles: vehicles,
-                    providers: providers,
-                    locations: locations
-                ) {
-                    Task { await load() }
+                NavigationStack {
+                    SessionDetailView(
+                        session: session,
+                        vehicles: vehicles,
+                        providers: providers,
+                        locations: locations,
+                        onChanged: { Task { await load() } },
+                        onClose: { sessionToPreview = nil }
+                    )
                 }
             }
             // sheet(item:) statt sheet(isPresented:) + separater State-Variable, damit

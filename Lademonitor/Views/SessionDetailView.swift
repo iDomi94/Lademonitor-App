@@ -12,8 +12,10 @@ struct SessionDetailView: View {
     let locations: [ChargingLocation]
     /// Wird nach Bestaetigen oder Bearbeiten aufgerufen, damit die Liste dahinter neu laedt.
     let onChanged: () -> Void
+    /// Schliesst diese Ansicht - auf dem iPhone ein Sheet-Dismiss, auf dem
+    /// iPad das Zuruecksetzen der Auswahl in der Master-Detail-Ansicht.
+    let onClose: () -> Void
 
-    @Environment(\.dismiss) private var dismiss
     @State private var showingEdit = false
     @State private var isConfirming = false
     @State private var errorMessage: String?
@@ -45,109 +47,107 @@ struct SessionDetailView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                if let coordinate {
-                    Section {
-                        Map(initialPosition: .region(MKCoordinateRegion(
-                            center: coordinate,
-                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                        ))) {
-                            Marker(locationName ?? session.geocodedPlace ?? String(localized: "Ladevorgang"), coordinate: coordinate)
-                        }
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                        .listRowInsets(EdgeInsets())
+        Form {
+            if let coordinate {
+                Section {
+                    Map(initialPosition: .region(MKCoordinateRegion(
+                        center: coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    ))) {
+                        Marker(locationName ?? session.geocodedPlace ?? String(localized: "Ladevorgang"), coordinate: coordinate)
                     }
-                }
-
-                Section("Fahrzeug & Zeit") {
-                    LabeledContent("Fahrzeug", value: vehicleName ?? "–")
-                    LabeledContent("Start", value: Self.dateFormatter.string(from: session.startTime))
-                    if let type = session.chargingType {
-                        LabeledContent("Lade-Art", value: type.rawValue)
-                    }
-                }
-
-                Section("Ort & Anbieter") {
-                    LabeledContent("Anbieter", value: providerName ?? "–")
-                    LabeledContent("Ort", value: session.geocodedPlace ?? locationName ?? "–")
-                }
-
-                Section("Akkustand & Energie") {
-                    if session.socStart != nil || session.socEnd != nil {
-                        LabeledContent("SoC", value: socText)
-                    }
-                    if let kwh = session.energyKwh {
-                        LabeledContent(
-                            "kWh",
-                            value: String(format: "%.2f kWh", kwh) + (session.energyIsEstimated ? String(localized: " (geschätzt)") : "")
-                        )
-                    }
-                    if let odo = session.odometerKm {
-                        LabeledContent("Kilometerstand", value: "\(odo) km")
-                    }
-                    if let consumption = session.consumptionKwhPer100km {
-                        LabeledContent("Verbrauch", value: String(format: "%.1f kWh/100km", consumption))
-                    }
-                }
-
-                if session.priceTotal != nil || session.pricePerKwh != nil {
-                    Section("Preis") {
-                        if let priceTotal = session.priceTotal {
-                            LabeledContent("Gesamt", value: String(format: "%.2f €", priceTotal))
-                        }
-                        if let pricePerKwh = session.pricePerKwh {
-                            LabeledContent("Pro kWh", value: String(format: "%.4f €", pricePerKwh))
-                        }
-                    }
-                }
-
-                Section("Quelle") {
-                    LabeledContent("Erfasst als", value: session.source.displayName)
-                    LabeledContent("Status", value: session.needsReview ? String(localized: "Zu prüfen") : String(localized: "Geprüft"))
-                }
-
-                if let errorMessage {
-                    Section { Text(errorMessage).foregroundStyle(.red) }
+                    .frame(height: 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .listRowInsets(EdgeInsets())
                 }
             }
-            .navigationTitle("Ladevorgang")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
+
+            Section("Fahrzeug & Zeit") {
+                LabeledContent("Fahrzeug", value: vehicleName ?? "–")
+                LabeledContent("Start", value: Self.dateFormatter.string(from: session.startTime))
+                if let type = session.chargingType {
+                    LabeledContent("Lade-Art", value: type.rawValue)
                 }
-                ToolbarItemGroup(placement: .confirmationAction) {
-                    if session.needsReview {
-                        Button {
-                            Task { await confirm() }
-                        } label: {
-                            if isConfirming {
-                                ProgressView()
-                            } else {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                        .tint(.green)
-                        .disabled(isConfirming)
+            }
+
+            Section("Ort & Anbieter") {
+                LabeledContent("Anbieter", value: providerName ?? "–")
+                LabeledContent("Ort", value: session.geocodedPlace ?? locationName ?? "–")
+            }
+
+            Section("Akkustand & Energie") {
+                if session.socStart != nil || session.socEnd != nil {
+                    LabeledContent("SoC", value: socText)
+                }
+                if let kwh = session.energyKwh {
+                    LabeledContent(
+                        "kWh",
+                        value: String(format: "%.2f kWh", kwh) + (session.energyIsEstimated ? String(localized: " (geschätzt)") : "")
+                    )
+                }
+                if let odo = session.odometerKm {
+                    LabeledContent("Kilometerstand", value: "\(odo) km")
+                }
+                if let consumption = session.consumptionKwhPer100km {
+                    LabeledContent("Verbrauch", value: String(format: "%.1f kWh/100km", consumption))
+                }
+            }
+
+            if session.priceTotal != nil || session.pricePerKwh != nil {
+                Section("Preis") {
+                    if let priceTotal = session.priceTotal {
+                        LabeledContent("Gesamt", value: String(format: "%.2f €", priceTotal))
                     }
-                    Button {
-                        showingEdit = true
-                    } label: {
-                        Image(systemName: "pencil")
+                    if let pricePerKwh = session.pricePerKwh {
+                        LabeledContent("Pro kWh", value: String(format: "%.4f €", pricePerKwh))
                     }
                 }
             }
-            .sheet(isPresented: $showingEdit) {
-                AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: session) {
-                    onChanged()
-                    dismiss()
+
+            Section("Quelle") {
+                LabeledContent("Erfasst als", value: session.source.displayName)
+                LabeledContent("Status", value: session.needsReview ? String(localized: "Zu prüfen") : String(localized: "Geprüft"))
+            }
+
+            if let errorMessage {
+                Section { Text(errorMessage).foregroundStyle(.red) }
+            }
+        }
+        .navigationTitle("Ladevorgang")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    onClose()
+                } label: {
+                    Image(systemName: "xmark")
                 }
+            }
+            ToolbarItemGroup(placement: .confirmationAction) {
+                if session.needsReview {
+                    Button {
+                        Task { await confirm() }
+                    } label: {
+                        if isConfirming {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                    .tint(.green)
+                    .disabled(isConfirming)
+                }
+                Button {
+                    showingEdit = true
+                } label: {
+                    Image(systemName: "pencil")
+                }
+            }
+        }
+        .sheet(isPresented: $showingEdit) {
+            AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: session) {
+                onChanged()
+                onClose()
             }
         }
     }
@@ -159,7 +159,7 @@ struct SessionDetailView: View {
         do {
             _ = try await AppRepository.shared.updateSession(id: session.id, ChargingSessionPayload(needsReview: false))
             onChanged()
-            dismiss()
+            onClose()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -168,16 +168,18 @@ struct SessionDetailView: View {
 }
 
 #Preview {
-    SessionDetailView(
-        session: ChargingSession(
-            id: "1", vehicleId: "v1", providerId: nil, locationId: nil,
-            startTime: Date(), endTime: nil, chargingType: .ac,
-            socStart: 20, socEnd: 80, energyKwh: 30, energyIsEstimated: false,
-            odometerKm: 12345, priceTotal: 12.5, pricePerKwh: 0.42,
-            latitude: 48.7758, longitude: 9.1829, geocodedPlace: "Stuttgart",
-            consumptionKwhPer100km: 18.2, consumptionMethod: "soc_corrected",
-            notes: nil, source: .automatic, needsReview: true, externalSessionId: nil
-        ),
-        vehicles: [], providers: [], locations: [], onChanged: {}
-    )
+    NavigationStack {
+        SessionDetailView(
+            session: ChargingSession(
+                id: "1", vehicleId: "v1", providerId: nil, locationId: nil,
+                startTime: Date(), endTime: nil, chargingType: .ac,
+                socStart: 20, socEnd: 80, energyKwh: 30, energyIsEstimated: false,
+                odometerKm: 12345, priceTotal: 12.5, pricePerKwh: 0.42,
+                latitude: 48.7758, longitude: 9.1829, geocodedPlace: "Stuttgart",
+                consumptionKwhPer100km: 18.2, consumptionMethod: "soc_corrected",
+                notes: nil, source: .automatic, needsReview: true, externalSessionId: nil
+            ),
+            vehicles: [], providers: [], locations: [], onChanged: {}, onClose: {}
+        )
+    }
 }
