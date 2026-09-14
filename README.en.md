@@ -13,6 +13,11 @@ sync, so the web UI and the app always show the same state. The mode can
 be switched later at any time; local data can be uploaded to a server when
 switching.
 
+## TestFlight
+
+Public beta access via TestFlight:
+[testflight.apple.com/join/NMbyFTEK](https://testflight.apple.com/join/NMbyFTEK)
+
 ## Features
 
 - Dashboard with cost/kWh statistics per month

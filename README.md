@@ -13,6 +13,11 @@ Lademonitor-Backend mit bidirektionaler Synchronisierung, damit Web-UI und
 App immer denselben Stand zeigen. Der Modus lässt sich später jederzeit
 wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
 
+## TestFlight
+
+Öffentlicher Beta-Zugang über TestFlight:
+[testflight.apple.com/join/NMbyFTEK](https://testflight.apple.com/join/NMbyFTEK)
+
 ## Features
 
 - Dashboard mit Kosten-/kWh-Statistiken pro Monat
