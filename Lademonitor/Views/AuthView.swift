@@ -68,6 +68,7 @@ struct AuthView: View {
                 Section {
                     TextField(isRegistering ? "Nutzername" : "Nutzername oder E-Mail", text: $identifier)
                         .textInputAutocapitalization(.never)
+                        .autocapitalization(.none)
                         .autocorrectionDisabled()
                         .keyboardType(isRegistering ? .default : .emailAddress)
                     if isRegistering {
