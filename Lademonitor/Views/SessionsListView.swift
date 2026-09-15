@@ -38,20 +38,19 @@ struct SessionsListView: View {
                 } else if sessions.isEmpty && !isLoading {
                     ContentUnavailableView("Noch keine Ladevorgänge", systemImage: "bolt.slash")
                 } else {
-                    List {
+                    // selection statt Button/Tap-Handler: nur so weiss NavigationSplitView
+                    // in schmaler Breite (iPhone), dass es beim Antippen einer Zeile zur
+                    // Detailspalte weiterschalten soll (auf dem iPad zeigt dieselbe
+                    // Auswahl das Detail direkt daneben an).
+                    List(selection: $selectedSessionID) {
                         ForEach(sessions) { session in
-                            Button {
-                                selectedSessionID = session.id
-                            } label: {
-                                SessionRow(
-                                    session: session,
-                                    vehicleName: vehicles.first(where: { $0.id == session.vehicleId })?.name,
-                                    providerName: providers.first(where: { $0.id == session.providerId })?.name,
-                                    locationName: locations.first(where: { $0.id == session.locationId })?.name
-                                )
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
+                            SessionRow(
+                                session: session,
+                                vehicleName: vehicles.first(where: { $0.id == session.vehicleId })?.name,
+                                providerName: providers.first(where: { $0.id == session.providerId })?.name,
+                                locationName: locations.first(where: { $0.id == session.locationId })?.name
+                            )
+                            .tag(session.id)
                             .swipeActions(edge: .leading) {
                                 if session.needsReview {
                                     Button {
