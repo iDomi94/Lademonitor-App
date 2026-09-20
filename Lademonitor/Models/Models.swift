@@ -503,3 +503,34 @@ struct StatsSummary: Codable {
         case monthly
     }
 }
+
+// MARK: - Sync: serverseitig geloeschte Datensaetze
+
+/// Eine Loeschung, die auf dem Server stattgefunden hat (Web-UI, zweites
+/// Geraet, ein anderer Client). Gegenstueck zu `models.DeletedRecord` im
+/// Backend - siehe SyncService.applyServerDeletions() fuer das Warum.
+struct DeletedRecord: Codable, Hashable {
+    let entityType: String
+    let entityId: String
+
+    enum CodingKeys: String, CodingKey {
+        case entityType = "entity_type"
+        case entityId = "entity_id"
+    }
+}
+
+struct DeletionsResponse: Codable {
+    /// Cursor fuer den naechsten Abruf. Bewusst als ROHER STRING durchgereicht
+    /// und nie in ein `Date` gewandelt: der Server schickt naive UTC-Zeitstempel,
+    /// die der Datums-Decoder dieser App (siehe APIClient) als LOKALE Zeit liest -
+    /// hin- und zurueckgewandelt waere der Cursor um den Zeitzonen-Offset
+    /// verschoben und wuerde Loeschungen ueberspringen. Als unveraendert
+    /// zurueckgegebene Zeichenkette kann das nicht passieren.
+    let serverTime: String
+    let deletions: [DeletedRecord]
+
+    enum CodingKeys: String, CodingKey {
+        case serverTime = "server_time"
+        case deletions
+    }
+}

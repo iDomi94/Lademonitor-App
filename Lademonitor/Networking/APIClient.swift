@@ -365,6 +365,20 @@ final class APIClient {
         try await sendNoContent(request)
     }
 
+    // MARK: - Sync
+
+    /// Serverseitige Loeschungen seit `since` (der `server_time`-Wert des
+    /// vorherigen Aufrufs, roh durchgereicht - siehe DeletionsResponse).
+    /// Ohne `since` kommen alle - das ist der erste Abgleich eines Geraets.
+    func fetchDeletions(since: String? = nil) async throws -> DeletionsResponse {
+        var path = "/api/sync/deletions"
+        if let since, !since.isEmpty {
+            let encoded = since.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? since
+            path += "?since=\(encoded)"
+        }
+        return try await send(try makeRequest(path: path))
+    }
+
     // MARK: - Stats
 
     func fetchStatsSummary(vehicleId: String? = nil) async throws -> StatsSummary {

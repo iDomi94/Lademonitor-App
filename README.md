@@ -34,6 +34,17 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   gegen einen älteren Server bleibt der Bereich ausgeblendet
 - „Passwort vergessen“: die App fordert den Link an, gesetzt wird das neue
   Passwort über den Link in der Mail im Browser
+- Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
+  verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
+  „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem
+  bloßen Fehlen eines Eintrags in der Server-Antwort nicht auf eine Löschung
+  schließen, weil jede unvollständige Antwort sonst still lokale Daten
+  vernichtet hätte. Der Server meldet Löschungen jetzt ausdrücklich. Braucht
+  Lademonitor-Server 0.22.0 oder neuer; gegen einen älteren Server verhält sich
+  die App wie bisher
+- Die Ladevorgangs-Liste zeigte bis Server 0.22.0 nur die 200 neuesten Einträge
+  (eine Grenze auf Serverseite, die kein Client je aufgehoben hat) – mit einem
+  aktuellen Server kommen alle an, ohne dass in der App etwas einzustellen wäre
 - Meldest du dich an einem Konto an, mit dem dieses Gerät noch nie
   synchronisiert hat, und liegen schon Daten auf dem Gerät, **fragt die App
   nach**: hochladen oder vom Gerät löschen. Vorher wanderten sie stillschweigend

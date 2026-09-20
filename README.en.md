@@ -35,6 +35,16 @@ Public beta access via TestFlight:
   section stays hidden
 - "Forgot password": the app requests the link, the new password is then set
   through the link in the email, in a browser
+- Charging sessions, vehicles, providers and charging locations deleted on the
+  server now disappear from the app on the next sync. Previously they lingered
+  as "ghost rows" until you deleted them here too - the app must not infer a
+  deletion from an entry merely missing in the server's response, because any
+  incomplete response would then silently destroy local data. The server now
+  reports deletions explicitly. Requires Lademonitor-Server 0.22.0 or newer;
+  against an older server the app behaves as before
+- Up to server 0.22.0 the charging session list only ever showed the 200 most
+  recent entries (a server-side limit no client ever lifted) - with a current
+  server you get all of them, with nothing to configure in the app
 - When you sign in to an account this device has never synced with, and data is
   already stored locally, **the app asks first**: upload it, or delete it from
   the device. Previously it silently went into whichever account you had just
