@@ -10,6 +10,10 @@ struct SessionDetailView: View {
     let vehicles: [Vehicle]
     let providers: [Provider]
     let locations: [ChargingLocation]
+    /// Auf dem iPad (Master-Detail) gibt es keinen Zurueck-Pfeil, dort wird die
+    /// Auswahl ueber ein eigenes Schliessen-Symbol zurueckgesetzt. Auf dem iPhone
+    /// ist die Ansicht gepusht, da genuegt der Zurueck-Pfeil.
+    var showsCloseButton: Bool = true
     /// Wird nach Bestaetigen oder Bearbeiten aufgerufen, damit die Liste dahinter neu laedt.
     let onChanged: () -> Void
     /// Schliesst diese Ansicht - auf dem iPhone ein Sheet-Dismiss, auf dem
@@ -116,11 +120,13 @@ struct SessionDetailView: View {
         .navigationTitle("Ladevorgang")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    onClose()
-                } label: {
-                    Image(systemName: "xmark")
+            if showsCloseButton {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        onClose()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
                 }
             }
             ToolbarItemGroup(placement: .confirmationAction) {

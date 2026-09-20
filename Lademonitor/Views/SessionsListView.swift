@@ -17,107 +17,169 @@ struct SessionsListView: View {
     @State private var selectedSessionID: ChargingSession.ID?
     @ObservedObject private var sessionFilter = SessionFilter.shared
 
-    /// Auf dem iPad zeigt die Master-Detail-Ansicht das Detail direkt neben der
-    /// Liste; auf dem iPhone wird die Detailspalte beim Antippen eingeblendet
-    /// (NavigationSplitView faltet sich dort automatisch zu einem Stack zusammen).
+    /// Auf dem iPhone (compact) ist die Liste ein klassischer NavigationStack, auf
+    /// dem iPad eine Master-Detail-Ansicht. Beide Wege teilen sich Liste, Toolbar
+    /// und Sheets; nur die Navigation unterscheidet sich.
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     private var selectedSession: ChargingSession? {
         sessions.first { $0.id == selectedSessionID }
     }
 
     var body: some View {
-        NavigationSplitView {
-            Group {
-                if let errorMessage {
-                    ContentUnavailableView {
-                        Label("Keine Verbindung", systemImage: "wifi.slash")
-                    } description: {
-                        Text(errorMessage)
-                    } actions: {
-                        Button("Erneut versuchen") { Task { await load() } }
-                    }
-                } else if sessions.isEmpty && !isLoading {
-                    ContentUnavailableView("Noch keine Ladevorgänge", systemImage: "bolt.slash")
-                } else {
-                    // selection statt Button/Tap-Handler: nur so weiss NavigationSplitView
-                    // in schmaler Breite (iPhone), dass es beim Antippen einer Zeile zur
-                    // Detailspalte weiterschalten soll (auf dem iPad zeigt dieselbe
-                    // Auswahl das Detail direkt daneben an).
-                    List(selection: $selectedSessionID) {
-                        ForEach(sessions) { session in
-                            SessionRow(
+        if horizontalSizeClass == .compact {
+            // Auf dem iPhone bewusst KEIN NavigationSplitView: dessen
+            // zusammengefaltete Darstellung hat das Antippen einer Zeile nicht
+            // zuverlaessig in die Detailansicht weitergeleitet. Ein expliziter
+            // Push ueber navigationDestination(item:) tut das immer.
+            NavigationStack {
+                sessionsColumn(usesListSelection: false)
+                    .navigationDestination(item: $selectedSessionID) { id in
+                        if let session = sessions.first(where: { $0.id == id }) {
+                            SessionDetailView(
                                 session: session,
-                                vehicleName: vehicles.first(where: { $0.id == session.vehicleId })?.name,
-                                providerName: providers.first(where: { $0.id == session.providerId })?.name,
-                                locationName: locations.first(where: { $0.id == session.locationId })?.name
+                                vehicles: vehicles,
+                                providers: providers,
+                                locations: locations,
+                                // Zurueck-Pfeil der Navigation genuegt, der
+                                // zusaetzliche Schliessen-Knopf entfaellt hier.
+                                showsCloseButton: false,
+                                onChanged: { Task { await load() } },
+                                onClose: { selectedSessionID = nil }
                             )
-                            .tag(session.id)
-                            .swipeActions(edge: .leading) {
-                                if session.needsReview {
-                                    Button {
-                                        Task { await confirm(session) }
-                                    } label: {
-                                        Label("Bestätigen", systemImage: "checkmark")
-                                    }
-                                    .tint(.green)
-                                }
-                            }
-                        }
-                        .onDelete(perform: delete)
-                    }
-                    .listStyle(.plain)
-                }
-            }
-            .navigationTitle("Ladevorgänge")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        if vehicles.isEmpty {
-                            showingNoVehicleAlert = true
                         } else {
-                            showingAddSheet = true
+                            ContentUnavailableView("Ladevorgang nicht gefunden", systemImage: "bolt.slash")
                         }
-                    } label: {
-                        Image(systemName: "plus")
                     }
-                }
-                FilterToolbarItem(isPresented: $showingFilterSheet)
             }
-            .task(id: sessionFilter.dateRange) { await load() }
-            .refreshable { await load() }
-            .alert("Kein Fahrzeug vorhanden", isPresented: $showingNoVehicleAlert) {
-                Button("Fahrzeug anlegen") { showingAddVehicleSheet = true }
-                Button("Abbrechen", role: .cancel) {}
-            } message: {
-                Text("Bevor du einen Ladevorgang erfassen kannst, musst du mindestens ein Fahrzeug anlegen.")
-            }
-            .sheet(isPresented: $showingAddVehicleSheet) {
-                AddEditVehicleView(vehicle: nil) {
-                    Task { await load() }
-                }
-            }
-            .sheet(isPresented: $showingFilterSheet) {
-                FilterSheetView()
-            }
-            .sheet(isPresented: $showingAddSheet) {
-                AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: nil) {
-                    Task { await load() }
+        } else {
+            NavigationSplitView {
+                sessionsColumn(usesListSelection: true)
+            } detail: {
+                if let selectedSession {
+                    SessionDetailView(
+                        session: selectedSession,
+                        vehicles: vehicles,
+                        providers: providers,
+                        locations: locations,
+                        showsCloseButton: true,
+                        onChanged: { Task { await load() } },
+                        onClose: { selectedSessionID = nil }
+                    )
+                } else {
+                    ContentUnavailableView("Ladevorgang auswählen", systemImage: "bolt.fill")
                 }
             }
-        } detail: {
-            if let selectedSession {
-                SessionDetailView(
-                    session: selectedSession,
-                    vehicles: vehicles,
-                    providers: providers,
-                    locations: locations,
-                    onChanged: { Task { await load() } },
-                    onClose: { selectedSessionID = nil }
-                )
+            .navigationSplitViewStyle(.balanced)
+        }
+    }
+
+    /// Die Liste samt Toolbar, Laden und Sheets - einmal fuer beide Navigationsarten.
+    /// `usesListSelection` steuert, ob die Auswahl ueber `List(selection:)` (iPad)
+    /// oder ueber einen Tap-Handler pro Zeile (iPhone) gesetzt wird.
+    @ViewBuilder
+    private func sessionsColumn(usesListSelection: Bool) -> some View {
+        Group {
+            if let errorMessage {
+                ContentUnavailableView {
+                    Label("Keine Verbindung", systemImage: "wifi.slash")
+                } description: {
+                    Text(errorMessage)
+                } actions: {
+                    Button("Erneut versuchen") { Task { await load() } }
+                }
+            } else if sessions.isEmpty && !isLoading {
+                ContentUnavailableView("Noch keine Ladevorgänge", systemImage: "bolt.slash")
+            } else if usesListSelection {
+                List(selection: $selectedSessionID) {
+                    sessionRows(tagged: true)
+                }
+                .listStyle(.plain)
             } else {
-                ContentUnavailableView("Ladevorgang auswählen", systemImage: "bolt.fill")
+                List {
+                    sessionRows(tagged: false)
+                }
+                .listStyle(.plain)
             }
         }
-        .navigationSplitViewStyle(.balanced)
+        .navigationTitle("Ladevorgänge")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    if vehicles.isEmpty {
+                        showingNoVehicleAlert = true
+                    } else {
+                        showingAddSheet = true
+                    }
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+            FilterToolbarItem(isPresented: $showingFilterSheet)
+        }
+        .task(id: sessionFilter.dateRange) { await load() }
+        .refreshable { await load() }
+        .alert("Kein Fahrzeug vorhanden", isPresented: $showingNoVehicleAlert) {
+            Button("Fahrzeug anlegen") { showingAddVehicleSheet = true }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Bevor du einen Ladevorgang erfassen kannst, musst du mindestens ein Fahrzeug anlegen.")
+        }
+        .sheet(isPresented: $showingAddVehicleSheet) {
+            AddEditVehicleView(vehicle: nil) {
+                Task { await load() }
+            }
+        }
+        .sheet(isPresented: $showingFilterSheet) {
+            FilterSheetView()
+        }
+        .sheet(isPresented: $showingAddSheet) {
+            AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: nil) {
+                Task { await load() }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func sessionRows(tagged: Bool) -> some View {
+        ForEach(sessions) { session in
+            if tagged {
+                row(for: session)
+                    .tag(session.id)
+                    .swipeActions(edge: .leading) { confirmSwipeButton(for: session) }
+            } else {
+                Button {
+                    selectedSessionID = session.id
+                } label: {
+                    row(for: session)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .swipeActions(edge: .leading) { confirmSwipeButton(for: session) }
+            }
+        }
+        .onDelete(perform: delete)
+    }
+
+    private func row(for session: ChargingSession) -> some View {
+        SessionRow(
+            session: session,
+            vehicleName: vehicles.first(where: { $0.id == session.vehicleId })?.name,
+            providerName: providers.first(where: { $0.id == session.providerId })?.name,
+            locationName: locations.first(where: { $0.id == session.locationId })?.name
+        )
+    }
+
+    @ViewBuilder
+    private func confirmSwipeButton(for session: ChargingSession) -> some View {
+        if session.needsReview {
+            Button {
+                Task { await confirm(session) }
+            } label: {
+                Label("Bestätigen", systemImage: "checkmark")
+            }
+            .tint(.green)
+        }
     }
 
     private func load() async {
