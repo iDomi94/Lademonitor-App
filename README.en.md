@@ -35,6 +35,12 @@ Public beta access via TestFlight:
   section stays hidden
 - "Forgot password": the app requests the link, the new password is then set
   through the link in the email, in a browser
+- Record and view the outside temperature per charging session – the basis of
+  the "consumption by outside temperature" analysis in the server dashboard
+  (from Lademonitor-Server 0.23.0). It means the value **at the start of
+  charging**: the consumption the server attributes to a session comes from the
+  drive before it. With Home Assistant you get it automatically; here you can
+  add it by hand. Works in local-only mode too
 - Charging sessions, vehicles, providers and charging locations deleted on the
   server now disappear from the app on the next sync. Previously they lingered
   as "ghost rows" until you deleted them here too - the app must not infer a

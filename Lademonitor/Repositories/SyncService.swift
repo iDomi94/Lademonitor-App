@@ -379,6 +379,7 @@ final class SyncService: ObservableObject {
                     pricePerKwh: session.pricePerKwh,
                     priceTotal: session.priceTotal,
                     odometerKm: session.odometerKm,
+                    outsideTempC: session.outsideTempC,
                     latitude: session.latitude,
                     longitude: session.longitude,
                     geocodedPlace: session.geocodedPlace,
@@ -521,7 +522,8 @@ final class SyncService: ObservableObject {
                     serverId: ss.id, vehicleId: ss.vehicleId, providerId: ss.providerId, locationId: ss.locationId,
                     startTime: ss.startTime, endTime: ss.endTime, chargingType: ss.chargingType?.rawValue,
                     socStart: ss.socStart, socEnd: ss.socEnd, energyKwh: ss.energyKwh,
-                    energyIsEstimated: ss.energyIsEstimated, odometerKm: ss.odometerKm, priceTotal: ss.priceTotal,
+                    energyIsEstimated: ss.energyIsEstimated, odometerKm: ss.odometerKm,
+                    outsideTempC: ss.outsideTempC, priceTotal: ss.priceTotal,
                     pricePerKwh: ss.pricePerKwh, latitude: ss.latitude, longitude: ss.longitude,
                     geocodedPlace: ss.geocodedPlace, notes: ss.notes, source: ss.source.rawValue,
                     needsReview: ss.needsReview, externalSessionId: ss.externalSessionId, isDirty: false
@@ -544,6 +546,7 @@ final class SyncService: ObservableObject {
         session.energyKwh = dto.energyKwh
         session.energyIsEstimated = dto.energyIsEstimated
         session.odometerKm = dto.odometerKm
+        session.outsideTempC = dto.outsideTempC
         session.priceTotal = dto.priceTotal
         session.pricePerKwh = dto.pricePerKwh
         session.latitude = dto.latitude

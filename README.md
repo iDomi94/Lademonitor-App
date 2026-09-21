@@ -34,6 +34,12 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   gegen einen älteren Server bleibt der Bereich ausgeblendet
 - „Passwort vergessen“: die App fordert den Link an, gesetzt wird das neue
   Passwort über den Link in der Mail im Browser
+- Außentemperatur je Ladevorgang erfassen und ansehen – Grundlage der
+  Auswertung „Verbrauch nach Außentemperatur" im Server-Dashboard (ab
+  Lademonitor-Server 0.23.0). Gemeint ist der Wert **beim Ladebeginn**: der
+  Verbrauch, den der Server einem Ladevorgang zurechnet, stammt von der Fahrt
+  davor. Wer Home Assistant nutzt, bekommt ihn automatisch; hier lässt er sich
+  nachtragen. Funktioniert auch im Local-Only-Modus
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
   „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem

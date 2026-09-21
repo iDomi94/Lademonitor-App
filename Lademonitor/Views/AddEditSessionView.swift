@@ -21,6 +21,7 @@ struct AddEditSessionView: View {
     @State private var pricePerKwh: String
     @State private var priceTotal: String
     @State private var odometerKm: String
+    @State private var outsideTempC: String
     @State private var geocodedPlace: String
     @State private var latitude: String
     @State private var longitude: String
@@ -61,6 +62,7 @@ struct AddEditSessionView: View {
         _pricePerKwh = State(initialValue: session?.pricePerKwh.map { String(format: "%.4f", $0) } ?? "")
         _priceTotal = State(initialValue: session?.priceTotal.map { String(format: "%.2f", $0) } ?? "")
         _odometerKm = State(initialValue: session?.odometerKm.map(String.init) ?? "")
+        _outsideTempC = State(initialValue: session?.outsideTempC.map { String($0) } ?? "")
         _geocodedPlace = State(initialValue: session?.geocodedPlace ?? "")
         _latitude = State(initialValue: session?.latitude.map { String(format: "%.6f", $0) } ?? "")
         _longitude = State(initialValue: session?.longitude.map { String(format: "%.6f", $0) } ?? "")
@@ -157,6 +159,18 @@ struct AddEditSessionView: View {
                         TextField("optional", text: $odometerKm)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
+                    }
+                    // Aussentemperatur BEIM LADEBEGINN - Grundlage der
+                    // Verbrauchsauswertung nach Temperatur im Dashboard. Wer
+                    // Home Assistant nutzt, bekommt den Wert automatisch; hier
+                    // steht er zum Nachtragen.
+                    HStack {
+                        Text("Außentemperatur")
+                        Spacer()
+                        TextField("optional", text: $outsideTempC)
+                            .keyboardType(.numbersAndPunctuation)
+                            .multilineTextAlignment(.trailing)
+                        Text("°C").foregroundStyle(.secondary)
                     }
                 }
 
@@ -329,6 +343,7 @@ struct AddEditSessionView: View {
             pricePerKwh: Double(pricePerKwh.replacingOccurrences(of: ",", with: ".")),
             priceTotal: Double(priceTotal.replacingOccurrences(of: ",", with: ".")),
             odometerKm: Int(odometerKm),
+            outsideTempC: Double(outsideTempC.replacingOccurrences(of: ",", with: ".")),
             latitude: Double(latitude.replacingOccurrences(of: ",", with: ".")),
             longitude: Double(longitude.replacingOccurrences(of: ",", with: ".")),
             geocodedPlace: geocodedPlace.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty

@@ -95,6 +95,9 @@ struct SessionDetailView: View {
                 if let consumption = session.consumptionKwhPer100km {
                     LabeledContent("Verbrauch", value: String(format: "%.1f kWh/100km", consumption))
                 }
+                if let temp = session.outsideTempC {
+                    LabeledContent("Außentemperatur", value: String(format: "%.1f °C", temp))
+                }
             }
 
             if session.priceTotal != nil || session.pricePerKwh != nil {

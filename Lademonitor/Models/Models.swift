@@ -124,6 +124,11 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     var energyKwh: Double?
     var energyIsEstimated: Bool
     var odometerKm: Int?
+    /// Aussentemperatur in Grad Celsius BEIM LADEBEGINN (Server ab 0.23.0).
+    /// Der Zeitpunkt ist entscheidend: der Verbrauch, den der Server diesem
+    /// Vorgang zurechnet, stammt von der Fahrt davor - und die endet im
+    /// Moment des Einsteckens.
+    var outsideTempC: Double?
     var priceTotal: Double?
     var pricePerKwh: Double?
     var latitude: Double?
@@ -152,6 +157,7 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case energyKwh = "energy_kwh"
         case energyIsEstimated = "energy_is_estimated"
         case odometerKm = "odometer_km"
+        case outsideTempC = "outside_temp_c"
         case priceTotal = "price_total"
         case pricePerKwh = "price_per_kwh"
         case needsReview = "needs_review"
@@ -178,6 +184,7 @@ struct ChargingSessionPayload: Codable {
     var pricePerKwh: Double?
     var priceTotal: Double?
     var odometerKm: Int?
+    var outsideTempC: Double?
     var latitude: Double?
     var longitude: Double?
     var geocodedPlace: String?
@@ -198,6 +205,7 @@ struct ChargingSessionPayload: Codable {
         case pricePerKwh = "price_per_kwh"
         case priceTotal = "price_total"
         case odometerKm = "odometer_km"
+        case outsideTempC = "outside_temp_c"
         case geocodedPlace = "geocoded_place"
         case needsReview = "needs_review"
     }
