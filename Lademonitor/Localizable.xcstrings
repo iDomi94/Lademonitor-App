@@ -5205,19 +5205,19 @@
         }
       }
     },
-    "vom Wetterdienst (Tagesmittel)" : {
+    "vom Wetterdienst (Zeitraummittel)" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vom Wetterdienst (Tagesmittel)"
+            "value" : "vom Wetterdienst (Zeitraummittel)"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "from the weather service (daily mean)"
+            "value" : "from the weather service (interval mean)"
           }
         }
       }
