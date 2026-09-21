@@ -124,6 +124,11 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     var energyKwh: Double?
     var energyIsEstimated: Bool
     var odometerKm: Int?
+    /// Aussentemperatur in Grad Celsius BEIM LADEBEGINN (Server ab 0.23.0).
+    /// Der Zeitpunkt ist entscheidend: der Verbrauch, den der Server diesem
+    /// Vorgang zurechnet, stammt von der Fahrt davor - und die endet im
+    /// Moment des Einsteckens.
+    var outsideTempC: Double?
     var priceTotal: Double?
     var pricePerKwh: Double?
     var latitude: Double?
@@ -152,6 +157,7 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case energyKwh = "energy_kwh"
         case energyIsEstimated = "energy_is_estimated"
         case odometerKm = "odometer_km"
+        case outsideTempC = "outside_temp_c"
         case priceTotal = "price_total"
         case pricePerKwh = "price_per_kwh"
         case needsReview = "needs_review"
@@ -178,6 +184,7 @@ struct ChargingSessionPayload: Codable {
     var pricePerKwh: Double?
     var priceTotal: Double?
     var odometerKm: Int?
+    var outsideTempC: Double?
     var latitude: Double?
     var longitude: Double?
     var geocodedPlace: String?
@@ -198,6 +205,7 @@ struct ChargingSessionPayload: Codable {
         case pricePerKwh = "price_per_kwh"
         case priceTotal = "price_total"
         case odometerKm = "odometer_km"
+        case outsideTempC = "outside_temp_c"
         case geocodedPlace = "geocoded_place"
         case needsReview = "needs_review"
     }
@@ -501,5 +509,155 @@ struct StatsSummary: Codable {
         case totalKmDriven = "total_km_driven"
         case byProvider = "by_provider"
         case monthly
+    }
+}
+
+// MARK: - Sync: serverseitig geloeschte Datensaetze
+
+/// Eine Loeschung, die auf dem Server stattgefunden hat (Web-UI, zweites
+/// Geraet, ein anderer Client). Gegenstueck zu `models.DeletedRecord` im
+/// Backend - siehe SyncService.applyServerDeletions() fuer das Warum.
+struct DeletedRecord: Codable, Hashable {
+    let entityType: String
+    let entityId: String
+
+    enum CodingKeys: String, CodingKey {
+        case entityType = "entity_type"
+        case entityId = "entity_id"
+    }
+}
+
+struct DeletionsResponse: Codable {
+    /// Cursor fuer den naechsten Abruf. Bewusst als ROHER STRING durchgereicht
+    /// und nie in ein `Date` gewandelt: der Server schickt naive UTC-Zeitstempel,
+    /// die der Datums-Decoder dieser App (siehe APIClient) als LOKALE Zeit liest -
+    /// hin- und zurueckgewandelt waere der Cursor um den Zeitzonen-Offset
+    /// verschoben und wuerde Loeschungen ueberspringen. Als unveraendert
+    /// zurueckgegebene Zeichenkette kann das nicht passieren.
+    let serverTime: String
+    let deletions: [DeletedRecord]
+
+    enum CodingKeys: String, CodingKey {
+        case serverTime = "server_time"
+        case deletions
+    }
+}
+
+// MARK: - Verbrauch nach Aussentemperatur
+
+/// Antwort von `GET /api/stats/temperature`.
+///
+/// Wird bewusst NICHT lokal nachgerechnet (anders als `StatsSummary`, die im
+/// Local-Only-Modus aus `LocalStatsCalculator` kommt): die Auswertung in
+/// `temperature.py` haengt an der Verbrauchskette, den km-Gewichten und den
+/// Schwellen fuer die Ausgleichsgerade - ein dritter Nachbau davon (nach
+/// `LocalConsumptionCalculator`) wuerde frueher oder spaeter andere Zahlen
+/// zeigen als das Web-Dashboard. Die Ansicht gibt es deshalb nur im
+/// Server-Modus.
+struct TemperatureStats: Codable {
+    let points: [TempPoint]
+    let buckets: [TempBucket]
+    let seasons: [SeasonStat]
+    /// `nil`, wenn zu wenige Fahrten oder ein zu schmaler Temperaturbereich
+    /// vorliegen - dann wird bewusst keine Gerade gezeigt.
+    let trend: TempTrend?
+    /// Vorgaenge mit berechenbarem Verbrauch, aber ohne Temperatur.
+    let sessionsWithoutTemp: Int
+    let bucketWidthC: Int
+
+    enum CodingKeys: String, CodingKey {
+        case points, buckets, seasons, trend
+        case sessionsWithoutTemp = "sessions_without_temp"
+        case bucketWidthC = "bucket_width_c"
+    }
+}
+
+struct TempPoint: Codable, Identifiable {
+    var id: String { sessionId }
+    let sessionId: String
+    let startTime: Date
+    let tempC: Double
+    let consumptionKwhPer100km: Double
+    let km: Double
+    let consumptionMethod: String
+    let season: String
+
+    enum CodingKeys: String, CodingKey {
+        case sessionId = "session_id"
+        case startTime = "start_time"
+        case tempC = "temp_c"
+        case consumptionKwhPer100km = "consumption_kwh_per_100km"
+        case km
+        case consumptionMethod = "consumption_method"
+        case season
+    }
+}
+
+struct TempBucket: Codable, Identifiable {
+    var id: Double { fromC }
+    let fromC: Double
+    let toC: Double
+    let avgConsumptionKwhPer100km: Double
+    let sessionCount: Int
+    let km: Double
+
+    enum CodingKeys: String, CodingKey {
+        case fromC = "from_c"
+        case toC = "to_c"
+        case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
+        case sessionCount = "session_count"
+        case km
+    }
+
+    /// Mitte der Klasse - der x-Wert, an dem der Klassenmittelwert im
+    /// Streudiagramm sitzt.
+    var centerC: Double { (fromC + toC) / 2 }
+
+    var label: String { String(format: "%.0f…%.0f °C", fromC, toC) }
+}
+
+struct SeasonStat: Codable, Identifiable {
+    var id: String { season }
+    /// winter | spring | summer | autumn
+    let season: String
+    let avgConsumptionKwhPer100km: Double
+    let sessionCount: Int
+    let km: Double
+
+    enum CodingKeys: String, CodingKey {
+        case season
+        case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
+        case sessionCount = "session_count"
+        case km
+    }
+
+    /// Uebersetzter Name. Die Rohwerte sind die englischen Schluessel aus
+    /// `temperature.py::SEASONS` und bleiben unangetastet (sie sind Daten,
+    /// keine Anzeige).
+    var displayName: String {
+        switch season {
+        case "winter": return String(localized: "Winter")
+        case "spring": return String(localized: "Frühling")
+        case "summer": return String(localized: "Sommer")
+        case "autumn": return String(localized: "Herbst")
+        default: return season
+        }
+    }
+}
+
+struct TempTrend: Codable {
+    let slope: Double
+    let intercept: Double
+    /// Wieviel der Streuung die Temperatur ueberhaupt erklaert (0…1).
+    let r2: Double
+    let consumptionAt0c: Double
+    let consumptionAt20c: Double
+    let extraPctAt0c: Double
+
+    enum CodingKeys: String, CodingKey {
+        case slope, intercept, r2
+        case consumptionAt0c = "consumption_at_0c"
+        case consumptionAt20c = "consumption_at_20c"
+        case extraPctAt0c = "extra_pct_at_0c"
     }
 }

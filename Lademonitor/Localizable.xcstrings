@@ -4913,6 +4913,245 @@
           }
         }
       }
+    },
+    "Außentemperatur" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außentemperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outside temperature"
+          }
+        }
+      }
+    },
+    "°C" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "°C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "°C"
+          }
+        }
+      }
+    }
+,
+    "%lld Ladevorgänge ohne Temperaturangabe sind nicht enthalten." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladevorgänge ohne Temperaturangabe sind nicht enthalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charging sessions without a temperature are not included."
+          }
+        }
+      }
+    },
+    "Fahrten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drives"
+          }
+        }
+      }
+    },
+    "Frühling" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frühling"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spring"
+          }
+        }
+      }
+    },
+    "Herbst" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herbst"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autumn"
+          }
+        }
+      }
+    },
+    "Mehrverbrauch bei 0 °C statt 20 °C" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrverbrauch bei 0 °C statt 20 °C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra consumption at 0 °C instead of 20 °C"
+          }
+        }
+      }
+    },
+    "Mittel je %lld °C" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel je %lld °C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average per %lld °C"
+          }
+        }
+      }
+    },
+    "Noch keine Ladevorgänge mit Außentemperatur. Der Wert wird beim Einstecken erfasst – die Auswertung füllt sich über die nächsten Wochen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Ladevorgänge mit Außentemperatur. Der Wert wird beim Einstecken erfasst – die Auswertung füllt sich über die nächsten Wochen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No charging sessions with an outside temperature yet. The value is recorded when plugging in – the analysis fills up over the coming weeks."
+          }
+        }
+      }
+    },
+    "Sommer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summer"
+          }
+        }
+      }
+    },
+    "Trend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend"
+          }
+        }
+      }
+    },
+    "Verbrauch nach Außentemperatur" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch nach Außentemperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption by outside temperature"
+          }
+        }
+      }
+    },
+    "Verbrauch nach Jahreszeit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch nach Jahreszeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption by season"
+          }
+        }
+      }
+    },
+    "Winter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winter"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

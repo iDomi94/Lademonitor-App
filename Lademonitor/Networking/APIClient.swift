@@ -365,11 +365,48 @@ final class APIClient {
         try await sendNoContent(request)
     }
 
+    // MARK: - Sync
+
+    /// Serverseitige Loeschungen seit `since` (der `server_time`-Wert des
+    /// vorherigen Aufrufs, roh durchgereicht - siehe DeletionsResponse).
+    /// Ohne `since` kommen alle - das ist der erste Abgleich eines Geraets.
+    func fetchDeletions(since: String? = nil) async throws -> DeletionsResponse {
+        var path = "/api/sync/deletions"
+        if let since, !since.isEmpty {
+            let encoded = since.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? since
+            path += "?since=\(encoded)"
+        }
+        return try await send(try makeRequest(path: path))
+    }
+
     // MARK: - Stats
 
     func fetchStatsSummary(vehicleId: String? = nil) async throws -> StatsSummary {
         var path = "/api/stats/summary"
         if let vehicleId { path += "?vehicle_id=\(vehicleId)" }
+        return try await send(try makeRequest(path: path))
+    }
+
+    /// Verbrauch gegen Aussentemperatur (Streudiagramm, Klassenmittel,
+    /// Ausgleichsgerade, Jahreszeiten). Nur im Server-Modus verfuegbar - die
+    /// Rechnung liegt bewusst allein auf dem Server, siehe `TemperatureStats`.
+    ///
+    /// Der Zeitraumfilter geht hier als `start_date`/`end_date` an den Server
+    /// (reines Datum, keine Uhrzeit) - anders als bei der Zusammenfassung, die
+    /// aus dem lokalen Spiegel kommt und dort gefiltert wird.
+    func fetchTemperatureStats(vehicleId: String? = nil,
+                               dateRange: ClosedRange<Date>? = nil) async throws -> TemperatureStats {
+        var items: [String] = []
+        if let vehicleId { items.append("vehicle_id=\(vehicleId)") }
+        if let dateRange {
+            let f = DateFormatter()
+            f.locale = Locale(identifier: "en_US_POSIX")
+            f.timeZone = TimeZone.current
+            f.dateFormat = "yyyy-MM-dd"
+            items.append("start_date=\(f.string(from: dateRange.lowerBound))")
+            items.append("end_date=\(f.string(from: dateRange.upperBound))")
+        }
+        let path = "/api/stats/temperature" + (items.isEmpty ? "" : "?" + items.joined(separator: "&"))
         return try await send(try makeRequest(path: path))
     }
 }

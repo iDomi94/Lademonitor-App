@@ -153,6 +153,10 @@ final class LocalChargingSession {
     var energyKwh: Double?
     var energyIsEstimated: Bool
     var odometerKm: Int?
+    /// Aussentemperatur beim Ladebeginn. Optional - eine neue optionale
+    /// Eigenschaft ist fuer SwiftData eine leichte Migration, bestehende
+    /// Zeilen bekommen schlicht nil.
+    var outsideTempC: Double?
     var priceTotal: Double?
     var pricePerKwh: Double?
     var latitude: Double?
@@ -181,6 +185,7 @@ final class LocalChargingSession {
         energyKwh: Double? = nil,
         energyIsEstimated: Bool = false,
         odometerKm: Int? = nil,
+        outsideTempC: Double? = nil,
         priceTotal: Double? = nil,
         pricePerKwh: Double? = nil,
         latitude: Double? = nil,
@@ -208,6 +213,7 @@ final class LocalChargingSession {
         self.energyKwh = energyKwh
         self.energyIsEstimated = energyIsEstimated
         self.odometerKm = odometerKm
+        self.outsideTempC = outsideTempC
         self.priceTotal = priceTotal
         self.pricePerKwh = pricePerKwh
         self.latitude = latitude
@@ -285,6 +291,7 @@ extension LocalChargingSession {
             energyKwh: energyKwh,
             energyIsEstimated: energyIsEstimated,
             odometerKm: odometerKm,
+            outsideTempC: outsideTempC,
             priceTotal: priceTotal,
             pricePerKwh: pricePerKwh,
             latitude: latitude,

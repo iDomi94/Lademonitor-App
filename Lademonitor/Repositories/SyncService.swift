@@ -193,6 +193,10 @@ final class SyncService: ObservableObject {
             try await pullProviders()
             try await pullLocations()
             try await pullSessions()
+            // Zum Schluss, nach den Pulls: die legen fehlende Zeilen an, und eine
+            // gerade erst angelegte Zeile darf ein Grabstein aus demselben
+            // Durchlauf gleich wieder entfernen.
+            try await applyServerDeletions()
             lastSyncDate = Date()
             // Auch bei insgesamt erfolgreichem Durchlauf koennen einzelne Zeilen
             // uebersprungen worden sein (siehe itemErrors) - das soll sichtbar bleiben,
@@ -215,6 +219,10 @@ final class SyncService: ObservableObject {
         guard let currentUserId = SessionManager.shared.currentUser?.id else { return }
         defer { lastSyncedUserId = currentUserId }
         guard let lastSyncedUserId, lastSyncedUserId != currentUserId else { return }
+        // Grabsteine gelten pro Konto - ein Cursor aus Konto A sagt ueber Konto B
+        // nichts aus. Zurueckgesetzt holt der naechste Abruf dessen vollstaendige
+        // Liste.
+        lastDeletionCursor = nil
         resetSyncState(for: LocalVehicle.self)
         resetSyncState(for: LocalProvider.self)
         resetSyncState(for: LocalChargingLocation.self)
@@ -371,6 +379,7 @@ final class SyncService: ObservableObject {
                     pricePerKwh: session.pricePerKwh,
                     priceTotal: session.priceTotal,
                     odometerKm: session.odometerKm,
+                    outsideTempC: session.outsideTempC,
                     latitude: session.latitude,
                     longitude: session.longitude,
                     geocodedPlace: session.geocodedPlace,
@@ -513,7 +522,8 @@ final class SyncService: ObservableObject {
                     serverId: ss.id, vehicleId: ss.vehicleId, providerId: ss.providerId, locationId: ss.locationId,
                     startTime: ss.startTime, endTime: ss.endTime, chargingType: ss.chargingType?.rawValue,
                     socStart: ss.socStart, socEnd: ss.socEnd, energyKwh: ss.energyKwh,
-                    energyIsEstimated: ss.energyIsEstimated, odometerKm: ss.odometerKm, priceTotal: ss.priceTotal,
+                    energyIsEstimated: ss.energyIsEstimated, odometerKm: ss.odometerKm,
+                    outsideTempC: ss.outsideTempC, priceTotal: ss.priceTotal,
                     pricePerKwh: ss.pricePerKwh, latitude: ss.latitude, longitude: ss.longitude,
                     geocodedPlace: ss.geocodedPlace, notes: ss.notes, source: ss.source.rawValue,
                     needsReview: ss.needsReview, externalSessionId: ss.externalSessionId, isDirty: false
@@ -536,6 +546,7 @@ final class SyncService: ObservableObject {
         session.energyKwh = dto.energyKwh
         session.energyIsEstimated = dto.energyIsEstimated
         session.odometerKm = dto.odometerKm
+        session.outsideTempC = dto.outsideTempC
         session.priceTotal = dto.priceTotal
         session.pricePerKwh = dto.pricePerKwh
         session.latitude = dto.latitude
@@ -547,15 +558,76 @@ final class SyncService: ObservableObject {
         session.externalSessionId = dto.externalSessionId
     }
 
-    /// ACHTUNG: entfernt lokale Spiegel-Zeilen NICHT mehr automatisch nur weil sie in
-    /// einer Pull-Antwort fehlen (fruehere Version tat das, um serverseitige Loeschungen
-    /// z.B. ueber das Web-UI zu spiegeln). Grund fuer die Ruecknahme: jede Luecke in der
-    /// Pull-Antwort - ob durch einen echten Server-Fehler, eine unerwartete leere Antwort
-    /// oder einen Fehler in der ID-Aufloesung beim vorangegangenen Push - fuehrte sonst zu
-    /// STILLEM, UNWIDERRUFLICHEM Verlust lokaler Ladevorgaenge. Das Risiko ist die Funktion
-    /// nicht wert. Serverseitig geloeschte Eintraege bleiben dadurch als "Geisterzeilen"
-    /// lokal bestehen, bis sie auch in der App geloescht werden - bewusster Kompromiss.
+    /// ACHTUNG: entfernt lokale Spiegel-Zeilen bewusst NICHT, nur weil sie in einer
+    /// Pull-Antwort fehlen. Jede Luecke in der Antwort - ob durch einen Server-Fehler,
+    /// eine unerwartet leere Antwort oder einen Fehler in der ID-Aufloesung beim
+    /// vorangegangenen Push - wuerde sonst STILL und UNWIDERRUFLICH lokale Ladevorgaenge
+    /// vernichten. Absenz ist kein Beweis.
+    ///
+    /// Serverseitige Loeschungen kommen stattdessen ueber applyServerDeletions() an: ein
+    /// ausdrueckliches "diese ID ist geloescht" vom Server, das eine unvollstaendige
+    /// Antwort nicht erfinden kann. Die Geisterzeilen, mit denen diese App bis dahin
+    /// leben musste, gibt es damit nicht mehr.
+    ///
+    /// Die Funktion bleibt als bewusst leerer Aufruf an den vier Pull-Stellen stehen,
+    /// damit dort sichtbar ist, dass hier NICHT aufgeraeumt wird.
     private func removeVanishedMirrors<T: PersistentModel>(_ type: T.Type, stillOnServer: Set<String>) throws where T: SyncMirrorable {
+    }
+
+    // MARK: - Serverseitige Loeschungen
+
+    /// Cursor fuer GET /api/sync/deletions: der `server_time`-Wert des letzten
+    /// erfolgreichen Abrufs, roh als Zeichenkette (siehe DeletionsResponse).
+    /// UserDefaults reicht - es ist kein sensibler Wert, und geht er verloren,
+    /// holt der naechste Abruf eben alle Grabsteine statt nur der neuen.
+    private var lastDeletionCursor: String? {
+        get { UserDefaults.standard.string(forKey: "lastDeletionCursor") }
+        set { UserDefaults.standard.set(newValue, forKey: "lastDeletionCursor") }
+    }
+
+    /// Loescht lokal, was auf dem Server geloescht wurde.
+    ///
+    /// Der Grabstein gewinnt - auch gegen eine lokal noch ungespeicherte Aenderung
+    /// (`isDirty`). Das ist Absicht: die Zeile existiert auf dem Server nicht mehr,
+    /// ein Push darauf liefe ins Leere (404), und sie stehenzulassen brachte genau
+    /// die Geisterzeilen zurueck, wegen derer es diesen Mechanismus gibt. Der Fall
+    /// verlangt ohnehin zwei Geraete gleichzeitig: eines loescht, das andere
+    /// bearbeitet denselben Datensatz, bevor es synchronisiert.
+    ///
+    /// Der Cursor wird erst NACH dem erfolgreichen Anwenden gesetzt. Bricht der
+    /// Durchlauf vorher ab, kommen dieselben Grabsteine beim naechsten Mal erneut -
+    /// eine bereits geloeschte Zeile noch einmal zu loeschen ist folgenlos, eine
+    /// verpasste Loeschung waere dauerhaft.
+    private func applyServerDeletions() async throws {
+        let response: DeletionsResponse
+        do {
+            response = try await APIClient.shared.fetchDeletions(since: lastDeletionCursor)
+        } catch APIError.server(let statusCode, _) where statusCode == 404 {
+            // Server aelter als 0.22.0 - den Endpunkt gibt es dort noch nicht.
+            // Dann bleibt es beim bisherigen Verhalten (serverseitige Loeschungen
+            // bleiben als Geisterzeilen stehen); der Rest des Syncs soll deswegen
+            // aber nicht als fehlgeschlagen gelten.
+            return
+        }
+        for record in response.deletions {
+            switch record.entityType {
+            case "vehicle":
+                if let row = try findLocalVehicle(serverId: record.entityId) { context.delete(row) }
+            case "provider":
+                if let row = try findLocalProvider(serverId: record.entityId) { context.delete(row) }
+            case "location":
+                if let row = try findLocalLocation(serverId: record.entityId) { context.delete(row) }
+            case "session":
+                if let row = try findLocalSession(serverId: record.entityId) { context.delete(row) }
+            default:
+                // Unbekannter Typ aus einem neueren Server: ueberspringen statt
+                // zu raten. Eine aeltere App soll an einem neueren Server nicht
+                // scheitern.
+                continue
+            }
+        }
+        try context.save()
+        lastDeletionCursor = response.serverTime
     }
 
     private func findLocalVehicle(serverId: String) throws -> LocalVehicle? {
