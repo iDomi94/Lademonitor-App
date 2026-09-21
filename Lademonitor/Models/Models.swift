@@ -183,6 +183,10 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case "vehicle": return String(localized: "vom Fahrzeug")
         case "manual": return String(localized: "von Hand")
         case "weather": return String(localized: "vom Wetterdienst")
+        // Zeilen ohne Uhrzeit (Spritmonitor-Import, alle auf 00:00) bekommen
+        // serverseitig das Tagesmittel statt des Mitternachtswerts - das ist
+        // keine Messung zu einem Zeitpunkt und wird deshalb getrennt benannt.
+        case "weather_daily": return String(localized: "vom Wetterdienst (Tagesmittel)")
         default: return nil
         }
     }

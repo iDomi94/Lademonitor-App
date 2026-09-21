@@ -5204,6 +5204,23 @@
           }
         }
       }
+    },
+    "vom Wetterdienst (Tagesmittel)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vom Wetterdienst (Tagesmittel)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "from the weather service (daily mean)"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
