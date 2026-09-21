@@ -277,6 +277,9 @@ final class LocalDataStore {
             energyKwh: payload.energyKwh,
             odometerKm: payload.odometerKm,
             outsideTempC: payload.outsideTempC,
+            // Im Local-Only-Modus gibt es nur eine Quelle: den Menschen, der
+            // sie eintippt. Der Server macht dieselbe Ableitung.
+            outsideTempSource: payload.outsideTempC != nil ? "manual" : nil,
             priceTotal: payload.priceTotal,
             pricePerKwh: payload.pricePerKwh,
             latitude: payload.latitude,
@@ -312,7 +315,18 @@ final class LocalDataStore {
         if let pricePerKwh = payload.pricePerKwh { session.pricePerKwh = pricePerKwh }
         if let priceTotal = payload.priceTotal { session.priceTotal = priceTotal }
         if let odometerKm = payload.odometerKm { session.odometerKm = odometerKm }
-        if let outsideTempC = payload.outsideTempC { session.outsideTempC = outsideTempC }
+        if let outsideTempC = payload.outsideTempC {
+            // Wie beim energy_is_estimated-Flag daneben und wie in
+            // update_session() im Backend: das Formular schickt die Temperatur
+            // bei JEDEM Speichern mit, deshalb zaehlt nur eine tatsaechliche
+            // Wertaenderung als Handeintrag. Sonst wuerde ein vom Wetterdienst
+            // geholter Wert nach einmal Oeffnen-und-Speichern als "von Hand"
+            // dastehen.
+            if session.outsideTempC.map({ abs(outsideTempC - $0) > 1e-6 }) ?? true {
+                session.outsideTempSource = "manual"
+            }
+            session.outsideTempC = outsideTempC
+        }
         if let latitude = payload.latitude { session.latitude = latitude }
         if let longitude = payload.longitude { session.longitude = longitude }
         if let geocodedPlace = payload.geocodedPlace { session.geocodedPlace = geocodedPlace }

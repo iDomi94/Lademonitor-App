@@ -129,6 +129,16 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     /// Vorgang zurechnet, stammt von der Fahrt davor - und die endet im
     /// Moment des Einsteckens.
     var outsideTempC: Double?
+    /// Woher die Temperatur daneben stammt: "vehicle" (Fahrzeugsensor ueber
+    /// Home Assistant oder den MyŠkoda-Poller), "manual" (von Hand) oder
+    /// "weather" (nachtraeglich vom Wetterdienst geholt). `nil` bei
+    /// Bestandsdaten aus der Zeit vor dieser Angabe.
+    ///
+    /// Bewusst NUR lesend: das Feld fehlt in `ChargingSessionPayload`. Der
+    /// Server leitet "manual" aus einer echten Wertaenderung ab - schickte die
+    /// App den alten Wert einfach zurueck, bliebe eine von Hand korrigierte
+    /// Temperatur faelschlich als "vom Wetterdienst" stehen.
+    var outsideTempSource: String?
     var priceTotal: Double?
     var pricePerKwh: Double?
     var latitude: Double?
@@ -158,10 +168,23 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case energyIsEstimated = "energy_is_estimated"
         case odometerKm = "odometer_km"
         case outsideTempC = "outside_temp_c"
+        case outsideTempSource = "outside_temp_source"
         case priceTotal = "price_total"
         case pricePerKwh = "price_per_kwh"
         case needsReview = "needs_review"
         case externalSessionId = "external_session_id"
+    }
+
+    /// Uebersetzter Klartext zur Herkunft der Temperatur, `nil` wenn keine
+    /// hinterlegt ist. Die Rohwerte bleiben unangetastet - sie sind Daten,
+    /// keine Anzeige (siehe models.TemperatureSource im Backend).
+    var outsideTempSourceLabel: String? {
+        switch outsideTempSource {
+        case "vehicle": return String(localized: "vom Fahrzeug")
+        case "manual": return String(localized: "von Hand")
+        case "weather": return String(localized: "vom Wetterdienst")
+        default: return nil
+        }
     }
 
     /// Getypte Variante des Server-Strings `consumption_method`; unbekannte oder

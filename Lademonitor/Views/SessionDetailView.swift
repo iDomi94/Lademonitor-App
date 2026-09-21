@@ -96,7 +96,19 @@ struct SessionDetailView: View {
                     LabeledContent("Verbrauch", value: String(format: "%.1f kWh/100km", consumption))
                 }
                 if let temp = session.outsideTempC {
-                    LabeledContent("Außentemperatur", value: String(format: "%.1f °C", temp))
+                    // Herkunft als zweite Zeile: ein Wert vom Wetterdienst ist
+                    // eine Rekonstruktion am Ladeort, kein Messwert aus dem
+                    // Auto - der Unterschied gehoert dorthin, wo die Zahl steht.
+                    LabeledContent("Außentemperatur") {
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text(String(format: "%.1f °C", temp))
+                            if let origin = session.outsideTempSourceLabel {
+                                Text(origin)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
                 }
             }
 

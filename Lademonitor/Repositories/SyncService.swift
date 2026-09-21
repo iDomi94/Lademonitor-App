@@ -523,7 +523,8 @@ final class SyncService: ObservableObject {
                     startTime: ss.startTime, endTime: ss.endTime, chargingType: ss.chargingType?.rawValue,
                     socStart: ss.socStart, socEnd: ss.socEnd, energyKwh: ss.energyKwh,
                     energyIsEstimated: ss.energyIsEstimated, odometerKm: ss.odometerKm,
-                    outsideTempC: ss.outsideTempC, priceTotal: ss.priceTotal,
+                    outsideTempC: ss.outsideTempC, outsideTempSource: ss.outsideTempSource,
+                    priceTotal: ss.priceTotal,
                     pricePerKwh: ss.pricePerKwh, latitude: ss.latitude, longitude: ss.longitude,
                     geocodedPlace: ss.geocodedPlace, notes: ss.notes, source: ss.source.rawValue,
                     needsReview: ss.needsReview, externalSessionId: ss.externalSessionId, isDirty: false
@@ -547,6 +548,7 @@ final class SyncService: ObservableObject {
         session.energyIsEstimated = dto.energyIsEstimated
         session.odometerKm = dto.odometerKm
         session.outsideTempC = dto.outsideTempC
+        session.outsideTempSource = dto.outsideTempSource
         session.priceTotal = dto.priceTotal
         session.pricePerKwh = dto.pricePerKwh
         session.latitude = dto.latitude
