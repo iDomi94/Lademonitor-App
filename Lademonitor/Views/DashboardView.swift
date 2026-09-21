@@ -4,6 +4,8 @@ import Charts
 struct DashboardView: View {
     @ObservedObject private var sessionFilter = SessionFilter.shared
     @State private var stats: StatsSummary?
+    /// Nur im Server-Modus gefuellt - siehe TemperatureSection.
+    @State private var temperature: TemperatureStats?
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showingFilterSheet = false
@@ -116,6 +118,15 @@ struct DashboardView: View {
                         }
                         .padding(.bottom, 24)
                     }
+
+                    // Verbrauch nach Aussentemperatur. Bewusst NUR im
+                    // Server-Modus: die Auswertung kommt fertig aus
+                    // /api/stats/temperature, damit sie nicht ein drittes Mal
+                    // nachgebaut werden muss (siehe TemperatureStats).
+                    if let temperature {
+                        TemperatureSection(stats: temperature)
+                            .padding(.bottom, 24)
+                    }
                 } else if isLoading {
                     ProgressView("Lade Statistiken…")
                         .padding(.top, 60)
@@ -142,6 +153,7 @@ struct DashboardView: View {
         do {
             stats = try await AppRepository.shared.fetchStatsSummary(dateRange: sessionFilter.dateRange)
             errorMessage = nil
+            await loadTemperature()
         } catch {
             // Fehlgeschlagener Refresh soll bestehende Daten nicht verwerfen.
             if stats == nil {
@@ -149,6 +161,22 @@ struct DashboardView: View {
             }
         }
         isLoading = false
+    }
+
+    /// Temperaturauswertung nachladen - ausschliesslich im Server-Modus.
+    /// Scheitert der Abruf (aelterer Server ohne den Endpunkt, Netzfehler),
+    /// bleibt der Abschnitt einfach weg: er ist eine Ergaenzung, kein Grund,
+    /// das ganze Dashboard als fehlgeschlagen zu melden.
+    private func loadTemperature() async {
+        guard AppSettings.shared.appMode == .server else {
+            temperature = nil
+            return
+        }
+        do {
+            temperature = try await APIClient.shared.fetchTemperatureStats(dateRange: sessionFilter.dateRange)
+        } catch {
+            temperature = nil
+        }
     }
 }
 
@@ -411,6 +439,10 @@ private struct MonthlyBarChart: View {
     let data: [(String, Double)]
     let color: Color
     let unit: String
+    /// Nachkommastellen der Beschriftung. Kosten/kWh pro Monat lesen sich ohne
+    /// (Vorgabe), beim Verbrauch je Jahreszeit ginge der ganze Unterschied
+    /// verloren (15,4 und 17,9 waeren beide "16").
+    var decimals: Int = 0
 
     private var maxValue: Double { max(data.map(\.1).max() ?? 0, 0.0001) }
 
@@ -429,7 +461,7 @@ private struct MonthlyBarChart: View {
                             .frame(width: max(geo.size.width * (entry.1 / maxValue), 4))
                     }
                     .frame(height: 20)
-                    Text(String(format: "%.0f%@", entry.1, unit))
+                    Text(String(format: "%.\(decimals)f%@", entry.1, unit))
                         .font(.caption)
                         .frame(width: 60, alignment: .trailing)
                 }
@@ -438,6 +470,161 @@ private struct MonthlyBarChart: View {
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Verbrauch nach Aussentemperatur
+
+/// Gegenstueck zum Temperatur-Abschnitt des Web-Dashboards. Zeigt dieselben
+/// drei Marken in einem Bild - ein Punkt je Fahrt (die Streuung), das Mittel
+/// je Temperaturklasse (das, was man ablesen soll) und die Ausgleichsgerade
+/// (die Zusammenfassung) - plus die Jahreszeiten darunter.
+///
+/// Die Farben sind bewusst dieselben wie im Web (#3d8ee0/#2ea87f/#bd8a26):
+/// eine Stufe dunkler als die sonstigen Akzentfarben, weil ein Feld aus ueber
+/// hundert Punkten in den hellen Toenen blendet.
+private struct TemperatureSection: View {
+    let stats: TemperatureStats
+
+    private static let pointColor  = Color(red: 0.239, green: 0.557, blue: 0.878)
+    private static let bucketColor = Color(red: 0.180, green: 0.659, blue: 0.498)
+    private static let trendColor  = Color(red: 0.741, green: 0.541, blue: 0.149)
+
+    /// Anfangs- und Endpunkt der Ausgleichsgeraden, gezeichnet nur ueber den
+    /// Bereich, in dem es auch Messpunkte gibt - eine bis 0 Grad verlaengerte
+    /// Gerade ohne Winterdaten waere eine Behauptung, keine Ablesung.
+    private func trendLine(_ trend: TempTrend) -> [(x: Double, y: Double)] {
+        let temps = stats.points.map(\.tempC)
+        guard let minT = temps.min(), let maxT = temps.max(), minT < maxT else { return [] }
+        return [minT, maxT].map { (x: $0, y: trend.intercept + trend.slope * $0) }
+    }
+
+    private var seasonData: [(String, Double)] {
+        stats.seasons.map { ($0.displayName, $0.avgConsumptionKwhPer100km) }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Verbrauch nach Außentemperatur")
+                .font(.headline)
+                .padding(.horizontal)
+
+            VStack(alignment: .leading, spacing: 16) {
+                if stats.points.isEmpty {
+                    Text("Noch keine Ladevorgänge mit Außentemperatur. Der Wert wird beim Einstecken erfasst – die Auswertung füllt sich über die nächsten Wochen.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } else {
+                    if let trend = stats.trend {
+                        HStack(alignment: .firstTextBaseline, spacing: 12) {
+                            Text(String(format: "%+.1f %%", trend.extraPctAt0c))
+                                .font(.system(size: 40, weight: .semibold))
+                                .foregroundStyle(Self.trendColor)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Mehrverbrauch bei 0 °C statt 20 °C")
+                                    .font(.subheadline)
+                                Text(String(format: "%.1f statt %.1f kWh/100km · R² %.2f",
+                                            trend.consumptionAt0c, trend.consumptionAt20c, trend.r2))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+
+                    chart
+                        .frame(height: 220)
+
+                    HStack(spacing: 14) {
+                        LegendDot(color: Self.pointColor, label: String(localized: "Fahrten"))
+                        LegendDot(color: Self.bucketColor,
+                                  label: String(localized: "Mittel je \(stats.bucketWidthC) °C"))
+                        if stats.trend != nil {
+                            LegendDot(color: Self.trendColor, label: String(localized: "Trend"))
+                        }
+                    }
+                    .font(.caption)
+
+                    if stats.sessionsWithoutTemp > 0 {
+                        Text("\(stats.sessionsWithoutTemp) Ladevorgänge ohne Temperaturangabe sind nicht enthalten.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .padding(.horizontal)
+
+            if !seasonData.isEmpty {
+                Text("Verbrauch nach Jahreszeit")
+                    .font(.headline)
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+                // Nullbasiert wie im Web: der Unterschied zwischen 15,4 und
+                // 17,9 ist klein, eine abgeschnittene Achse wuerde ihn
+                // kuenstlich vergroessern.
+                MonthlyBarChart(data: seasonData,
+                                color: Self.bucketColor,
+                                unit: " kWh",
+                                decimals: 1)
+                    .padding(.horizontal)
+            }
+        }
+    }
+
+    private var chart: some View {
+        Chart {
+            ForEach(stats.points) { point in
+                PointMark(
+                    x: .value("Temperatur", point.tempC),
+                    y: .value("kWh/100km", point.consumptionKwhPer100km)
+                )
+                .foregroundStyle(Self.pointColor.opacity(0.6))
+                .symbolSize(24)
+            }
+            if let trend = stats.trend {
+                ForEach(trendLine(trend), id: \.x) { end in
+                    LineMark(
+                        x: .value("Temperatur", end.x),
+                        y: .value("kWh/100km", end.y),
+                        series: .value("Serie", "trend")
+                    )
+                    .foregroundStyle(Self.trendColor)
+                    .lineStyle(StrokeStyle(lineWidth: 2, dash: [6, 4]))
+                }
+            }
+            ForEach(stats.buckets) { bucket in
+                LineMark(
+                    x: .value("Temperatur", bucket.centerC),
+                    y: .value("kWh/100km", bucket.avgConsumptionKwhPer100km),
+                    series: .value("Serie", "buckets")
+                )
+                .foregroundStyle(Self.bucketColor)
+                .lineStyle(StrokeStyle(lineWidth: 2.5))
+                PointMark(
+                    x: .value("Temperatur", bucket.centerC),
+                    y: .value("kWh/100km", bucket.avgConsumptionKwhPer100km)
+                )
+                .foregroundStyle(Self.bucketColor)
+                .symbolSize(60)
+            }
+        }
+        .chartXAxisLabel("°C")
+        .chartYAxisLabel("kWh/100km")
+    }
+}
+
+private struct LegendDot: View {
+    let color: Color
+    let label: String
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Circle().fill(color).frame(width: 9, height: 9)
+            Text(label).foregroundStyle(.secondary)
+        }
     }
 }
 

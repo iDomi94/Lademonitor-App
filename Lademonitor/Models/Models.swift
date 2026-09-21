@@ -542,3 +542,122 @@ struct DeletionsResponse: Codable {
         case deletions
     }
 }
+
+// MARK: - Verbrauch nach Aussentemperatur
+
+/// Antwort von `GET /api/stats/temperature`.
+///
+/// Wird bewusst NICHT lokal nachgerechnet (anders als `StatsSummary`, die im
+/// Local-Only-Modus aus `LocalStatsCalculator` kommt): die Auswertung in
+/// `temperature.py` haengt an der Verbrauchskette, den km-Gewichten und den
+/// Schwellen fuer die Ausgleichsgerade - ein dritter Nachbau davon (nach
+/// `LocalConsumptionCalculator`) wuerde frueher oder spaeter andere Zahlen
+/// zeigen als das Web-Dashboard. Die Ansicht gibt es deshalb nur im
+/// Server-Modus.
+struct TemperatureStats: Codable {
+    let points: [TempPoint]
+    let buckets: [TempBucket]
+    let seasons: [SeasonStat]
+    /// `nil`, wenn zu wenige Fahrten oder ein zu schmaler Temperaturbereich
+    /// vorliegen - dann wird bewusst keine Gerade gezeigt.
+    let trend: TempTrend?
+    /// Vorgaenge mit berechenbarem Verbrauch, aber ohne Temperatur.
+    let sessionsWithoutTemp: Int
+    let bucketWidthC: Int
+
+    enum CodingKeys: String, CodingKey {
+        case points, buckets, seasons, trend
+        case sessionsWithoutTemp = "sessions_without_temp"
+        case bucketWidthC = "bucket_width_c"
+    }
+}
+
+struct TempPoint: Codable, Identifiable {
+    var id: String { sessionId }
+    let sessionId: String
+    let startTime: Date
+    let tempC: Double
+    let consumptionKwhPer100km: Double
+    let km: Double
+    let consumptionMethod: String
+    let season: String
+
+    enum CodingKeys: String, CodingKey {
+        case sessionId = "session_id"
+        case startTime = "start_time"
+        case tempC = "temp_c"
+        case consumptionKwhPer100km = "consumption_kwh_per_100km"
+        case km
+        case consumptionMethod = "consumption_method"
+        case season
+    }
+}
+
+struct TempBucket: Codable, Identifiable {
+    var id: Double { fromC }
+    let fromC: Double
+    let toC: Double
+    let avgConsumptionKwhPer100km: Double
+    let sessionCount: Int
+    let km: Double
+
+    enum CodingKeys: String, CodingKey {
+        case fromC = "from_c"
+        case toC = "to_c"
+        case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
+        case sessionCount = "session_count"
+        case km
+    }
+
+    /// Mitte der Klasse - der x-Wert, an dem der Klassenmittelwert im
+    /// Streudiagramm sitzt.
+    var centerC: Double { (fromC + toC) / 2 }
+
+    var label: String { String(format: "%.0f…%.0f °C", fromC, toC) }
+}
+
+struct SeasonStat: Codable, Identifiable {
+    var id: String { season }
+    /// winter | spring | summer | autumn
+    let season: String
+    let avgConsumptionKwhPer100km: Double
+    let sessionCount: Int
+    let km: Double
+
+    enum CodingKeys: String, CodingKey {
+        case season
+        case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
+        case sessionCount = "session_count"
+        case km
+    }
+
+    /// Uebersetzter Name. Die Rohwerte sind die englischen Schluessel aus
+    /// `temperature.py::SEASONS` und bleiben unangetastet (sie sind Daten,
+    /// keine Anzeige).
+    var displayName: String {
+        switch season {
+        case "winter": return String(localized: "Winter")
+        case "spring": return String(localized: "Frühling")
+        case "summer": return String(localized: "Sommer")
+        case "autumn": return String(localized: "Herbst")
+        default: return season
+        }
+    }
+}
+
+struct TempTrend: Codable {
+    let slope: Double
+    let intercept: Double
+    /// Wieviel der Streuung die Temperatur ueberhaupt erklaert (0…1).
+    let r2: Double
+    let consumptionAt0c: Double
+    let consumptionAt20c: Double
+    let extraPctAt0c: Double
+
+    enum CodingKeys: String, CodingKey {
+        case slope, intercept, r2
+        case consumptionAt0c = "consumption_at_0c"
+        case consumptionAt20c = "consumption_at_20c"
+        case extraPctAt0c = "extra_pct_at_0c"
+    }
+}
