@@ -69,6 +69,23 @@
         }
       }
     },
+    "%1$.1f statt %2$.1f kWh/100km laut %3$@ · R² %4$.2f" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$.1f statt %2$.1f kWh/100km laut %3$@ · R² %4$.2f"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$.1f instead of %2$.1f kWh/100km per %3$@ · R² %4$.2f"
+          }
+        }
+      }
+    },
     "%@ %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1935,6 +1952,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Saved."
+          }
+        }
+      }
+    },
+    "einer Ausgleichsgeraden" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "einer Ausgleichsgeraden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a single fitted line"
+          }
+        }
+      }
+    },
+    "hochgerechnet – so kalt war es in deinen Daten noch nie" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hochgerechnet – so kalt war es in deinen Daten noch nie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "extrapolated – your data has never seen it this cold"
           }
         }
       }
@@ -4927,6 +4978,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outside temperature"
+          }
+        }
+      }
+    },
+    "zwei Geraden mit dem geringsten Verbrauch bei %.0f °C" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "zwei Geraden mit dem geringsten Verbrauch bei %.0f °C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "two lines with the lowest consumption at %.0f °C"
           }
         }
       }
