@@ -31,6 +31,16 @@ struct SettingsView: View {
                     } label: {
                         Label("Anbieter", systemImage: "bolt.fill")
                     }
+                    // Reifen gibt es bewusst nur im Server-Modus: die Zuordnung
+                    // der Fahrten und der temperaturbereinigte Vergleich liegen
+                    // komplett auf dem Server (siehe TireModels.swift).
+                    if settings.appMode == .server {
+                        NavigationLink {
+                            TiresSettingsView()
+                        } label: {
+                            Label("Reifen", systemImage: "circle.circle")
+                        }
+                    }
                 }
 
                 Section("Server") {
