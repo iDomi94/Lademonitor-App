@@ -112,10 +112,20 @@ struct TiresSettingsView: View {
     @ViewBuilder
     private var mountingsSection: some View {
         Section {
+            // Der Einstiegstext steht hier und nicht in einer Hilfe: gebraucht
+            // wird er genau in dem Moment, in dem die Liste leer ist.
             if mountings.isEmpty {
-                Text("Noch kein Reifenwechsel eingetragen. Trage den ersten ein – ab diesem Datum gilt der Satz, bis der nächste Eintrag folgt.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("So fängst du an")
+                        .font(.footnote.weight(.semibold))
+                    Text("Trag den Satz ein, der gerade aufgezogen ist – mit dem Datum, an dem er montiert wurde, auch wenn das ein Jahr zurückliegt, und dem Kilometerstand von damals, falls du ihn noch findest.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Text("Fahrten VOR diesem Datum bleiben ohne Reifensatz – was damals drauf war, weiß die App nicht. Beim Raten lieber ein etwas späteres Datum als ein zu frühes: zu früh schreibt diesem Satz fremde Fahrten zu, zu spät lässt nur ein paar Fahrten weg.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 2)
             }
             ForEach(mountings) { mounting in
                 Button {

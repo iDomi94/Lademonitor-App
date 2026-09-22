@@ -5865,6 +5865,57 @@
           }
         }
       }
+    },
+    "So fängst du an" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So fängst du an"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to start"
+          }
+        }
+      }
+    },
+    "Trag den Satz ein, der gerade aufgezogen ist – mit dem Datum, an dem er montiert wurde, auch wenn das ein Jahr zurückliegt, und dem Kilometerstand von damals, falls du ihn noch findest." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trag den Satz ein, der gerade aufgezogen ist – mit dem Datum, an dem er montiert wurde, auch wenn das ein Jahr zurückliegt, und dem Kilometerstand von damals, falls du ihn noch findest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record the set that is fitted right now – with the date it was mounted, even if that was a year ago, and the odometer reading from back then if you can still find it."
+          }
+        }
+      }
+    },
+    "Fahrten VOR diesem Datum bleiben ohne Reifensatz – was damals drauf war, weiß die App nicht. Beim Raten lieber ein etwas späteres Datum als ein zu frühes: zu früh schreibt diesem Satz fremde Fahrten zu, zu spät lässt nur ein paar Fahrten weg." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrten VOR diesem Datum bleiben ohne Reifensatz – was damals drauf war, weiß die App nicht. Beim Raten lieber ein etwas späteres Datum als ein zu frühes: zu früh schreibt diesem Satz fremde Fahrten zu, zu spät lässt nur ein paar Fahrten weg."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drives BEFORE that date stay without a tire set – the app has no idea what was fitted then. When guessing, pick a slightly later date rather than one that is too early: too early attributes other sets' drives to this one, too late merely leaves a few drives out."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
