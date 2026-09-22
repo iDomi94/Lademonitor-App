@@ -387,6 +387,41 @@ final class APIClient {
         return try await send(try makeRequest(path: path))
     }
 
+    // MARK: - Reifen
+
+    /// Reifensaetze, neueste Montage zuerst. Nur im Server-Modus - Reifen sind
+    /// bewusst nicht Teil des lokalen Spiegels (siehe TireModels.swift).
+    func fetchTireSets(vehicleId: String? = nil) async throws -> [TireSet] {
+        let path = "/api/tires" + (vehicleId.map { "?vehicle_id=\($0)" } ?? "")
+        return try await send(try makeRequest(path: path))
+    }
+
+    func createTireSet(_ payload: TireSetPayload) async throws -> TireSet {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/tires", method: "POST", body: body))
+    }
+
+    func updateTireSet(id: String, _ payload: TireSetPayload) async throws -> TireSet {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/tires/\(id)", method: "PATCH", body: body))
+    }
+
+    func deleteTireSet(id: String) async throws {
+        try await sendNoContent(try makeRequest(path: "/api/tires/\(id)", method: "DELETE"))
+    }
+
+    /// Laufleistung, Dauer und Alter je Montage und je Satz.
+    func fetchTireOverview(vehicleId: String? = nil) async throws -> TireOverview {
+        let path = "/api/tires/overview" + (vehicleId.map { "?vehicle_id=\($0)" } ?? "")
+        return try await send(try makeRequest(path: path))
+    }
+
+    /// Temperaturbereinigter Verbrauchsvergleich der Saetze.
+    func fetchTireComparison(vehicleId: String? = nil) async throws -> TireComparison {
+        let path = "/api/tires/comparison" + (vehicleId.map { "?vehicle_id=\($0)" } ?? "")
+        return try await send(try makeRequest(path: path))
+    }
+
     /// Verbrauch gegen Aussentemperatur (Streudiagramm, Klassenmittel,
     /// Ausgleichsgerade, Jahreszeiten). Nur im Server-Modus verfuegbar - die
     /// Rechnung liegt bewusst allein auf dem Server, siehe `TemperatureStats`.

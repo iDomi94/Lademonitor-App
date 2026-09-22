@@ -5015,8 +5015,7 @@
           }
         }
       }
-    }
-,
+    },
     "%lld Ladevorgänge ohne Temperaturangabe sind nicht enthalten." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5220,8 +5219,7 @@
           }
         }
       }
-    }
-,
+    },
     "vom Fahrzeug" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5286,6 +5284,635 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "from the weather service (interval mean)"
+          }
+        }
+      }
+    },
+    "Ganzjahr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganzjahr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All-season"
+          }
+        }
+      }
+    },
+    "Reifen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tires"
+          }
+        }
+      }
+    },
+    "Reifensätze" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifensätze"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tire sets"
+          }
+        }
+      }
+    },
+    "Reifenwechsel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifenwechsel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tire changes"
+          }
+        }
+      }
+    },
+    "Reifenwechsel löschen?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifenwechsel löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete tire change?"
+          }
+        }
+      }
+    },
+    "Reifenwechsel bearbeiten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifenwechsel bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit tire change"
+          }
+        }
+      }
+    },
+    "Neuer Reifenwechsel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Reifenwechsel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New tire change"
+          }
+        }
+      }
+    },
+    "Die Ladevorgänge bleiben erhalten – sie werden danach nur keinem Reifensatz mehr zugeordnet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Ladevorgänge bleiben erhalten – sie werden danach nur keinem Reifensatz mehr zugeordnet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The charging sessions are kept – they simply won't be attributed to a tire set any more."
+          }
+        }
+      }
+    },
+    "Vergleich" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vergleich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparison"
+          }
+        }
+      }
+    },
+    "Mehrverbrauch Winter- gegenüber Sommerreifen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrverbrauch Winter- gegenüber Sommerreifen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Winter tires versus summer tires"
+          }
+        }
+      }
+    },
+    "Temperaturbereinigt auf %@ °C" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temperaturbereinigt auf %@ °C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjusted for temperature to %@ °C"
+          }
+        }
+      }
+    },
+    "Verglichen wird nicht der rohe Saison-Durchschnitt – der würde nur messen, dass Winterreifen im Winter gefahren werden –, sondern die Abweichung von der Verbrauchskurve über der Außentemperatur." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verglichen wird nicht der rohe Saison-Durchschnitt – der würde nur messen, dass Winterreifen im Winter gefahren werden –, sondern die Abweichung von der Verbrauchskurve über der Außentemperatur."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is compared is not the raw seasonal average – that would only measure that winter tires are driven in winter – but the deviation from the consumption curve over outside temperature."
+          }
+        }
+      }
+    },
+    "Die Sätze wurden in getrennten Temperaturbereichen gefahren – der bereinigte Vergleich ist damit eine Hochrechnung." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Sätze wurden in getrennten Temperaturbereichen gefahren – der bereinigte Vergleich ist damit eine Hochrechnung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sets were driven in separate temperature ranges, so the adjusted comparison is an extrapolation."
+          }
+        }
+      }
+    },
+    "Die Sätze überlappen sich nur um %@ K Temperatur – die Zahl ist überwiegend eine Hochrechnung." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Sätze überlappen sich nur um %@ K Temperatur – die Zahl ist überwiegend eine Hochrechnung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sets only overlap by %@ K of temperature – the figure is mostly an extrapolation."
+          }
+        }
+      }
+    },
+    "Noch kein Reifenwechsel eingetragen. Trage den ersten ein – ab diesem Datum gilt der Satz, bis der nächste Eintrag folgt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch kein Reifenwechsel eingetragen. Trage den ersten ein – ab diesem Datum gilt der Satz, bis der nächste Eintrag folgt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tire change recorded yet. Add the first one – from that date the set applies until the next entry."
+          }
+        }
+      }
+    },
+    "Nicht berücksichtigt: %lld Fahrten ohne zugeordneten Reifensatz, %lld Fahrten über einen Wechsel hinweg." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht berücksichtigt: %lld Fahrten ohne zugeordneten Reifensatz, %lld Fahrten über einen Wechsel hinweg."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Left out: %lld drives without a tire set, %lld drives spanning a change."
+          }
+        }
+      }
+    },
+    "aufgezogen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aufgezogen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fitted"
+          }
+        }
+      }
+    },
+    "%lld km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km"
+          }
+        }
+      }
+    },
+    "%lld Fahrten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Fahrten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld drives"
+          }
+        }
+      }
+    },
+    "%@ montiert · %@ alt · %lld×" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ montiert · %@ alt · %lld×"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fitted · %@ old · %lld×"
+          }
+        }
+      }
+    },
+    "%lld km · %lld Fahrten · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km · %lld Fahrten · %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km · %lld drives · %@"
+          }
+        }
+      }
+    },
+    "bis %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "until %@"
+          }
+        }
+      }
+    },
+    "bis heute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis heute"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "until today"
+          }
+        }
+      }
+    },
+    "Jahre" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahre"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "years"
+          }
+        }
+      }
+    },
+    "Tage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "days"
+          }
+        }
+      }
+    },
+    "Art" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Art"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        }
+      }
+    },
+    "Montiert am" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montiert am"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fitted on"
+          }
+        }
+      }
+    },
+    "Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From this date the set applies until the next change follows. That is why there is no end date."
+          }
+        }
+      }
+    },
+    "Größe (z. B. 235/45 R21)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe (z. B. 235/45 R21)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size (e.g. 235/45 R21)"
+          }
+        }
+      }
+    },
+    "Notiz (optional)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiz (optional)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note (optional)"
+          }
+        }
+      }
+    },
+    "%lld km *" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km *"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km *"
+          }
+        }
+      }
+    },
+    "%lld km * · %lld Fahrten · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km * · %lld Fahrten · %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km * · %lld drives · %@"
+          }
+        }
+      }
+    },
+    "* Nur aus den zugeordneten Fahrten gezählt – die Fahrt über den Wechsel hinweg fehlt. Trage den Kilometerstand beim Wechsel ein, dann wird der Wert exakt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* Nur aus den zugeordneten Fahrten gezählt – die Fahrt über den Wechsel hinweg fehlt. Trage den Kilometerstand beim Wechsel ein, dann wird der Wert exakt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* Counted from the attributed drives only – the drive across the change is missing. Enter the odometer reading at the change and the figure becomes exact."
+          }
+        }
+      }
+    },
+    "Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht. Der Kilometerstand macht die Laufleistung exakt – ohne ihn wird sie aus den zugeordneten Fahrten gezählt, und die eine Fahrt über den Wechsel hinweg fehlt darin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht. Der Kilometerstand macht die Laufleistung exakt – ohne ihn wird sie aus den zugeordneten Fahrten gezählt, und die eine Fahrt über den Wechsel hinweg fehlt darin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From this date the set applies until the next change follows. That is why there is no end date. The odometer reading makes the mileage exact – without it, it is counted from the attributed drives, and the one drive across the change is missing from it."
+          }
+        }
+      }
+    },
+    "So fängst du an" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So fängst du an"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to start"
+          }
+        }
+      }
+    },
+    "Trag den Satz ein, der gerade aufgezogen ist – mit dem Datum, an dem er montiert wurde, auch wenn das ein Jahr zurückliegt, und dem Kilometerstand von damals, falls du ihn noch findest." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trag den Satz ein, der gerade aufgezogen ist – mit dem Datum, an dem er montiert wurde, auch wenn das ein Jahr zurückliegt, und dem Kilometerstand von damals, falls du ihn noch findest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record the set that is fitted right now – with the date it was mounted, even if that was a year ago, and the odometer reading from back then if you can still find it."
+          }
+        }
+      }
+    },
+    "Fahrten VOR diesem Datum bleiben ohne Reifensatz – was damals drauf war, weiß die App nicht. Beim Raten lieber ein etwas späteres Datum als ein zu frühes: zu früh schreibt diesem Satz fremde Fahrten zu, zu spät lässt nur ein paar Fahrten weg." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrten VOR diesem Datum bleiben ohne Reifensatz – was damals drauf war, weiß die App nicht. Beim Raten lieber ein etwas späteres Datum als ein zu frühes: zu früh schreibt diesem Satz fremde Fahrten zu, zu spät lässt nur ein paar Fahrten weg."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drives BEFORE that date stay without a tire set – the app has no idea what was fitted then. When guessing, pick a slightly later date rather than one that is too early: too early attributes other sets' drives to this one, too late merely leaves a few drives out."
           }
         }
       }

@@ -40,6 +40,13 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   Verbrauch, den der Server einem Ladevorgang zurechnet, stammt von der Fahrt
   davor. Wer Home Assistant nutzt, bekommt ihn automatisch; hier lässt er sich
   nachtragen. Funktioniert auch im Local-Only-Modus
+- Reifen (Einstellungen → Reifen): jeden Reifenwechsel mit Art, Datum, Kilometerstand,
+  Größe, Marke und Modell eintragen. Dazu die Übersicht, wie lange ein Satz aufgezogen
+  war, wie viele Kilometer und Fahrten auf ihm liegen und wie alt er seit der
+  ersten Montage ist, plus den temperaturbereinigten Vergleich Winter gegen
+  Sommer. Braucht Lademonitor-Server 0.26.0 oder neuer und ist **nur im
+  Server-Modus** verfügbar: die Zuordnung der Fahrten und die Bereinigung
+  rechnet der Server, damit App und Web nicht unterschiedliche Zahlen zeigen
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
   „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem

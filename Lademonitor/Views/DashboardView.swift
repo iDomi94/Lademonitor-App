@@ -506,6 +506,28 @@ private struct TemperatureSection: View {
         return [minT, maxT].map { (x: $0, y: trend.intercept + trend.slope * $0) }
     }
 
+    /// Wertebereich der y-Achse - dieselbe Rechnung wie in der Web-Oberflaeche
+    /// (`index.html`): 10 % Luft nach unten, 5 % nach oben, nie unter 0.
+    ///
+    /// Bewusst NICHT nullbasiert, anders als die Jahreszeiten-Balken darunter -
+    /// und das ist kein Widerspruch: bei einem Balken kodiert die LAENGE den
+    /// Wert, ein abgeschnittener Nullpunkt vergroessert den Unterschied dort
+    /// kuenstlich. Hier kodiert die POSITION, es gibt keine Laenge zu
+    /// verzerren, und eine Nullachse presst alle Fahrten ins obere Drittel:
+    /// liegt kein Vorgang unter 10 kWh/100 km, ist das untere Drittel der
+    /// Flaeche schlicht leer.
+    private var consumptionDomain: ClosedRange<Double> {
+        var values = stats.points.map(\.consumptionKwhPer100km)
+        values += stats.buckets.map(\.avgConsumptionKwhPer100km)
+        if let trend = stats.trend {
+            values += trendLine(trend).map(\.y)
+        }
+        guard let lowest = values.min(), let highest = values.max() else { return 0...1 }
+        let lower = max(0, lowest * 0.9)
+        let upper = highest * 1.05
+        return lower...(upper > lower ? upper : lower + 1)
+    }
+
     /// Woraus die Kennzahl stammt - eine Gerade oder zwei, und bei zweien auch
     /// gleich die Temperatur des geringsten Verbrauchs.
     private func modelDescription(_ trend: TempTrend) -> String {
@@ -639,6 +661,7 @@ private struct TemperatureSection: View {
                 .symbolSize(60)
             }
         }
+        .chartYScale(domain: consumptionDomain)
         .chartXAxisLabel("°C")
         .chartYAxisLabel("kWh/100km")
     }
