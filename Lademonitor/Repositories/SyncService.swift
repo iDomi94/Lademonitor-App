@@ -710,7 +710,15 @@ final class SyncService: ObservableObject {
             case "vehicle":
                 if let row = try findLocalVehicle(serverId: record.entityId) { context.delete(row) }
             case "provider":
-                if let row = try findLocalProvider(serverId: record.entityId) { context.delete(row) }
+                if let row = try findLocalProvider(serverId: record.entityId) {
+                    // Seine Gebuehren mit: eine noch nie hochgeladene haette sonst
+                    // keinen Anbieter mehr und scheiterte bei jedem Push erneut.
+                    let refs = Set([row.localId.uuidString, record.entityId])
+                    try context.fetch(FetchDescriptor<LocalProviderFee>())
+                        .filter { refs.contains($0.providerId) }
+                        .forEach { context.delete($0) }
+                    context.delete(row)
+                }
             case "location":
                 if let row = try findLocalLocation(serverId: record.entityId) { context.delete(row) }
             case "session":

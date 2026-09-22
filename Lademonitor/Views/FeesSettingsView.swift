@@ -209,7 +209,7 @@ struct AddEditFeeView: View {
                     HStack {
                         Text("Betrag (€)")
                         Spacer()
-                        TextField("15,00", text: $amount)
+                        TextField("15,00" as String, text: $amount)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                     }
