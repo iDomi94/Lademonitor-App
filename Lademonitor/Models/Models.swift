@@ -673,19 +673,53 @@ struct SeasonStat: Codable, Identifiable {
     }
 }
 
+/// Ein Eckpunkt der Ausgleichskurve - die Punkte ergeben einen Streckenzug.
+struct TempCurveVertex: Codable {
+    let tempC: Double
+    let consumption: Double
+
+    enum CodingKeys: String, CodingKey {
+        case tempC = "temp_c"
+        case consumption
+    }
+}
+
 struct TempTrend: Codable {
+    /// Beschreiben IMMER die einfache Ausgleichsgerade, auch beim Knickmodell -
+    /// deshalb bleiben sie der Rueckfallweg fuer `curve` (aelterer Server).
     let slope: Double
     let intercept: Double
-    /// Wieviel der Streuung die Temperatur ueberhaupt erklaert (0…1).
+    /// Wieviel der Streuung die Temperatur ueberhaupt erklaert (0…1). Gehoert
+    /// zu dem Modell, das der Server tatsaechlich benutzt hat.
     let r2: Double
     let consumptionAt0c: Double
     let consumptionAt20c: Double
     let extraPctAt0c: Double
 
+    /// "linear" oder "breakpoint" (Server ab 0.25.0). Der Verbrauch ueber der
+    /// Temperatur ist eine Wanne: unterhalb der Komfortgrenze heizt das
+    /// Fahrzeug, oberhalb kuehlt es. Hat der Server dafuer genug Daten, legt er
+    /// je eine Gerade nach kalt und nach warm.
+    let model: String?
+    /// Streckenzug des benutzten Modells: zwei Eckpunkte bei der Geraden, drei
+    /// beim Knickmodell. Nur ueber den gemessenen Bereich.
+    let curve: [TempCurveVertex]?
+    /// Temperatur des geringsten Verbrauchs (nur beim Knickmodell).
+    let breakpointC: Double?
+    let slopeCold: Double?
+    let slopeWarm: Double?
+    /// True, wenn 0 °C unter der kaeltesten gemessenen Fahrt liegt - dann ist
+    /// die Kennzahl eine Hochrechnung, keine Messung.
+    let at0cIsExtrapolated: Bool?
+
     enum CodingKeys: String, CodingKey {
-        case slope, intercept, r2
+        case slope, intercept, r2, model, curve
         case consumptionAt0c = "consumption_at_0c"
         case consumptionAt20c = "consumption_at_20c"
         case extraPctAt0c = "extra_pct_at_0c"
+        case breakpointC = "breakpoint_c"
+        case slopeCold = "slope_cold"
+        case slopeWarm = "slope_warm"
+        case at0cIsExtrapolated = "at_0c_is_extrapolated"
     }
 }

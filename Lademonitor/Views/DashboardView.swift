@@ -490,13 +490,30 @@ private struct TemperatureSection: View {
     private static let bucketColor = Color(red: 0.180, green: 0.659, blue: 0.498)
     private static let trendColor  = Color(red: 0.741, green: 0.541, blue: 0.149)
 
-    /// Anfangs- und Endpunkt der Ausgleichsgeraden, gezeichnet nur ueber den
-    /// Bereich, in dem es auch Messpunkte gibt - eine bis 0 Grad verlaengerte
-    /// Gerade ohne Winterdaten waere eine Behauptung, keine Ablesung.
+    /// Eckpunkte der Ausgleichskurve, gezeichnet nur ueber den Bereich, in dem
+    /// es auch Messpunkte gibt - eine bis 0 Grad verlaengerte Linie ohne
+    /// Winterdaten waere eine Behauptung, keine Ablesung.
+    ///
+    /// Der Server liefert ab 0.25.0 `curve`: zwei Eckpunkte bei der Geraden,
+    /// drei beim Knickmodell. Ein aelterer Server kennt das Feld nicht - dann
+    /// wird die Gerade wie bisher aus `slope`/`intercept` gebaut.
     private func trendLine(_ trend: TempTrend) -> [(x: Double, y: Double)] {
+        if let curve = trend.curve, curve.count > 1 {
+            return curve.map { (x: $0.tempC, y: $0.consumption) }
+        }
         let temps = stats.points.map(\.tempC)
         guard let minT = temps.min(), let maxT = temps.max(), minT < maxT else { return [] }
         return [minT, maxT].map { (x: $0, y: trend.intercept + trend.slope * $0) }
+    }
+
+    /// Woraus die Kennzahl stammt - eine Gerade oder zwei, und bei zweien auch
+    /// gleich die Temperatur des geringsten Verbrauchs.
+    private func modelDescription(_ trend: TempTrend) -> String {
+        guard trend.model == "breakpoint", let breakpoint = trend.breakpointC else {
+            return String(localized: "einer Ausgleichsgeraden")
+        }
+        return String(format: String(localized: "zwei Geraden mit dem geringsten Verbrauch bei %.0f °C"),
+                      breakpoint)
     }
 
     private var seasonData: [(String, Double)] {
@@ -523,10 +540,21 @@ private struct TemperatureSection: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Mehrverbrauch bei 0 °C statt 20 °C")
                                     .font(.subheadline)
-                                Text(String(format: "%.1f statt %.1f kWh/100km · R² %.2f",
-                                            trend.consumptionAt0c, trend.consumptionAt20c, trend.r2))
+                                Text(String(format: String(localized: "%1$.1f statt %2$.1f kWh/100km laut %3$@ · R² %4$.2f"),
+                                            trend.consumptionAt0c, trend.consumptionAt20c,
+                                            modelDescription(trend), trend.r2))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
+                                // Der Hinweis gehoert an die Kennzahl, nicht in
+                                // eine Fussnote: wer erst im Fruehjahr
+                                // angefangen hat zu messen, sieht hier eine
+                                // Hochrechnung auf einen Winter, den es in den
+                                // Daten gar nicht gibt.
+                                if trend.at0cIsExtrapolated == true {
+                                    Text("hochgerechnet – so kalt war es in deinen Daten noch nie")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                     }
