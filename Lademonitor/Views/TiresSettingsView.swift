@@ -95,9 +95,15 @@ struct TiresSettingsView: View {
     @ViewBuilder
     private var setsSection: some View {
         if let overview, !overview.sets.isEmpty {
-            Section("Reifensätze") {
+            Section {
                 ForEach(overview.sets) { summary in
                     TireSetSummaryRow(summary: summary)
+                }
+            } header: {
+                Text("Reifensätze")
+            } footer: {
+                if overview.sets.contains(where: { !$0.kmIsExact }) {
+                    Text("* Nur aus den zugeordneten Fahrten gezählt – die Fahrt über den Wechsel hinweg fehlt. Trage den Kilometerstand beim Wechsel ein, dann wird der Wert exakt.")
                 }
             }
         }
@@ -144,8 +150,8 @@ struct TiresSettingsView: View {
         return sets.map {
             TireMounting(tireSetId: $0.id, vehicleId: $0.vehicleId, kind: $0.kind,
                          label: $0.label, installedOn: $0.installedOn, removedOn: nil,
-                         isCurrent: false, days: 0, drives: 0, km: 0, energyKwh: 0,
-                         avgConsumptionKwhPer100km: nil)
+                         isCurrent: false, days: 0, drives: 0, km: 0, kmSource: nil,
+                         energyKwh: 0, avgConsumptionKwhPer100km: nil)
         }
     }
 
@@ -222,7 +228,11 @@ private struct TireSetSummaryRow: View {
                 }
             }
             HStack(spacing: 12) {
-                Text("\(Int(summary.km.rounded())) km")
+                // Ein Sternchen an der Zahl, wenn sie nur aus den zugeordneten
+                // Fahrten stammt - dort fehlt die Fahrt ueber den Wechsel.
+                Text(summary.kmIsExact
+                     ? "\(Int(summary.km.rounded())) km"
+                     : "\(Int(summary.km.rounded())) km *")
                 Text("\(summary.drives) Fahrten")
                 if let consumption = summary.avgConsumptionKwhPer100km {
                     Text(String(format: "%.1f kWh/100 km", consumption))
@@ -258,8 +268,10 @@ private struct TireMountingRow: View {
             Text(period)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            if mounting.drives > 0 {
-                Text("\(Int(mounting.km.rounded())) km · \(mounting.drives) Fahrten · \(TireFormat.duration(mounting.days))")
+            if mounting.drives > 0 || mounting.km > 0 {
+                Text(mounting.kmIsExact
+                     ? "\(Int(mounting.km.rounded())) km · \(mounting.drives) Fahrten · \(TireFormat.duration(mounting.days))"
+                     : "\(Int(mounting.km.rounded())) km * · \(mounting.drives) Fahrten · \(TireFormat.duration(mounting.days))")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -303,6 +315,7 @@ struct AddEditTireSetView: View {
     @State private var vehicleId: String
     @State private var kind: TireKind
     @State private var installedOn: Date
+    @State private var odometerKm: String
     @State private var size: String
     @State private var brand: String
     @State private var model: String
@@ -317,6 +330,7 @@ struct AddEditTireSetView: View {
         _vehicleId = State(initialValue: tireSet?.vehicleId ?? vehicles.first?.id ?? "")
         _kind = State(initialValue: tireSet?.kind ?? .summer)
         _installedOn = State(initialValue: tireSet?.installedOn ?? Date())
+        _odometerKm = State(initialValue: tireSet?.odometerKm.map { String(format: "%.0f", $0) } ?? "")
         _size = State(initialValue: tireSet?.size ?? "")
         _brand = State(initialValue: tireSet?.brand ?? "")
         _model = State(initialValue: tireSet?.model ?? "")
@@ -341,8 +355,15 @@ struct AddEditTireSetView: View {
                         }
                     }
                     DatePicker("Montiert am", selection: $installedOn, displayedComponents: .date)
+                    HStack {
+                        Text("Kilometerstand")
+                        Spacer()
+                        TextField("optional", text: $odometerKm)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                    }
                 } footer: {
-                    Text("Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht.")
+                    Text("Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht. Der Kilometerstand macht die Laufleistung exakt – ohne ihn wird sie aus den zugeordneten Fahrten gezählt, und die eine Fahrt über den Wechsel hinweg fehlt darin.")
                 }
 
                 Section("Reifen") {
@@ -386,6 +407,9 @@ struct AddEditTireSetView: View {
             vehicleId: isEditing ? nil : vehicleId,
             kind: kind,
             installedOn: day,
+            // Ohne Angabe bewusst nil statt 0 - die Auswertung faellt dann auf
+            // die Fahrten zurueck, statt bei Kilometerstand 0 zu beginnen.
+            odometerKm: Double(odometerKm.replacingOccurrences(of: ",", with: ".")),
             size: cleaned(size),
             brand: cleaned(brand),
             model: cleaned(model),

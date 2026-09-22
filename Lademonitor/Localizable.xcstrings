@@ -5797,6 +5797,74 @@
           }
         }
       }
+    },
+    "%lld km *" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km *"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km *"
+          }
+        }
+      }
+    },
+    "%lld km * · %lld Fahrten · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km * · %lld Fahrten · %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld km * · %lld drives · %@"
+          }
+        }
+      }
+    },
+    "* Nur aus den zugeordneten Fahrten gezählt – die Fahrt über den Wechsel hinweg fehlt. Trage den Kilometerstand beim Wechsel ein, dann wird der Wert exakt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* Nur aus den zugeordneten Fahrten gezählt – die Fahrt über den Wechsel hinweg fehlt. Trage den Kilometerstand beim Wechsel ein, dann wird der Wert exakt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* Counted from the attributed drives only – the drive across the change is missing. Enter the odometer reading at the change and the figure becomes exact."
+          }
+        }
+      }
+    },
+    "Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht. Der Kilometerstand macht die Laufleistung exakt – ohne ihn wird sie aus den zugeordneten Fahrten gezählt, und die eine Fahrt über den Wechsel hinweg fehlt darin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht. Der Kilometerstand macht die Laufleistung exakt – ohne ihn wird sie aus den zugeordneten Fahrten gezählt, und die eine Fahrt über den Wechsel hinweg fehlt darin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From this date the set applies until the next change follows. That is why there is no end date. The odometer reading makes the mileage exact – without it, it is counted from the attributed drives, and the one drive across the change is missing from it."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -41,6 +41,10 @@ struct TireSet: Codable, Identifiable, Hashable {
     let vehicleId: String
     let kind: TireKind
     let installedOn: Date
+    /// Kilometerstand beim Wechsel. Optional, aber die genauere Quelle fuer die
+    /// Laufleistung: die Differenz zweier Wechsel enthaelt auch die Fahrt, die
+    /// ueber den Wechsel hinweg lief und keinem Satz zugeordnet werden kann.
+    let odometerKm: Double?
     let size: String?
     let brand: String?
     let model: String?
@@ -50,6 +54,7 @@ struct TireSet: Codable, Identifiable, Hashable {
         case id, kind, size, brand, model, notes
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
+        case odometerKm = "odometer_km"
     }
 
     /// Marke, Modell und Groesse in einer Zeile - leere Felder fallen weg.
@@ -64,6 +69,7 @@ struct TireSetPayload: Codable {
     let vehicleId: String?
     let kind: TireKind
     let installedOn: Date
+    let odometerKm: Double?
     let size: String?
     let brand: String?
     let model: String?
@@ -73,6 +79,7 @@ struct TireSetPayload: Codable {
         case kind, size, brand, model, notes
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
+        case odometerKm = "odometer_km"
     }
 
     /// Leere Textfelder werden als `null` GESCHICKT, nicht weggelassen: der
@@ -85,6 +92,7 @@ struct TireSetPayload: Codable {
         try container.encodeIfPresent(vehicleId, forKey: .vehicleId)
         try container.encode(kind, forKey: .kind)
         try container.encode(installedOn, forKey: .installedOn)
+        try container.encode(odometerKm, forKey: .odometerKm)
         try container.encode(size, forKey: .size)
         try container.encode(brand, forKey: .brand)
         try container.encode(model, forKey: .model)
@@ -105,13 +113,18 @@ struct TireMounting: Codable, Identifiable {
     let days: Int
     let drives: Int
     let km: Double
+    /// "odometer" (Differenz der Kilometerstaende, exakt) oder "drives" (Summe
+    /// der zugeordneten Fahrten - die Fahrt ueber den Wechsel fehlt dort).
+    let kmSource: String?
     let energyKwh: Double
     let avgConsumptionKwhPer100km: Double?
 
     var id: String { tireSetId }
+    var kmIsExact: Bool { kmSource == "odometer" }
 
     enum CodingKeys: String, CodingKey {
         case kind, label, days, drives, km
+        case kmSource = "km_source"
         case tireSetId = "tire_set_id"
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
@@ -136,14 +149,18 @@ struct TireSetSummary: Codable, Identifiable {
     let daysMounted: Int
     let drives: Int
     let km: Double
+    /// "odometer" nur, wenn JEDE Montage dieses Satzes gemessene Kilometer hat.
+    let kmSource: String?
     let energyKwh: Double
     let isCurrent: Bool
     let avgConsumptionKwhPer100km: Double?
 
     var id: String { key }
+    var kmIsExact: Bool { kmSource == "odometer" }
 
     enum CodingKeys: String, CodingKey {
         case key, label, kind, mountings, drives, km
+        case kmSource = "km_source"
         case firstInstalledOn = "first_installed_on"
         case ageDays = "age_days"
         case daysMounted = "days_mounted"
