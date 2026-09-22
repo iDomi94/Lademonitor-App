@@ -41,7 +41,7 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   davor. Wer Home Assistant nutzt, bekommt ihn automatisch; hier lässt er sich
   nachtragen. Funktioniert auch im Local-Only-Modus
 - Reifen (Einstellungen → Reifen): jeden Reifenwechsel mit Art, Datum, Kilometerstand,
-  Größe, Marke und Modell eintragen. Dazu die Übersicht, wie lange ein Satz aufgezogen
+  Größe (bei Mischbereifung vorne/hinten getrennt), Marke und Modell eintragen. Dazu die Übersicht, wie lange ein Satz aufgezogen
   war, wie viele Kilometer und Fahrten auf ihm liegen und wie alt er seit der
   ersten Montage ist, plus den temperaturbereinigten Vergleich Winter gegen
   Sommer. Braucht Lademonitor-Server 0.26.0 oder neuer und ist **nur im

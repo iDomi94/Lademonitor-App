@@ -5916,6 +5916,40 @@
           }
         }
       }
+    },
+    "Größe hinten (nur bei Mischbereifung)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe hinten (nur bei Mischbereifung)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rear size (staggered fitment only)"
+          }
+        }
+      }
+    },
+    "Gleiche Größe rundum? Dann reicht das erste Feld. Bei Mischbereifung steht dort die Vorderachse und darunter die Hinterachse." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleiche Größe rundum? Dann reicht das erste Feld. Bei Mischbereifung steht dort die Vorderachse und darunter die Hinterachse."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Same size all round? Then the first field is enough. With a staggered fitment it holds the front axle and the one below it the rear axle."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

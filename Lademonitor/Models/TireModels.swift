@@ -45,7 +45,10 @@ struct TireSet: Codable, Identifiable, Hashable {
     /// Laufleistung: die Differenz zweier Wechsel enthaelt auch die Fahrt, die
     /// ueber den Wechsel hinweg lief und keinem Satz zugeordnet werden kann.
     let odometerKm: Double?
+    /// Groesse aller vier Raeder - oder, wenn `sizeRear` gesetzt ist, die der
+    /// Vorderachse (Mischbereifung).
     let size: String?
+    let sizeRear: String?
     let brand: String?
     let model: String?
     let notes: String?
@@ -55,11 +58,23 @@ struct TireSet: Codable, Identifiable, Hashable {
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
         case odometerKm = "odometer_km"
+        case sizeRear = "size_rear"
+    }
+
+    /// Bei Mischbereifung beide Achsen ("vorne / hinten"), sonst die eine
+    /// Groesse - dieselbe Regel wie serverseitig in `tires.py::size_label()`.
+    var sizeLabel: String {
+        if let size, let sizeRear, !size.isEmpty, !sizeRear.isEmpty {
+            return "\(size) / \(sizeRear)"
+        }
+        return [size, sizeRear].compactMap { $0?.isEmpty == false ? $0 : nil }.first ?? ""
     }
 
     /// Marke, Modell und Groesse in einer Zeile - leere Felder fallen weg.
     var label: String {
-        [brand, model, size].compactMap { $0?.isEmpty == false ? $0 : nil }.joined(separator: " ")
+        [brand, model, sizeLabel.isEmpty ? nil : sizeLabel]
+            .compactMap { $0?.isEmpty == false ? $0 : nil }
+            .joined(separator: " ")
     }
 }
 
@@ -71,6 +86,7 @@ struct TireSetPayload: Codable {
     let installedOn: Date
     let odometerKm: Double?
     let size: String?
+    let sizeRear: String?
     let brand: String?
     let model: String?
     let notes: String?
@@ -80,6 +96,7 @@ struct TireSetPayload: Codable {
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
         case odometerKm = "odometer_km"
+        case sizeRear = "size_rear"
     }
 
     /// Leere Textfelder werden als `null` GESCHICKT, nicht weggelassen: der
@@ -94,6 +111,7 @@ struct TireSetPayload: Codable {
         try container.encode(installedOn, forKey: .installedOn)
         try container.encode(odometerKm, forKey: .odometerKm)
         try container.encode(size, forKey: .size)
+        try container.encode(sizeRear, forKey: .sizeRear)
         try container.encode(brand, forKey: .brand)
         try container.encode(model, forKey: .model)
         try container.encode(notes, forKey: .notes)
