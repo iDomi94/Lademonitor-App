@@ -51,7 +51,11 @@ struct DashboardView: View {
                     LazyVGrid(columns: columns, spacing: 12) {
                         StatCard(label: String(localized: "Ladevorgänge"), value: "\(stats.totalSessions)")
                         StatCard(label: String(localized: "Gesamt kWh"), value: String(format: "%.1f kWh", stats.totalKwh))
-                        StatCard(label: String(localized: "Gesamtkosten"), value: String(format: "%.2f €", stats.totalCost))
+                        StatCard(
+                            label: String(localized: "Gesamtkosten"),
+                            value: String(format: "%.2f €", stats.totalCost),
+                            detail: stats.totalFees.flatMap { $0 > 0 ? String(format: String(localized: "davon %.2f € Grundgebühren"), $0) : nil }
+                        )
                         StatCard(label: String(localized: "Ø Preis/kWh"), value: stats.avgPricePerKwh.map { String(format: "%.3f €", $0) } ?? "–")
                         StatCard(label: String(localized: "Ø Verbrauch/100km"), value: stats.avgConsumptionKwhPer100km.map { String(format: "%.1f kWh", $0) } ?? "–")
                         StatCard(label: String(localized: "Preis/100km"), value: stats.pricePer100km.map { String(format: "%.2f €", $0) } ?? "–")
@@ -185,6 +189,8 @@ struct DashboardView: View {
 private struct StatCard: View {
     let label: String
     let value: String
+    /// Kleine Zusatzzeile unter dem Wert, z.B. der Grundgebuehren-Anteil.
+    var detail: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -193,6 +199,11 @@ private struct StatCard: View {
                 .foregroundStyle(.secondary)
             Text(value)
                 .font(.title3.bold())
+            if let detail {
+                Text(detail)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()

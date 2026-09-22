@@ -150,6 +150,11 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     var source: SessionSource
     var needsReview: Bool
     var externalSessionId: String?
+    /// Anteil an den Grundgebuehren/Abos des Anbieters in EUR (Server ab
+    /// 0.27.0), nach kWh auf die Vorgaenge der Periode umgelegt. Kommt NICHT
+    /// in `priceTotal` vor - das bleibt der Saeulenpreis. Nur lesend und
+    /// lokal immer frisch berechnet (LocalFeeAllocator), wie der Verbrauch.
+    var feeShare: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, notes, source, latitude, longitude
@@ -173,6 +178,14 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case pricePerKwh = "price_per_kwh"
         case needsReview = "needs_review"
         case externalSessionId = "external_session_id"
+        case feeShare = "fee_share"
+    }
+
+    /// Saeulenpreis plus Grundgebuehranteil - das, was der Vorgang effektiv
+    /// gekostet hat. `nil` nur, wenn beides fehlt.
+    var effectiveTotal: Double? {
+        guard priceTotal != nil || feeShare != nil else { return nil }
+        return (priceTotal ?? 0) + (feeShare ?? 0)
     }
 
     /// Uebersetzter Klartext zur Herkunft der Temperatur, `nil` wenn keine
@@ -448,12 +461,16 @@ struct ProviderStat: Codable, Identifiable {
     var id: String { providerName }
     let providerName: String
     let totalKwh: Double
+    /// Inklusive Grundgebuehren (ab Server 0.27.0).
     let totalCost: Double
+    /// Davon Grundgebuehren/Abos.
+    var totalFees: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case providerName = "provider_name"
         case totalKwh = "total_kwh"
         case totalCost = "total_cost"
+        case totalFees = "total_fees"
     }
 }
 
@@ -464,6 +481,8 @@ struct MonthlyStat: Codable, Identifiable {
     let totalKwh: Double
     let sessionCount: Int
     let avgConsumptionKwhPer100km: Double?
+    /// Davon Grundgebuehren/Abos (in `totalCost` enthalten).
+    var totalFees: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case month
@@ -471,6 +490,7 @@ struct MonthlyStat: Codable, Identifiable {
         case totalKwh = "total_kwh"
         case sessionCount = "session_count"
         case avgConsumptionKwhPer100km = "avg_consumption_kwh_per_100km"
+        case totalFees = "total_fees"
     }
 
     /// Wandelt das Server-Format "YYYY-MM" (z.B. "2026-08") in einen an die
@@ -522,6 +542,11 @@ struct StatsSummary: Codable {
     let totalKmDriven: Int?
     let byProvider: [ProviderStat]
     let monthly: [MonthlyStat]
+    /// Grundgebuehren/Abos im Zeitraum, in `totalCost`, `avgPricePerKwh` und
+    /// `pricePer100km` bereits enthalten (Server ab 0.27.0).
+    var totalFees: Double? = nil
+    /// Davon Perioden, in denen es keinen Ladevorgang des Anbieters gab.
+    var unallocatedFees: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case totalSessions = "total_sessions"
@@ -537,6 +562,8 @@ struct StatsSummary: Codable {
         case totalKmDriven = "total_km_driven"
         case byProvider = "by_provider"
         case monthly
+        case totalFees = "total_fees"
+        case unallocatedFees = "unallocated_fees"
     }
 }
 

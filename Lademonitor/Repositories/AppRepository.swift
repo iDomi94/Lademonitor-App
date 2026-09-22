@@ -143,6 +143,43 @@ final class AppRepository {
         let sessions = try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: nil, dateRange: dateRange)
         let vehicles = try LocalDataStore.shared.fetchVehicles()
         let providers = try LocalDataStore.shared.fetchProviders()
-        return LocalStatsCalculator.compute(sessions: sessions, vehicles: vehicles, providers: providers)
+        // Perioden ohne Ladevorgang gehoeren zu keinem Fahrzeug (ein Abo gilt
+        // fuers Konto) und zaehlen beim Zeitraum nach ihrem Beginn - wie stats.py.
+        var unallocated: [LocalFeeAllocator.Period] = []
+        if vehicleId == nil {
+            unallocated = try LocalDataStore.shared.feeAllocation().unallocated
+            if let dateRange {
+                let from = Calendar.current.startOfDay(for: dateRange.lowerBound)
+                let to = Calendar.current.startOfDay(for: dateRange.upperBound)
+                unallocated = unallocated.filter { from <= $0.start && $0.start <= to }
+            }
+        }
+        return LocalStatsCalculator.compute(
+            sessions: sessions, vehicles: vehicles, providers: providers, unallocatedFees: unallocated
+        )
+    }
+
+    // MARK: - Grundgebuehren
+
+    func fetchFees(providerId: String? = nil) async throws -> [ProviderFee] {
+        await syncBeforeRead()
+        return try LocalDataStore.shared.fetchFees(providerId: providerId)
+    }
+
+    func createFee(_ payload: ProviderFeePayload) async throws -> ProviderFee {
+        let fee = try LocalDataStore.shared.createFee(payload)
+        syncAfterWrite()
+        return fee
+    }
+
+    func updateFee(id: String, _ payload: ProviderFeePayload) async throws -> ProviderFee {
+        let fee = try LocalDataStore.shared.updateFee(id: id, payload)
+        syncAfterWrite()
+        return fee
+    }
+
+    func deleteFee(id: String) async throws {
+        try LocalDataStore.shared.deleteFee(id: id)
+        syncAfterWrite()
     }
 }

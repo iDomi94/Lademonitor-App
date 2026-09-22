@@ -279,6 +279,30 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/providers/\(id)", method: "DELETE"))
     }
 
+    // MARK: - Grundgebuehren (Server ab 0.27.0)
+    //
+    // Ein aelterer Server antwortet hier mit 404 - der SyncService faengt das
+    // ab und laesst die Gebuehren dann lokal liegen, statt den Sync scheitern
+    // zu lassen.
+
+    func fetchProviderFees() async throws -> [ProviderFee] {
+        try await send(try makeRequest(path: "/api/provider-fees"))
+    }
+
+    func createProviderFee(_ payload: ProviderFeePayload) async throws -> ProviderFee {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/provider-fees", method: "POST", body: body))
+    }
+
+    func updateProviderFee(id: String, _ payload: ProviderFeePayload) async throws -> ProviderFee {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/provider-fees/\(id)", method: "PATCH", body: body))
+    }
+
+    func deleteProviderFee(id: String) async throws {
+        try await sendNoContent(try makeRequest(path: "/api/provider-fees/\(id)", method: "DELETE"))
+    }
+
     // MARK: - Locations
 
     func fetchLocations() async throws -> [ChargingLocation] {

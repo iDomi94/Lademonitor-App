@@ -112,13 +112,28 @@ struct SessionDetailView: View {
                 }
             }
 
-            if session.priceTotal != nil || session.pricePerKwh != nil {
-                Section("Preis") {
+            if session.priceTotal != nil || session.pricePerKwh != nil || session.feeShare != nil {
+                Section {
                     if let priceTotal = session.priceTotal {
                         LabeledContent("Gesamt", value: String(format: "%.2f €", priceTotal))
                     }
                     if let pricePerKwh = session.pricePerKwh {
                         LabeledContent("Pro kWh", value: String(format: "%.4f €", pricePerKwh))
+                    }
+                    if let feeShare = session.feeShare {
+                        LabeledContent("Grundgebühr-Anteil", value: String(format: "%.2f €", feeShare))
+                        if let effective = session.effectiveTotal {
+                            LabeledContent("Effektiv gesamt", value: String(format: "%.2f €", effective))
+                        }
+                        if let kwh = session.energyKwh, kwh > 0, let effective = session.effectiveTotal {
+                            LabeledContent("Effektiv pro kWh", value: String(format: "%.4f €", effective / kwh))
+                        }
+                    }
+                } header: {
+                    Text("Preis")
+                } footer: {
+                    if session.feeShare != nil {
+                        Text("Die Grundgebühr des Anbieters wird nach kWh auf alle seine Ladevorgänge im jeweiligen Zeitraum umgelegt.")
                     }
                 }
             }
