@@ -327,6 +327,7 @@ struct AddEditTireSetView: View {
     @State private var installedOn: Date
     @State private var odometerKm: String
     @State private var size: String
+    @State private var sizeRear: String
     @State private var brand: String
     @State private var model: String
     @State private var notes: String
@@ -342,6 +343,7 @@ struct AddEditTireSetView: View {
         _installedOn = State(initialValue: tireSet?.installedOn ?? Date())
         _odometerKm = State(initialValue: tireSet?.odometerKm.map { String(format: "%.0f", $0) } ?? "")
         _size = State(initialValue: tireSet?.size ?? "")
+        _sizeRear = State(initialValue: tireSet?.sizeRear ?? "")
         _brand = State(initialValue: tireSet?.brand ?? "")
         _model = State(initialValue: tireSet?.model ?? "")
         _notes = State(initialValue: tireSet?.notes ?? "")
@@ -376,11 +378,16 @@ struct AddEditTireSetView: View {
                     Text("Ab diesem Datum gilt der Satz, bis der nächste Wechsel folgt. Ein Enddatum gibt es deshalb nicht. Der Kilometerstand macht die Laufleistung exakt – ohne ihn wird sie aus den zugeordneten Fahrten gezählt, und die eine Fahrt über den Wechsel hinweg fehlt darin.")
                 }
 
-                Section("Reifen") {
+                Section {
                     TextField("Größe (z. B. 235/45 R21)", text: $size)
+                    TextField("Größe hinten (nur bei Mischbereifung)", text: $sizeRear)
                     TextField("Marke (optional)", text: $brand)
                     TextField("Modell (optional)", text: $model)
                     TextField("Notiz (optional)", text: $notes)
+                } header: {
+                    Text("Reifen")
+                } footer: {
+                    Text("Gleiche Größe rundum? Dann reicht das erste Feld. Bei Mischbereifung steht dort die Vorderachse und darunter die Hinterachse.")
                 }
 
                 if let errorMessage {
@@ -421,6 +428,7 @@ struct AddEditTireSetView: View {
             // die Fahrten zurueck, statt bei Kilometerstand 0 zu beginnen.
             odometerKm: Double(odometerKm.replacingOccurrences(of: ",", with: ".")),
             size: cleaned(size),
+            sizeRear: cleaned(sizeRear),
             brand: cleaned(brand),
             model: cleaned(model),
             notes: cleaned(notes)
