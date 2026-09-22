@@ -1,6 +1,6 @@
 import Foundation
 
-/// Reifensaetze und ihre Auswertung (Server ab 0.26.0).
+/// Reifensaetze und ihre Auswertung (Server ab 0.26.1 fuer die zweite Groesse).
 ///
 /// Bewusst **nur im Server-Modus**: die Zuordnung von Fahrten zu Saetzen und
 /// die temperaturbereinigte Rechnung liegen komplett in `tires.py`. Sie lokal
