@@ -48,6 +48,14 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   Sommer. Braucht Lademonitor-Server 0.26.1 oder neuer und ist **nur im
   Server-Modus** verfügbar: die Zuordnung der Fahrten und die Bereinigung
   rechnet der Server, damit App und Web nicht unterschiedliche Zahlen zeigen
+- Reiter **Tools** mit dem Rechner „Lohnt sich der Tarif?“: effektiver Preis
+  pro kWh mit Grundgebühr, ob das günstiger ist als ohne Tarif und ab wie viel
+  km im Monat es sich lohnt. Tarifpreis, Grundgebühr, km im Monat und Anteil
+  beim Tarif sind Schieberegler, das Ergebnis rechnet beim Schieben live mit.
+  Vorbelegt aus den eigenen Ladevorgängen, der Preis ohne Tarif wahlweise
+  automatisch aus dem, was an öffentlichen Anbietern bezahlt wurde (welche das
+  sind, unter Einstellungen → Tools). Rechnet komplett auf dem Gerät, auch im
+  Local-Only-Modus
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
   „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem

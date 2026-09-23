@@ -168,6 +168,18 @@ struct AddEditProviderView: View {
                     Text("Diese Preise dienen als Vorschlag und werden bei jedem Ladevorgang mit Preis automatisch aktualisiert.")
                 }
 
+                if let provider {
+                    Section {
+                        NavigationLink {
+                            TariffCalculatorView(initialProviderId: provider.id)
+                        } label: {
+                            Label("Lohnt sich der Tarif?", systemImage: "eurosign.circle")
+                        }
+                    } footer: {
+                        Text("Rechnet mit den gespeicherten Preisen und Grundgebühren dieses Anbieters.")
+                    }
+                }
+
                 Section("Notizen") {
                     TextField("optional", text: $notes, axis: .vertical)
                         .lineLimit(1...4)

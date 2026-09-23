@@ -70,6 +70,9 @@ struct ContentView: View {
             MapOverviewView()
                 .tabItem { Label("Karte", systemImage: "map.fill") }
 
+            ToolsView()
+                .tabItem { Label("Tools", systemImage: "wrench.and.screwdriver.fill") }
+
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape.fill") }
         }

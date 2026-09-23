@@ -261,7 +261,7 @@ final class LocalDataStore {
     /// noch ueber die lokale UUID kennen, obwohl der inzwischen eine serverId
     /// hat - ohne diese Vereinheitlichung fiele die Umlage fuer genau diese
     /// Vorgaenge still aus.
-    private func canonicalProviderIds() throws -> [String: String] {
+    func canonicalProviderIds() throws -> [String: String] {
         var map: [String: String] = [:]
         for provider in try context.fetch(FetchDescriptor<LocalProvider>()) {
             let canonical = provider.serverId ?? provider.localId.uuidString
