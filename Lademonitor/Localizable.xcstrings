@@ -6545,6 +6545,1077 @@
           }
         }
       }
+    },
+    "Übernehmen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übernehmen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply"
+          }
+        }
+      }
+    },
+    "Gleich teuer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleich teuer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Same cost"
+          }
+        }
+      }
+    },
+    "Günstiger" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günstiger"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cheaper"
+          }
+        }
+      }
+    },
+    "Teurer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teurer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More expensive"
+          }
+        }
+      }
+    },
+    "Ø bezahlt (%@)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø bezahlt (%@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avg. paid (%@)"
+          }
+        }
+      }
+    },
+    "Öffentliche Anbieter auswählen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffentliche Anbieter auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose public providers"
+          }
+        }
+      }
+    },
+    "Preis ohne Tarif" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preis ohne Tarif"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Price without tariff"
+          }
+        }
+      }
+    },
+    "Werte übernehmen von" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werte übernehmen von"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take values from"
+          }
+        }
+      }
+    },
+    "Automatik" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic"
+          }
+        }
+      }
+    },
+    "Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten an öffentlichen Ladesäulen pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Welche Anbieter als öffentlich zählen, stellst du unter „Öffentliche Anbieter“ ein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten an öffentlichen Ladesäulen pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Welche Anbieter als öffentlich zählen, stellst du unter „Öffentliche Anbieter“ ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic: the average you paid per kWh at public chargers over the last 12 months, including base fee shares, weighted by kWh and only for the selected charging type. The provider whose values were taken does not count. Choose which providers count as public under “Public providers”."
+          }
+        }
+      }
+    },
+    "Der Anteil ist der Teil deiner geladenen Energie, der beim Tarif geladen würde. Was du zu Hause lädst, zählt nicht dazu." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Anteil ist der Teil deiner geladenen Energie, der beim Tarif geladen würde. Was du zu Hause lädst, zählt nicht dazu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The share is the part of your charged energy that would be charged on this tariff. What you charge at home does not count."
+          }
+        }
+      }
+    },
+    "Der Preis, den du ohne diesen Tarif pro kWh zahlen würdest, z. B. der Ad-hoc-Preis an der Säule." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Preis, den du ohne diesen Tarif pro kWh zahlen würdest, z. B. der Ad-hoc-Preis an der Säule."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The price per kWh you would pay without this tariff, e.g. the ad-hoc price at the charger."
+          }
+        }
+      }
+    },
+    "Effektiver Preis pro kWh mit Grundgebühr, verglichen mit dem Laden ohne Tarif" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effektiver Preis pro kWh mit Grundgebühr, verglichen mit dem Laden ohne Tarif"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effective price per kWh including the base fee, compared with charging without the tariff"
+          }
+        }
+      }
+    },
+    "Effektiver Preis" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effektiver Preis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effective price"
+          }
+        }
+      }
+    },
+    "Fahrprofil" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fahrprofil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Driving profile"
+          }
+        }
+      }
+    },
+    "Keine Ladevorgänge mit Preis im letzten Jahr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Ladevorgänge mit Preis im letzten Jahr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sessions with a price in the last year"
+          }
+        }
+      }
+    },
+    "Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe die Auswahl der öffentlichen Anbieter." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe die Auswahl der öffentlichen Anbieter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No matching sessions in the last year. Enter the price yourself or check which providers count as public."
+          }
+        }
+      }
+    },
+    "Lohnt sich der Tarif?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lohnt sich der Tarif?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Is the tariff worth it?"
+          }
+        }
+      }
+    },
+    "Neuer Tarif" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Tarif"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New tariff"
+          }
+        }
+      }
+    },
+    "Nur eingeschaltete Anbieter zählen zum automatischen Preis ohne Tarif im Tarifrechner. Schalte private Anbieter wie die eigene Wallbox aus. Neue Anbieter zählen automatisch als öffentlich. Die Auswahl gilt nur auf diesem Gerät." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur eingeschaltete Anbieter zählen zum automatischen Preis ohne Tarif im Tarifrechner. Schalte private Anbieter wie die eigene Wallbox aus. Neue Anbieter zählen automatisch als öffentlich. Die Auswahl gilt nur auf diesem Gerät."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only providers switched on count towards the automatic price without tariff in the tariff calculator. Switch off private providers such as your own wallbox. New providers count as public automatically. The selection applies to this device only."
+          }
+        }
+      }
+    },
+    "Preis je kWh (€)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preis je kWh (€)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Price per kWh (€)"
+          }
+        }
+      }
+    },
+    "Selbst eintragen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selbst eintragen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter manually"
+          }
+        }
+      }
+    },
+    "Spielwiese für jeden Tarif, auch einen, den du noch nicht hast. „Werte übernehmen von“ füllt Preis, Grundgebühr und Anteil aus einem vorhandenen Anbieter vor. Ein Tipp auf einen Wert erlaubt die genaue Eingabe." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielwiese für jeden Tarif, auch einen, den du noch nicht hast. „Werte übernehmen von“ füllt Preis, Grundgebühr und Anteil aus einem vorhandenen Anbieter vor. Ein Tipp auf einen Wert erlaubt die genaue Eingabe."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try out any tariff, including one you don't have yet. “Take values from” prefills price, base fee and share from an existing provider. Tap a value to enter it exactly."
+          }
+        }
+      }
+    },
+    "Tarif" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarif"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tariff"
+          }
+        }
+      }
+    },
+    "Verbrauch (kWh/100 km)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch (kWh/100 km)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption (kWh/100 km)"
+          }
+        }
+      }
+    },
+    "aus %lld Ladevorgängen im letzten Jahr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aus %lld Ladevorgängen im letzten Jahr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "from %lld sessions in the last year"
+          }
+        }
+      }
+    },
+    "Ø %@ bezahlt, %lld Ladevorgänge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø %@ bezahlt, %lld Ladevorgänge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avg. %@ paid, %lld sessions"
+          }
+        }
+      }
+    },
+    "Wert" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Value"
+          }
+        }
+      }
+    },
+    "z. B. 0,69" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "z. B. 0,69"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 0.69"
+          }
+        }
+      }
+    },
+    "Genauen Wert eingeben" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genauen Wert eingeben"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter an exact value"
+          }
+        }
+      }
+    },
+    "Auf Vorschlag zurücksetzen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf Vorschlag zurücksetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset to suggestion"
+          }
+        }
+      }
+    },
+    "Anteil beim Tarif (%)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteil beim Tarif (%)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share on tariff (%)"
+          }
+        }
+      }
+    },
+    "Für %@ ist kein %@-Preis hinterlegt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %1$@ ist kein %2$@-Preis hinterlegt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No %2$@ price stored for %1$@"
+          }
+        }
+      }
+    },
+    "Für %@ ist keine aktive Grundgebühr hinterlegt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %@ ist keine aktive Grundgebühr hinterlegt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No active base fee stored for %@"
+          }
+        }
+      }
+    },
+    "Grundgebühr pro Monat (€)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühr pro Monat (€)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base fee per month (€)"
+          }
+        }
+      }
+    },
+    "Kein eigener Wert vorhanden, Richtwert" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein eigener Wert vorhanden, Richtwert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No value of your own yet, typical value"
+          }
+        }
+      }
+    },
+    "Kostet %@ mehr im Monat (%@ statt %@)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostet %@ mehr im Monat (%@ statt %@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costs %@ more per month (%@ instead of %@)"
+          }
+        }
+      }
+    },
+    "Lohnt sich ab ca. %@ im Monat (%@ kWh beim Tarif)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lohnt sich ab ca. %@ im Monat (%@ kWh beim Tarif)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Worth it from about %@ per month (%@ kWh on the tariff)"
+          }
+        }
+      }
+    },
+    "Lohnt sich ab ca. %@ kWh im Monat beim Tarif" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lohnt sich ab ca. %@ kWh im Monat beim Tarif"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Worth it from about %@ kWh per month on the tariff"
+          }
+        }
+      }
+    },
+    "Lohnt sich bei keiner Fahrleistung: der Tarifpreis liegt nicht unter dem Preis ohne Tarif." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lohnt sich bei keiner Fahrleistung: der Tarifpreis liegt nicht unter dem Preis ohne Tarif."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not worth it at any mileage: the tariff price is not below the price without tariff."
+          }
+        }
+      }
+    },
+    "Mit und ohne Tarif gleich teuer (%@ im Monat)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit und ohne Tarif gleich teuer (%@ im Monat)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Same cost with and without the tariff (%@ per month)"
+          }
+        }
+      }
+    },
+    "Noch kein Verlauf des Kilometerstands vorhanden" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch kein Verlauf des Kilometerstands vorhanden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No odometer history yet"
+          }
+        }
+      }
+    },
+    "Noch keine Ladevorgänge, Anteil bitte schätzen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Ladevorgänge, Anteil bitte schätzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sessions yet, please estimate the share"
+          }
+        }
+      }
+    },
+    "Ohne Grundgebühr lohnt sich der Tarif ab der ersten kWh." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Grundgebühr lohnt sich der Tarif ab der ersten kWh."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a base fee the tariff pays off from the first kWh."
+          }
+        }
+      }
+    },
+    "Ohne Ladungen beim Tarif bleibt nur die Grundgebühr von %@ im Monat." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Ladungen beim Tarif bleibt nur die Grundgebühr von %@ im Monat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without charging on the tariff, only the base fee of %@ per month remains."
+          }
+        }
+      }
+    },
+    "Ohne Vergleichspreis lässt sich nicht sagen, ob sich der Tarif lohnt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Vergleichspreis lässt sich nicht sagen, ob sich der Tarif lohnt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a comparison price it's impossible to say whether the tariff pays off."
+          }
+        }
+      }
+    },
+    "Spart %@ im Monat (%@ statt %@)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spart %@ im Monat (%@ statt %@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves %@ per month (%@ instead of %@)"
+          }
+        }
+      }
+    },
+    "Tarifpreis (€/kWh)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarifpreis (€/kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tariff price (€/kWh)"
+          }
+        }
+      }
+    },
+    "Vorschlag %@: aktive Grundgebühr von %@, auf einen Monat gerechnet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschlag %@: aktive Grundgebühr von %@, auf einen Monat gerechnet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested %@: active base fee of %@, per month"
+          }
+        }
+      }
+    },
+    "Vorschlag %@: Ø der letzten 3 Monate aus dem Kilometerstand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschlag %@: Ø der letzten 3 Monate aus dem Kilometerstand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested %@: average of the last 3 months from the odometer"
+          }
+        }
+      }
+    },
+    "Vorschlag %@: zuletzt bezahlter %@-Preis bei %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschlag %1$@: zuletzt bezahlter %2$@-Preis bei %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested %1$@: last %2$@ price paid at %3$@"
+          }
+        }
+      }
+    },
+    "Vorschlag %@: bisheriger Anteil von %@, letzte 3 Monate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschlag %@: bisheriger Anteil von %@, letzte 3 Monate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested %@: previous share of %@, last 3 months"
+          }
+        }
+      }
+    },
+    "Vorschlag %@: bisheriger Anteil öffentlicher Anbieter, letzte 3 Monate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschlag %@: bisheriger Anteil öffentlicher Anbieter, letzte 3 Monate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested %@: previous share of public providers, last 3 months"
+          }
+        }
+      }
+    },
+    "%@ kWh im Monat beim Tarif: %@ plus %@ Grundgebühr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh im Monat beim Tarif: %@ plus %@ Grundgebühr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh per month on the tariff: %@ plus %@ base fee"
+          }
+        }
+      }
+    },
+    "km im Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "km im Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "km per month"
+          }
+        }
+      }
+    },
+    "Ø der letzten 12 Monate aus deinen Ladevorgängen, inklusive Ladeverlusten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø der letzten 12 Monate aus deinen Ladevorgängen, inklusive Ladeverlusten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average of the last 12 months from your sessions, including charging losses"
+          }
+        }
+      }
+    },
+    "Tools" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tools"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tools"
+          }
+        }
+      }
+    },
+    "Öffentliche Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffentliche Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Public providers"
+          }
+        }
+      }
+    },
+    "Anteil beim Tarif" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteil beim Tarif"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share on tariff"
+          }
+        }
+      }
+    },
+    "Grundgebühr pro Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühr pro Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base fee per month"
+          }
+        }
+      }
+    },
+    "Tarifpreis" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarifpreis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tariff price"
+          }
+        }
+      }
+    },
+    "Rechnet mit den gespeicherten Preisen und Grundgebühren dieses Anbieters." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechnet mit den gespeicherten Preisen und Grundgebühren dieses Anbieters."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses the saved prices and base fees of this provider."
+          }
+        }
+      }
+    },
+    "Tarifrechner: öffentliche Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarifrechner: öffentliche Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tariff calculator: public providers"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

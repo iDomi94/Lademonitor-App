@@ -159,6 +159,30 @@ final class AppRepository {
         )
     }
 
+    // MARK: - Tarifrechner
+
+    /// Alles, was der Tarifrechner fuer seine Vorschlagswerte braucht, mit
+    /// EINER Anbieter-ID-Form (= `Provider.id`): Ladevorgaenge und die
+    /// gespeicherte Abwahl koennen einen Anbieter noch ueber seine lokale UUID
+    /// kennen, obwohl er inzwischen eine Server-ID hat.
+    func tariffBasis() async throws -> TariffBasis {
+        await syncBeforeRead()
+        let store = LocalDataStore.shared
+        let canonical = try store.canonicalProviderIds()
+        let sessions = try store.fetchSessions(vehicleId: nil, needsReview: nil).map { session -> ChargingSession in
+            var s = session
+            s.providerId = s.providerId.map { canonical[$0] ?? $0 }
+            return s
+        }
+        let excluded = Set(TariffCalculatorSettings.storedExcludedProviderIds.map { canonical[$0] ?? $0 })
+        return TariffBasis(
+            sessions: sessions,
+            providers: try store.fetchProviders(),
+            fees: try store.fetchFees(),
+            excludedProviderIds: excluded
+        )
+    }
+
     // MARK: - Grundgebuehren
 
     func fetchFees(providerId: String? = nil) async throws -> [ProviderFee] {
@@ -182,4 +206,12 @@ final class AppRepository {
         try LocalDataStore.shared.deleteFee(id: id)
         syncAfterWrite()
     }
+}
+
+struct TariffBasis {
+    let sessions: [ChargingSession]
+    let providers: [Provider]
+    let fees: [ProviderFee]
+    /// Als privat abgewaehlte Anbieter (zaehlen nicht zum Vergleichspreis).
+    var excludedProviderIds: Set<String>
 }

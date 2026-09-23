@@ -49,6 +49,14 @@ Public beta access via TestFlight:
   Lademonitor-Server 0.26.1 or newer and is available **in server mode only**:
   attributing the drives and adjusting for temperature happens on the server,
   so app and web never show different numbers
+- **Tools** tab with the calculator "Is the tariff worth it?": the effective
+  price per kWh including the base fee, whether that is cheaper than charging
+  without the tariff, and from how many km per month it pays off. Tariff
+  price, base fee, km per month and share on the tariff are sliders, and the
+  result updates live while dragging. Prefilled from your own sessions; the
+  price without tariff can be taken automatically from what you paid at
+  public providers (choose which ones under Settings → Tools). Runs entirely
+  on the device, including local-only mode
 - Charging sessions, vehicles, providers and charging locations deleted on the
   server now disappear from the app on the next sync. Previously they lingered
   as "ghost rows" until you deleted them here too - the app must not infer a
