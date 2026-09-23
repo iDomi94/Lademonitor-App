@@ -435,11 +435,13 @@ final class SyncService: ObservableObject {
                 }
                 let resolvedVehicleId = try resolvedVehicleServerId(session.vehicleId)
                 let resolvedProviderId = try resolvedProviderServerId(session.providerId)
+                let resolvedLocationId = try resolvedLocationServerId(session.locationId)
                 let payload = ChargingSessionPayload(
                     // vehicle_id kann serverseitig beim Bearbeiten nicht geaendert werden,
                     // daher nur beim erstmaligen Anlegen mitschicken (analog AddEditSessionView).
                     vehicleId: session.serverId == nil ? resolvedVehicleId : nil,
                     providerId: resolvedProviderId,
+                    locationId: resolvedLocationId,
                     startTime: session.startTime,
                     chargingType: session.chargingType.flatMap(ChargingType.init(rawValue:)),
                     socStart: session.socStart,
@@ -463,6 +465,9 @@ final class SyncService: ObservableObject {
                 }
                 session.vehicleId = resolvedVehicleId
                 session.providerId = resolvedProviderId
+                // Nur ueberschreiben, wenn aufgeloest: ein Ort, dessen eigener Push
+                // gerade fehlgeschlagen ist, soll seine Zuordnung nicht verlieren.
+                if let resolvedLocationId { session.locationId = resolvedLocationId }
                 session.isDirty = false
             } catch {
                 itemErrors.append(String(localized: "Ladevorgang vom \(session.startTime.formatted()): \(error.localizedDescription)"))
@@ -500,6 +505,18 @@ final class SyncService: ObservableObject {
             predicate: #Predicate { $0.serverId == ref || $0.localId == uuid }
         )).first
         return provider?.serverId
+    }
+
+    /// Wie beim Anbieter: der Ladeort ist optional, eine nicht aufloesbare Referenz
+    /// (z.B. ein inzwischen geloeschter Ort) faellt still auf nil zurueck. nil wird
+    /// nicht gesendet, die Zuordnung auf dem Server bleibt dann unberuehrt.
+    private func resolvedLocationServerId(_ ref: String?) throws -> String? {
+        guard let ref else { return nil }
+        let uuid = UUID(uuidString: ref) ?? UUID()
+        let location = try context.fetch(FetchDescriptor<LocalChargingLocation>(
+            predicate: #Predicate { $0.serverId == ref || $0.localId == uuid }
+        )).first
+        return location?.serverId
     }
 
     // MARK: - Pull

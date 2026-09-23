@@ -217,6 +217,10 @@ struct ChargingSession: Codable, Identifiable, Hashable {
 struct ChargingSessionPayload: Codable {
     var vehicleId: String?
     var providerId: String?
+    /// Nur gesetzt, wenn die App die Zuordnung selbst herstellt ("Als Ladeort
+    /// anlegen"). nil wird nicht gesendet, eine bestehende Zuordnung bleibt also
+    /// beim normalen Speichern stehen.
+    var locationId: String? = nil
     var startTime: Date?
     var chargingType: ChargingType?
     var socStart: Int?
@@ -238,6 +242,7 @@ struct ChargingSessionPayload: Codable {
         case longitude
         case vehicleId = "vehicle_id"
         case providerId = "provider_id"
+        case locationId = "location_id"
         case startTime = "start_time"
         case chargingType = "charging_type"
         case socStart = "soc_start"

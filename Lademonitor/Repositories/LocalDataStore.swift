@@ -381,6 +381,7 @@ final class LocalDataStore {
         let session = LocalChargingSession(
             vehicleId: vehicleId,
             providerId: payload.providerId,
+            locationId: payload.locationId,
             startTime: payload.startTime ?? Date(),
             chargingType: payload.chargingType?.rawValue,
             socStart: payload.socStart,
@@ -409,6 +410,7 @@ final class LocalDataStore {
     func updateSession(id: String, _ payload: ChargingSessionPayload) throws -> ChargingSession {
         guard let session = try findSession(id: id) else { throw LocalStoreError.notFound }
         if let providerId = payload.providerId { session.providerId = providerId }
+        if let locationId = payload.locationId { session.locationId = locationId }
         if let startTime = payload.startTime { session.startTime = startTime }
         if let chargingType = payload.chargingType { session.chargingType = chargingType.rawValue }
         if let socStart = payload.socStart { session.socStart = socStart }

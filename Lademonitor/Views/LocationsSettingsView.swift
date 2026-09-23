@@ -121,9 +121,20 @@ private struct LocationRow: View {
     }
 }
 
+/// Vorbelegung fuer einen neuen Ladeort, z.B. aus einem Ladevorgang heraus
+/// ("Als Ladeort anlegen" in AddEditSessionView).
+struct LocationPrefill {
+    var name: String
+    var latitude: Double
+    var longitude: Double
+    var defaultProviderId: String?
+}
+
 struct AddEditLocationView: View {
     let location: ChargingLocation?
     let onSaved: () -> Void
+    /// Bekommt den neu angelegten Ort - nur beim Anlegen, nicht beim Bearbeiten.
+    var onCreated: ((ChargingLocation) -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
 
@@ -160,6 +171,16 @@ struct AddEditLocationView: View {
         _longitude = State(initialValue: location.map { String(format: "%.6f", $0.longitude) } ?? "")
         _radiusM = State(initialValue: location.map { String($0.radiusM) } ?? "100")
         _defaultProviderId = State(initialValue: location?.defaultProviderId)
+    }
+
+    /// Neuer Ladeort mit Vorbelegung. Alle Felder bleiben editierbar.
+    init(prefill: LocationPrefill, providers: [Provider], onCreated: @escaping (ChargingLocation) -> Void) {
+        self.init(location: nil, providers: providers, onSaved: {})
+        self.onCreated = onCreated
+        _name = State(initialValue: prefill.name)
+        _latitude = State(initialValue: String(format: "%.6f", prefill.latitude))
+        _longitude = State(initialValue: String(format: "%.6f", prefill.longitude))
+        _defaultProviderId = State(initialValue: prefill.defaultProviderId)
     }
 
     private var isEditing: Bool { location != nil }
@@ -361,7 +382,8 @@ struct AddEditLocationView: View {
             if let location {
                 _ = try await AppRepository.shared.updateLocation(id: location.id, payload)
             } else {
-                _ = try await AppRepository.shared.createLocation(payload)
+                let created = try await AppRepository.shared.createLocation(payload)
+                onCreated?(created)
             }
             onSaved()
             dismiss()
