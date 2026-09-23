@@ -38,6 +38,7 @@ final class LocalDataStore {
         if try context.fetchCount(FetchDescriptor<LocalVehicle>()) > 0 { return true }
         if try context.fetchCount(FetchDescriptor<LocalProvider>()) > 0 { return true }
         if try context.fetchCount(FetchDescriptor<LocalChargingLocation>()) > 0 { return true }
+        if try context.fetchCount(FetchDescriptor<LocalProviderFee>()) > 0 { return true }
         return false
     }
 
@@ -47,15 +48,18 @@ final class LocalDataStore {
         let providers = try context.fetchCount(FetchDescriptor<LocalProvider>())
         let locations = try context.fetchCount(FetchDescriptor<LocalChargingLocation>())
         let sessions = try context.fetchCount(FetchDescriptor<LocalChargingSession>())
+        let fees = try context.fetchCount(FetchDescriptor<LocalProviderFee>())
         var parts: [String] = []
         if vehicles > 0 { parts.append(String(localized: "\(vehicles) Fahrzeuge")) }
         if providers > 0 { parts.append(String(localized: "\(providers) Anbieter")) }
         if locations > 0 { parts.append(String(localized: "\(locations) Ladeorte")) }
         if sessions > 0 { parts.append(String(localized: "\(sessions) Ladevorgänge")) }
+        if fees > 0 { parts.append(String(localized: "\(fees) Grundgebühren")) }
         return parts.joined(separator: ", ")
     }
 
     func resetAllData() throws {
+        try context.delete(model: LocalProviderFee.self)
         try context.delete(model: LocalChargingSession.self)
         try context.delete(model: LocalChargingLocation.self)
         try context.delete(model: LocalProvider.self)
@@ -168,8 +172,16 @@ final class LocalDataStore {
         return provider.asDTO
     }
 
+    /// Die Grundgebuehren des Anbieters gehen sofort und hart mit: der Server
+    /// loescht sie beim Loeschen des Anbieters selbst (mit Grabstein), ein
+    /// eigener Push waere also ueberfluessig, und ohne Anbieter sind sie
+    /// ohnehin nicht mehr zuzuordnen.
     func deleteProvider(id: String) throws {
         guard let provider = try findProvider(id: id) else { throw LocalStoreError.notFound }
+        let refs = Set([provider.localId.uuidString] + (provider.serverId.map { [$0] } ?? []))
+        try context.fetch(FetchDescriptor<LocalProviderFee>())
+            .filter { refs.contains($0.providerId) }
+            .forEach { context.delete($0) }
         if provider.serverId != nil {
             provider.pendingDelete = true
             provider.isDirty = true
@@ -242,6 +254,105 @@ final class LocalDataStore {
         )).first
     }
 
+    // MARK: - Grundgebuehren
+
+    /// Alle Anbieter-Referenzen (lokale UUID ODER serverId) auf die kanonische
+    /// DTO-ID abbilden. Gebuehren und Ladevorgaenge koennen ihren Anbieter
+    /// noch ueber die lokale UUID kennen, obwohl der inzwischen eine serverId
+    /// hat - ohne diese Vereinheitlichung fiele die Umlage fuer genau diese
+    /// Vorgaenge still aus.
+    private func canonicalProviderIds() throws -> [String: String] {
+        var map: [String: String] = [:]
+        for provider in try context.fetch(FetchDescriptor<LocalProvider>()) {
+            let canonical = provider.serverId ?? provider.localId.uuidString
+            map[provider.localId.uuidString] = canonical
+            if let serverId = provider.serverId { map[serverId] = canonical }
+        }
+        return map
+    }
+
+    func fetchFees(providerId: String? = nil) throws -> [ProviderFee] {
+        let canonical = try canonicalProviderIds()
+        let rows = try context.fetch(FetchDescriptor<LocalProviderFee>(
+            predicate: #Predicate { !$0.pendingDelete },
+            sortBy: [SortDescriptor(\.startDate, order: .reverse)]
+        ))
+        var fees = rows.map { row -> ProviderFee in
+            var fee = row.asDTO
+            fee.providerId = canonical[fee.providerId] ?? fee.providerId
+            return fee
+        }
+        if let providerId {
+            let wanted = canonical[providerId] ?? providerId
+            fees = fees.filter { $0.providerId == wanted }
+        }
+        return fees
+    }
+
+    /// Umlage ueber ALLE Ladevorgaenge des Nutzers, wie load_allocation() im
+    /// Server. Filter (Fahrzeug, Zeitraum) greifen erst danach.
+    func feeAllocation() throws -> LocalFeeAllocator.Allocation {
+        let fees = try fetchFees()
+        guard !fees.isEmpty else { return LocalFeeAllocator.Allocation() }
+        let canonical = try canonicalProviderIds()
+        let sessions = try allUndeletedSessions().map { session -> ChargingSession in
+            var s = session
+            s.providerId = s.providerId.map { canonical[$0] ?? $0 }
+            return s
+        }
+        return LocalFeeAllocator.allocate(fees: fees, sessions: sessions)
+    }
+
+    func createFee(_ payload: ProviderFeePayload) throws -> ProviderFee {
+        let fee = LocalProviderFee(
+            providerId: payload.providerId,
+            amount: payload.amount,
+            interval: payload.interval.rawValue,
+            startDate: Calendar.current.startOfDay(for: payload.startDate),
+            endDate: payload.endDate.map { Calendar.current.startOfDay(for: $0) },
+            label: payload.label,
+            notes: payload.notes
+        )
+        context.insert(fee)
+        try context.save()
+        return fee.asDTO
+    }
+
+    /// Ersetzt alle Felder, wie der PATCH der App (siehe ProviderFeePayload):
+    /// ein leeres Enddatum hebt eine Kuendigung wieder auf.
+    func updateFee(id: String, _ payload: ProviderFeePayload) throws -> ProviderFee {
+        guard let fee = try findFee(id: id) else { throw LocalStoreError.notFound }
+        fee.providerId = payload.providerId
+        fee.amount = payload.amount
+        fee.interval = payload.interval.rawValue
+        fee.startDate = Calendar.current.startOfDay(for: payload.startDate)
+        fee.endDate = payload.endDate.map { Calendar.current.startOfDay(for: $0) }
+        fee.label = payload.label
+        fee.notes = payload.notes
+        fee.updatedAt = Date()
+        fee.isDirty = true
+        try context.save()
+        return fee.asDTO
+    }
+
+    func deleteFee(id: String) throws {
+        guard let fee = try findFee(id: id) else { throw LocalStoreError.notFound }
+        if fee.serverId != nil {
+            fee.pendingDelete = true
+            fee.isDirty = true
+        } else {
+            context.delete(fee)
+        }
+        try context.save()
+    }
+
+    private func findFee(id: String) throws -> LocalProviderFee? {
+        let uuid = UUID(uuidString: id) ?? UUID()
+        return try context.fetch(FetchDescriptor<LocalProviderFee>(
+            predicate: #Predicate { $0.serverId == id || $0.localId == uuid }
+        )).first
+    }
+
     // MARK: - Sessions
 
     func fetchSessions(vehicleId: String?, needsReview: Bool?, dateRange: ClosedRange<Date>? = nil) throws -> [ChargingSession] {
@@ -250,7 +361,7 @@ final class LocalDataStore {
         // sonst wuerde z.B. ein Datums- oder needs_review-Filter den chronologischen
         // Vorgaenger faelschlich aus der Berechnung herausnehmen.
         let all = try allUndeletedSessions()
-        var sessions = decoratedWithConsumption(all).sorted { $0.startTime > $1.startTime }
+        var sessions = try decoratedWithFees(decoratedWithConsumption(all)).sorted { $0.startTime > $1.startTime }
         if let vehicleId { sessions = sessions.filter { $0.vehicleId == vehicleId } }
         if let needsReview { sessions = sessions.filter { $0.needsReview == needsReview } }
         if let dateRange { sessions = sessions.filter { dateRange.contains($0.startTime) } }
@@ -370,7 +481,19 @@ final class LocalDataStore {
 
     private func decorateOne(_ session: ChargingSession) throws -> ChargingSession {
         let siblings = try allUndeletedSessions().filter { $0.vehicleId == session.vehicleId }
-        return decoratedWithConsumption(siblings).first { $0.id == session.id } ?? session
+        var decorated = decoratedWithConsumption(siblings).first { $0.id == session.id } ?? session
+        decorated.feeShare = try feeAllocation().shares[session.id]
+        return decorated
+    }
+
+    private func decoratedWithFees(_ sessions: [ChargingSession]) throws -> [ChargingSession] {
+        let shares = try feeAllocation().shares
+        guard !shares.isEmpty else { return sessions }
+        return sessions.map { session in
+            var s = session
+            s.feeShare = shares[session.id]
+            return s
+        }
     }
 
     /// Reichert Sessions mit consumptionKwhPer100km/-Method an, pro Fahrzeug getrennt

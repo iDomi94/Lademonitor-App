@@ -337,6 +337,11 @@ private struct SessionRow: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                if let feeShare = session.feeShare {
+                    Text(String(format: String(localized: "+ %.2f € Grundgebühr"), feeShare))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
                 if let pricePerKwh = session.pricePerKwh {
                     Text(String(format: "%.3f €/kWh", pricePerKwh))
                         .font(.caption2)

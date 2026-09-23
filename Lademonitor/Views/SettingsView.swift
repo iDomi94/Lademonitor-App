@@ -31,6 +31,11 @@ struct SettingsView: View {
                     } label: {
                         Label("Anbieter", systemImage: "bolt.fill")
                     }
+                    NavigationLink {
+                        FeesSettingsView()
+                    } label: {
+                        Label("Grundgebühren", systemImage: "creditcard")
+                    }
                     // Reifen gibt es bewusst nur im Server-Modus: die Zuordnung
                     // der Fahrten und der temperaturbereinigte Vergleich liegen
                     // komplett auf dem Server (siehe TireModels.swift).

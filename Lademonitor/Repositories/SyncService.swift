@@ -7,7 +7,7 @@ import Combine
 /// LocalModels schlicht nie konsultiert.
 ///
 /// Ablauf pro Sync: erst PUSH (alle lokal geaenderten/geloeschten Zeilen hoch, in
-/// FK-Reihenfolge Vehicles -> Providers -> Locations -> Sessions, damit z.B. eine neu
+/// FK-Reihenfolge Vehicles -> Providers -> Gebuehren -> Locations -> Sessions, damit z.B. eine neu
 /// angelegte Session ihre Fahrzeug-serverId schon kennt), dann PULL (Server-Stand
 /// herunterladen und mergen). Konfliktstrategie: lokal dirty gewinnt (wird beim naechsten
 /// Push ueberschrieben statt beim Pull ueberschrieben zu werden) - siehe Konzept-Diskussion,
@@ -42,6 +42,11 @@ final class SyncService: ObservableObject {
     private var itemErrors: [String] = []
 
     private var context: ModelContext { LocalStore.shared.context }
+
+    /// Ob der Server Grundgebuehren kennt (ab 0.27.0). Wird in jedem Durchlauf
+    /// neu ermittelt (pushFees), damit ein Server-Update ohne App-Neustart
+    /// greift.
+    private var serverSupportsFees = false
 
     private init() {
         // Sobald die Verbindung nach einer Offline-Phase wiederkommt, gepufferte
@@ -187,10 +192,12 @@ final class SyncService: ObservableObject {
         do {
             try await pushVehicles()
             try await pushProviders()
+            try await pushFees()
             try await pushLocations()
             try await pushSessions()
             try await pullVehicles()
             try await pullProviders()
+            try await pullFees()
             try await pullLocations()
             try await pullSessions()
             // Zum Schluss, nach den Pulls: die legen fehlende Zeilen an, und eine
@@ -223,10 +230,25 @@ final class SyncService: ObservableObject {
         // nichts aus. Zurueckgesetzt holt der naechste Abruf dessen vollstaendige
         // Liste.
         lastDeletionCursor = nil
+        // Gebuehren kennen ihren Anbieter nach dem ersten Sync nur noch ueber
+        // dessen serverId. Die verfaellt gleich - ohne Umschreiben auf die
+        // lokale UUID liesse sich die Gebuehr fuer das neue Konto nie mehr
+        // zuordnen und bliebe fuer immer ungepusht.
+        if let providers = try? context.fetch(FetchDescriptor<LocalProvider>()),
+           let fees = try? context.fetch(FetchDescriptor<LocalProviderFee>()) {
+            var localRef: [String: String] = [:]
+            for provider in providers {
+                if let serverId = provider.serverId { localRef[serverId] = provider.localId.uuidString }
+            }
+            for fee in fees {
+                if let ref = localRef[fee.providerId] { fee.providerId = ref }
+            }
+        }
         resetSyncState(for: LocalVehicle.self)
         resetSyncState(for: LocalProvider.self)
         resetSyncState(for: LocalChargingLocation.self)
         resetSyncState(for: LocalChargingSession.self)
+        resetSyncState(for: LocalProviderFee.self)
         try? context.save()
     }
 
@@ -317,6 +339,53 @@ final class SyncService: ObservableObject {
                 provider.isDirty = false
             } catch {
                 itemErrors.append(String(localized: "Anbieter „\(provider.name)“: \(error.localizedDescription)"))
+            }
+        }
+        try context.save()
+    }
+
+    /// Grundgebuehren nach den Anbietern, damit eine neue Gebuehr die serverId
+    /// ihres gerade erst hochgeladenen Anbieters schon kennt.
+    ///
+    /// Gegen einen Server aelter als 0.27.0 (404 auf die Liste) bleibt alles
+    /// lokal und dirty - nach dem Server-Update geht es beim naechsten Sync von
+    /// selbst hoch, und der uebrige Sync gilt deswegen nicht als gescheitert.
+    private func pushFees() async throws {
+        do {
+            _ = try await APIClient.shared.fetchProviderFees()
+            serverSupportsFees = true
+        } catch APIError.server(let statusCode, _) where statusCode == 404 {
+            serverSupportsFees = false
+            return
+        }
+        let dirty = try context.fetch(FetchDescriptor<LocalProviderFee>(predicate: #Predicate { $0.isDirty }))
+        for fee in dirty {
+            do {
+                if fee.pendingDelete {
+                    if let serverId = fee.serverId {
+                        try? await APIClient.shared.deleteProviderFee(id: serverId)
+                    }
+                    context.delete(fee)
+                    continue
+                }
+                guard let providerId = try resolvedProviderServerId(fee.providerId) else {
+                    throw UnresolvedReferenceError(what: String(localized: "Anbieter"))
+                }
+                let payload = ProviderFeePayload(
+                    providerId: providerId, amount: fee.amount,
+                    interval: FeeInterval(rawValue: fee.interval) ?? .monthly,
+                    startDate: fee.startDate, endDate: fee.endDate, label: fee.label, notes: fee.notes
+                )
+                if let serverId = fee.serverId {
+                    _ = try await APIClient.shared.updateProviderFee(id: serverId, payload)
+                } else {
+                    let created = try await APIClient.shared.createProviderFee(payload)
+                    fee.serverId = created.id
+                }
+                fee.providerId = providerId
+                fee.isDirty = false
+            } catch {
+                itemErrors.append(String(localized: "Grundgebühr „\(fee.label ?? fee.amount.formatted(.currency(code: "EUR")))“: \(error.localizedDescription)"))
             }
         }
         try context.save()
@@ -484,6 +553,31 @@ final class SyncService: ObservableObject {
         try context.save()
     }
 
+    private func pullFees() async throws {
+        guard serverSupportsFees else { return }
+        let serverFees = try await APIClient.shared.fetchProviderFees()
+        for sf in serverFees {
+            if let existing = try findLocalFee(serverId: sf.id) {
+                if !existing.isDirty {
+                    existing.providerId = sf.providerId
+                    existing.amount = sf.amount
+                    existing.interval = sf.interval.rawValue
+                    existing.startDate = sf.startDate
+                    existing.endDate = sf.endDate
+                    existing.label = sf.label
+                    existing.notes = sf.notes
+                }
+            } else {
+                context.insert(LocalProviderFee(
+                    serverId: sf.id, providerId: sf.providerId, amount: sf.amount,
+                    interval: sf.interval.rawValue, startDate: sf.startDate, endDate: sf.endDate,
+                    label: sf.label, notes: sf.notes, isDirty: false
+                ))
+            }
+        }
+        try context.save()
+    }
+
     private func pullLocations() async throws {
         let serverLocations = try await APIClient.shared.fetchLocations()
         var serverIds = Set<String>()
@@ -616,11 +710,21 @@ final class SyncService: ObservableObject {
             case "vehicle":
                 if let row = try findLocalVehicle(serverId: record.entityId) { context.delete(row) }
             case "provider":
-                if let row = try findLocalProvider(serverId: record.entityId) { context.delete(row) }
+                if let row = try findLocalProvider(serverId: record.entityId) {
+                    // Seine Gebuehren mit: eine noch nie hochgeladene haette sonst
+                    // keinen Anbieter mehr und scheiterte bei jedem Push erneut.
+                    let refs = Set([row.localId.uuidString, record.entityId])
+                    try context.fetch(FetchDescriptor<LocalProviderFee>())
+                        .filter { refs.contains($0.providerId) }
+                        .forEach { context.delete($0) }
+                    context.delete(row)
+                }
             case "location":
                 if let row = try findLocalLocation(serverId: record.entityId) { context.delete(row) }
             case "session":
                 if let row = try findLocalSession(serverId: record.entityId) { context.delete(row) }
+            case "provider_fee":
+                if let row = try findLocalFee(serverId: record.entityId) { context.delete(row) }
             default:
                 // Unbekannter Typ aus einem neueren Server: ueberspringen statt
                 // zu raten. Eine aeltere App soll an einem neueren Server nicht
@@ -644,9 +748,12 @@ final class SyncService: ObservableObject {
     private func findLocalSession(serverId: String) throws -> LocalChargingSession? {
         try context.fetch(FetchDescriptor<LocalChargingSession>(predicate: #Predicate { $0.serverId == serverId })).first
     }
+    private func findLocalFee(serverId: String) throws -> LocalProviderFee? {
+        try context.fetch(FetchDescriptor<LocalProviderFee>(predicate: #Predicate { $0.serverId == serverId })).first
+    }
 }
 
-/// Gemeinsames Protokoll der vier LocalModels-Typen, nur damit removeVanishedMirrors()/
+/// Gemeinsames Protokoll der LocalModels-Typen (plus LocalProviderFee), nur damit removeVanishedMirrors()/
 /// resetSyncState() generisch auf serverId/isDirty/pendingDelete zugreifen koennen.
 protocol SyncMirrorable: AnyObject {
     var serverId: String? { get set }
