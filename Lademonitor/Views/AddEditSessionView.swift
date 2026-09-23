@@ -3,13 +3,17 @@ import CoreLocation
 
 struct AddEditSessionView: View {
     let vehicles: [Vehicle]
-    let locations: [ChargingLocation]
     let session: ChargingSession?
     let onSaved: () -> Void
 
     @Environment(\.dismiss) private var dismiss
 
     @State private var providers: [Provider]
+    @State private var locations: [ChargingLocation]
+    /// Zugeordneter Ladeort. Wird nur gesendet, wenn gesetzt - die App kann eine
+    /// Zuordnung herstellen, aber (wie bisher) nicht aufheben.
+    @State private var locationId: String?
+    @State private var showingCreateLocationSheet = false
     @State private var vehicleId: String
     @State private var providerId: String?
     @State private var startTime: Date
@@ -47,7 +51,8 @@ struct AddEditSessionView: View {
     init(vehicles: [Vehicle], providers: [Provider], locations: [ChargingLocation] = [], session: ChargingSession?, onSaved: @escaping () -> Void) {
         self.vehicles = vehicles
         _providers = State(initialValue: providers)
-        self.locations = locations
+        _locations = State(initialValue: locations)
+        _locationId = State(initialValue: session?.locationId)
         self.session = session
         self.onSaved = onSaved
 
@@ -239,6 +244,16 @@ struct AddEditSessionView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
+
+                    if let assignedLocation {
+                        LabeledContent("Zugeordneter Ladeort", value: assignedLocation.name)
+                    } else if locationPrefill != nil {
+                        Button {
+                            showingCreateLocationSheet = true
+                        } label: {
+                            Label("Als Ladeort anlegen", systemImage: "plus.circle")
+                        }
+                    }
                 } header: {
                     Text("Position")
                 } footer: {
@@ -269,7 +284,32 @@ struct AddEditSessionView: View {
                     providerId = newProvider.id
                 }
             }
+            .sheet(isPresented: $showingCreateLocationSheet) {
+                if let locationPrefill {
+                    AddEditLocationView(prefill: locationPrefill, providers: providers) { created in
+                        locations.append(created)
+                        locationId = created.id
+                    }
+                }
+            }
         }
+    }
+
+    private var assignedLocation: ChargingLocation? {
+        guard let locationId else { return nil }
+        return locations.first { $0.id == locationId }
+    }
+
+    /// Vorbelegung fuer "Als Ladeort anlegen": die Koordinaten dieses Vorgangs,
+    /// als Name der Ortstext bzw. der zuletzt gewaehlte Suchtreffer, als
+    /// Standard-Anbieter der Anbieter dieses Vorgangs. nil ohne Koordinaten.
+    private var locationPrefill: LocationPrefill? {
+        guard let lat = Double(latitude.replacingOccurrences(of: ",", with: ".")),
+              let lon = Double(longitude.replacingOccurrences(of: ",", with: ".")) else { return nil }
+        let place = geocodedPlace.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = place.isEmpty ? addressQuery.trimmingCharacters(in: .whitespacesAndNewlines) : place
+        let provider = providerId == Self.newProviderSentinel ? nil : providerId
+        return LocationPrefill(name: name, latitude: lat, longitude: lon, defaultProviderId: provider)
     }
 
     private func searchAddress() async {
@@ -302,6 +342,7 @@ struct AddEditSessionView: View {
         latitude = String(format: "%.6f", location.latitude)
         longitude = String(format: "%.6f", location.longitude)
         addressQuery = location.name
+        locationId = location.id
         searchResults = []
         searchMessage = nil
     }
@@ -335,6 +376,7 @@ struct AddEditSessionView: View {
         let payload = ChargingSessionPayload(
             vehicleId: isEditing ? nil : vehicleId, // vehicle_id kann beim Bearbeiten nicht geaendert werden
             providerId: providerId,
+            locationId: locationId,
             startTime: startTime,
             chargingType: chargingType,
             socStart: socEnabled ? Int(socStartValue.rounded()) : nil,

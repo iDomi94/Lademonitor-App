@@ -7616,6 +7616,40 @@
           }
         }
       }
+    },
+    "Als Ladeort anlegen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Ladeort anlegen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save as Charging Location"
+          }
+        }
+      }
+    },
+    "Zugeordneter Ladeort" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugeordneter Ladeort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assigned Charging Location"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
