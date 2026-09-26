@@ -1,0 +1,105 @@
+# Baut die App und laedt sie nach App Store Connect (TestFlight) hoch.
+#
+# Parallel zu Xcode Cloud, nicht als Ersatz: vorerst nur von Hand startbar
+# (Actions -> "TestFlight Upload" -> Run workflow). Laufen beide automatisch,
+# kollidieren ihre Build-Nummern.
+#
+# Benoetigte Repository-Secrets (Settings -> Secrets and variables -> Actions):
+#   ASC_KEY_ID       Key-ID des App-Store-Connect-API-Keys
+#   ASC_ISSUER_ID    Issuer-ID (App Store Connect -> Benutzer und Zugriff -> Integrationen)
+#   ASC_KEY_P8       Inhalt der AuthKey_<KEY_ID>.p8, komplett inkl. BEGIN/END-Zeilen
+# Der Key braucht die Rolle "App Manager" (oder Admin), damit xcodebuild das
+# Distributionszertifikat und das Provisioning-Profil selbst anlegen darf -
+# ein .p12 im Repo ist dadurch nicht noetig.
+name: TestFlight Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "Build-Nummer (leer = 1000 + Laufnummer). Muss hoeher sein als die letzte hochgeladene, auch die von Xcode Cloud."
+        required: false
+        default: ""
+      xcode_version:
+        description: "Xcode-Version fuer setup-xcode (z.B. 27, 27.1, latest-stable)"
+        required: false
+        default: "latest-stable"
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      SCHEME: Lademonitor
+      PROJECT: Lademonitor-App.xcodeproj
+      TEAM_ID: 258758J335
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ inputs.xcode_version }}
+
+      - name: Build-Nummer festlegen
+        run: |
+          BUILD_NUMBER="${{ inputs.build_number }}"
+          if [ -z "$BUILD_NUMBER" ]; then
+            BUILD_NUMBER=$((1000 + ${{ github.run_number }}))
+          fi
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "Build-Nummer: $BUILD_NUMBER"
+
+      - name: API-Key ablegen
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          printf '%s' "$ASC_KEY_P8" > "$KEY_PATH"
+          echo "ASC_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: Archivieren
+        run: |
+          xcodebuild archive \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "$RUNNER_TEMP/Lademonitor.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+
+      - name: Exportieren und hochladen
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Lademonitor.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}"
+
+      - name: API-Key entfernen
+        if: always()
+        run: rm -f "$RUNNER_TEMP/AuthKey.p8"
