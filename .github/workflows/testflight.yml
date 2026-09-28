@@ -189,5 +189,8 @@ jobs:
           TESTFLIGHT_LOCALE: ${{ vars.TESTFLIGHT_LOCALE }}
         run: |
           pip install --quiet "pyjwt[crypto]" requests
+          # Derselbe Key wie im Upload-Job, also auch hier erst ins PEM-Format bringen.
+          ASC_KEY_P8="$(python .github/scripts/normalize_p8.py)"
+          export ASC_KEY_P8
           python .github/scripts/testflight_whats_new.py \
             "$BUNDLE_ID" "$VERSION" "$BUILD_NUMBER" "$RUNNER_TEMP/whats_new.txt"
