@@ -1,0 +1,189 @@
+# Baut die App, laedt sie nach App Store Connect (TestFlight) hoch und traegt
+# das Changelog als "Was testen" ein.
+#
+# Startet automatisch beim Push eines Release-Tags vX.Y.Z
+# (git tag v1.0.0 && git push origin v1.0.0) und zusaetzlich von Hand
+# (Actions -> "TestFlight Upload" -> Run workflow).
+#
+# Versionsnummer: beim Tag ist sie der Tag ohne "v" (v1.0.0 -> 1.0.0) und
+# ueberschreibt MARKETING_VERSION aus dem Projekt. Von Hand gestartet gilt die
+# Eingabe, sonst der Wert im Projekt.
+#
+# Changelog: der Abschnitt "## X.Y.Z" aus CHANGELOG.md, sonst die Commit-Titel
+# seit dem vorigen Tag.
+#
+# Laeuft parallel zu Xcode Cloud. Loest dort ein Workflow ebenfalls beim selben
+# Ereignis aus, kollidieren beide Uploads - dann einen von beiden abschalten.
+#
+# Benoetigte Repository-Secrets (Settings -> Secrets and variables -> Actions):
+#   ASC_KEY_ID       Key-ID des App-Store-Connect-API-Keys
+#   ASC_ISSUER_ID    Issuer-ID (App Store Connect -> Benutzer und Zugriff -> Integrationen)
+#   ASC_KEY_P8       Inhalt der AuthKey_<KEY_ID>.p8, komplett inkl. BEGIN/END-Zeilen
+# Der Key braucht die Rolle "App Manager" (oder Admin), damit xcodebuild das
+# Distributionszertifikat und das Provisioning-Profil selbst anlegen darf -
+# ein .p12 im Repo ist dadurch nicht noetig.
+# Optionale Repository-Variable TESTFLIGHT_LOCALE (Standard de-DE), nur falls
+# der Build noch keine TestFlight-Lokalisierung hat.
+name: TestFlight Upload
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "App-Version (leer = MARKETING_VERSION aus dem Projekt)"
+        required: false
+        default: ""
+      build_number:
+        description: "Build-Nummer (leer = 1000 + Laufnummer). Muss hoeher sein als die letzte hochgeladene, auch die von Xcode Cloud."
+        required: false
+        default: ""
+      xcode_version:
+        description: "Xcode-Version fuer setup-xcode (z.B. 27, 27.1, latest-stable)"
+        required: false
+        default: "latest-stable"
+
+concurrency:
+  group: testflight
+  cancel-in-progress: false
+
+env:
+  SCHEME: Lademonitor
+  PROJECT: Lademonitor-App.xcodeproj
+  TEAM_ID: 258758J335
+  BUNDLE_ID: com.dominiqueherbrigpersonalteam.Lademonitor
+
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 60
+    outputs:
+      version: ${{ steps.numbers.outputs.version }}
+      build_number: ${{ steps.numbers.outputs.build_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ inputs.xcode_version || 'latest-stable' }}
+
+      - name: Version und Build-Nummer festlegen
+        id: numbers
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          if [ -z "$VERSION" ]; then
+            VERSION=$(grep -m1 -oE 'MARKETING_VERSION = [^;]+' "$PROJECT/project.pbxproj" | cut -d' ' -f3)
+          fi
+          BUILD_NUMBER="${{ inputs.build_number }}"
+          if [ -z "$BUILD_NUMBER" ]; then
+            BUILD_NUMBER=$((1000 + ${{ github.run_number }}))
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "Version $VERSION, Build $BUILD_NUMBER"
+
+      - name: API-Key ablegen
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          printf '%s' "$ASC_KEY_P8" > "$KEY_PATH"
+          echo "ASC_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: Archivieren
+        run: |
+          xcodebuild archive \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "$RUNNER_TEMP/Lademonitor.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+
+      - name: Exportieren und hochladen
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Lademonitor.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}"
+
+      - name: API-Key entfernen
+        if: always()
+        run: rm -f "$RUNNER_TEMP/AuthKey.p8"
+
+  # Eigener Job auf Linux: das Warten auf Apples Verarbeitung dauert Minuten,
+  # und macOS-Minuten zaehlen zehnfach.
+  whats-new:
+    needs: upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      VERSION: ${{ needs.upload.outputs.version }}
+      BUILD_NUMBER: ${{ needs.upload.outputs.build_number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Changelog-Text ermitteln
+        run: |
+          OUT="$RUNNER_TEMP/whats_new.txt"
+          # Abschnitt "## X.Y.Z" bis zur naechsten "## "-Ueberschrift
+          if [ -f CHANGELOG.md ]; then
+            awk -v v="$VERSION" '
+              /^## / { if (found) exit; split(substr($0, 4), a, /[ \t]/); if (a[1] == v || a[1] == "[" v "]") { found = 1; next } }
+              found { print }
+            ' CHANGELOG.md | sed -e '/./,$!d' > "$OUT"
+          fi
+          if [ ! -s "$OUT" ] || ! grep -q '[^[:space:]]' "$OUT"; then
+            PREV=$(git describe --tags --abbrev=0 "HEAD^" 2>/dev/null || true)
+            if [ -n "$PREV" ]; then RANGE="$PREV..HEAD"; else RANGE="HEAD~20..HEAD"; fi
+            git log --no-merges --format='- %s' "$RANGE" > "$OUT"
+          fi
+          cat "$OUT"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: In TestFlight eintragen
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          TESTFLIGHT_LOCALE: ${{ vars.TESTFLIGHT_LOCALE }}
+        run: |
+          pip install --quiet "pyjwt[crypto]" requests
+          python .github/scripts/testflight_whats_new.py \
+            "$BUNDLE_ID" "$VERSION" "$BUILD_NUMBER" "$RUNNER_TEMP/whats_new.txt"
