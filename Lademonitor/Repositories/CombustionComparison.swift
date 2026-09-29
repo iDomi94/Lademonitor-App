@@ -23,7 +23,22 @@ enum CombustionComparison {
         /// Strom dagegen ist sie im Emissionsfaktor schon drin, der Vergleich
         /// faellt also eher zugunsten des Verbrenners aus.
         var co2KgPerLiter: Double { self == .petrol ? 2.37 : 2.65 }
+        /// Zusaetzlich fuer Foerderung, Transport und Raffinerie (Well-to-Tank,
+        /// grob 20 % obendrauf). Nur in der Lebenszyklus-Rechnung - dort steckt
+        /// auch beim Strom die ganze Vorkette im Emissionsfaktor.
+        var upstreamCo2KgPerLiter: Double { self == .petrol ? 0.52 : 0.60 }
     }
+
+    /// Lebenszyklus: CO2 aus der Herstellung. Das Fahrzeug ohne Akku zaehlt
+    /// fuer beide gleich (rund 7 t fuer einen Kompakt-SUV), beim E-Auto kommt
+    /// der Akku dazu. Fuer ihn nennen Studien 60 bis 100 kg je kWh, je nach
+    /// Zellchemie und Strommix des Werks.
+    static let vehicleProductionCo2Kg = 7_000.0
+    static let defaultBatteryCo2KgPerKwh = 75.0
+    static let defaultBatteryKwh = 77.0
+    static let defaultLifetimeKm = 200_000.0
+    /// Richtwert fuer den Verbrauch, falls die eigenen Daten keinen hergeben.
+    static let fallbackKwhPer100km = 18.0
 
     /// CO2 je kWh im deutschen Strommix (UBA, 2024 rund 0,36 kg). Bei eigenem
     /// Oekostrom- oder PV-Anteil stellt man den Regler herunter.
@@ -74,6 +89,8 @@ enum CombustionComparison {
         var litersPer100km: Double
         var pricePerLiter: Double
         var co2KgPerLiter: Double
+        /// Nur fuer den Lebenszyklus, siehe `Fuel.upstreamCo2KgPerLiter`.
+        var upstreamCo2KgPerLiter: Double
         var gridCo2KgPerKwh: Double
     }
 
@@ -89,6 +106,60 @@ enum CombustionComparison {
         let electricCo2Kg: Double
         /// Treibstoffpreis, bei dem beide gleich teuer gewesen waeren.
         let breakEvenPricePerLiter: Double?
+    }
+
+    struct LifecycleInput {
+        var lifetimeKm: Double
+        var batteryKwh: Double
+        var batteryCo2KgPerKwh: Double
+    }
+
+    struct Lifecycle {
+        let electricProductionCo2Kg: Double
+        let combustionProductionCo2Kg: Double
+        let electricTotalCo2Kg: Double
+        let combustionTotalCo2Kg: Double
+        let electricCo2Per100km: Double
+        let combustionCo2Per100km: Double
+        let electricEnergyCost: Double
+        let combustionEnergyCost: Double
+        /// Ab dieser Laufleistung hat das E-Auto seinen Herstellungs-Rucksack
+        /// wieder eingeholt. nil, wenn es im Betrieb nicht sauberer ist.
+        let co2BreakEvenKm: Double?
+    }
+
+    /// Verbrauch des E-Autos je km aus den eigenen Daten (geladene kWh, also
+    /// inkl. Ladeverlusten), sonst ein Richtwert.
+    static func kwhPerKm(_ basis: Basis) -> Double {
+        basis.km > 0 && basis.kwh > 0 ? basis.kwh / basis.km : fallbackKwhPer100km / 100
+    }
+
+    /// Stromkosten je km aus den eigenen Daten, sonst nil.
+    static func costPerKm(_ basis: Basis) -> Double? {
+        basis.km > 0 ? basis.cost / basis.km : nil
+    }
+
+    static func lifecycle(basis: Basis, input: Input, lifecycle: LifecycleInput) -> Lifecycle {
+        let km = max(lifecycle.lifetimeKm, 1)
+        let litersPerKm = max(input.litersPer100km, 0) / 100
+        let electricPerKm = kwhPerKm(basis) * input.gridCo2KgPerKwh
+        let combustionPerKm = litersPerKm * (input.co2KgPerLiter + input.upstreamCo2KgPerLiter)
+        let electricProduction = vehicleProductionCo2Kg + max(lifecycle.batteryKwh, 0) * max(lifecycle.batteryCo2KgPerKwh, 0)
+        let combustionProduction = vehicleProductionCo2Kg
+        let electricTotal = electricProduction + electricPerKm * km
+        let combustionTotal = combustionProduction + combustionPerKm * km
+        let advantage = combustionPerKm - electricPerKm
+        return Lifecycle(
+            electricProductionCo2Kg: electricProduction,
+            combustionProductionCo2Kg: combustionProduction,
+            electricTotalCo2Kg: electricTotal,
+            combustionTotalCo2Kg: combustionTotal,
+            electricCo2Per100km: electricTotal / km * 100,
+            combustionCo2Per100km: combustionTotal / km * 100,
+            electricEnergyCost: (costPerKm(basis) ?? 0) * km,
+            combustionEnergyCost: litersPerKm * max(input.pricePerLiter, 0) * km,
+            co2BreakEvenKm: advantage > 0 ? (electricProduction - combustionProduction) / advantage : nil
+        )
     }
 
     static func compute(basis: Basis, input: Input) -> Result {

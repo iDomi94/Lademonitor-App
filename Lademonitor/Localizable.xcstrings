@@ -7991,23 +7991,6 @@
         }
       }
     },
-    "Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (%@ kg je Liter), nicht die Herstellung." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (%@ kg je Liter), nicht die Herstellung."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The default is the German electricity mix. Lower it if you use green power or your own solar panels. For fuel only combustion counts (%@ kg per litre), not production."
-          }
-        }
-      }
-    },
     "Gespart gegenüber Verbrenner" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8055,23 +8038,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Combustion %1$@ (%2$@ l), electric %3$@"
-          }
-        }
-      }
-    },
-    "Pro 100 km: %1$@ statt %2$@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pro 100 km: %1$@ statt %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Per 100 km: %1$@ instead of %2$@"
           }
         }
       }
@@ -8497,6 +8463,397 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld charging sessions not included, %2$lld of them with estimated energy"
+          }
+        }
+      }
+    },
+    "Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (%@ kg je Liter), ohne Vorkette – die kommt in der Ansicht „Lebenszyklus“ dazu." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (%@ kg je Liter), ohne Vorkette – die kommt in der Ansicht „Lebenszyklus“ dazu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The default is the German grid mix. Lower it for green electricity or your own solar power. For fuel only combustion counts (%@ kg per litre), without the upstream chain – the Lifecycle view adds it."
+          }
+        }
+      }
+    },
+    "Ansicht" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View"
+          }
+        }
+      }
+    },
+    "Pro 100 km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per 100 km"
+          }
+        }
+      }
+    },
+    "Lebenszyklus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebenszyklus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifecycle"
+          }
+        }
+      }
+    },
+    "Laufleistung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufleistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifetime mileage"
+          }
+        }
+      }
+    },
+    "Akkugröße" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akkugröße"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery size"
+          }
+        }
+      }
+    },
+    "CO₂ je kWh Akku" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh Akku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh of battery"
+          }
+        }
+      }
+    },
+    "Markierung: Akkukapazität deines Fahrzeugs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markierung: Akkukapazität deines Fahrzeugs"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marker: your vehicle's battery capacity"
+          }
+        }
+      }
+    },
+    "Die Herstellung des Fahrzeugs ohne Akku zählt für beide gleich (rund 7 t CO₂), beim E-Auto kommt der Akku dazu. Studien nennen dafür 60 bis 100 kg je kWh. Beim Kraftstoff zählt hier zusätzlich die Vorkette (Förderung, Raffinerie, Transport), beim Strom steckt sie schon im Emissionsfaktor. Verbrauch und Kosten pro km kommen aus deinem gewählten Zeitraum." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Herstellung des Fahrzeugs ohne Akku zählt für beide gleich (rund 7 t CO₂), beim E-Auto kommt der Akku dazu. Studien nennen dafür 60 bis 100 kg je kWh. Beim Kraftstoff zählt hier zusätzlich die Vorkette (Förderung, Raffinerie, Transport), beim Strom steckt sie schon im Emissionsfaktor. Verbrauch und Kosten pro km kommen aus deinem gewählten Zeitraum."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Building the vehicle without its battery counts the same for both (about 7 t CO₂); the EV adds its battery. Studies put that at 60 to 100 kg per kWh. For fuel the upstream chain (extraction, refinery, transport) is added here; for electricity it is already part of the emission factor. Consumption and cost per km come from the period you selected."
+          }
+        }
+      }
+    },
+    "Pro 100 km günstiger" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km günstiger"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cheaper per 100 km"
+          }
+        }
+      }
+    },
+    "Pro 100 km teurer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km teurer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More expensive per 100 km"
+          }
+        }
+      }
+    },
+    "CO₂ weniger über %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ weniger über %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less CO₂ over %@"
+          }
+        }
+      }
+    },
+    "%1$@ kWh statt %2$@ l %3$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh statt %2$@ l %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh instead of %2$@ l %3$@"
+          }
+        }
+      }
+    },
+    "Kosten: %1$@ statt %2$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten: %1$@ statt %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cost: %1$@ instead of %2$@"
+          }
+        }
+      }
+    },
+    "Gesamt %1$@ statt %2$@, davon Herstellung %3$@ statt %4$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamt %1$@ statt %2$@, davon Herstellung %3$@ statt %4$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total %1$@ instead of %2$@, of which production %3$@ instead of %4$@"
+          }
+        }
+      }
+    },
+    "Pro 100 km inkl. Herstellung: %1$@ kg statt %2$@ kg CO₂" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km inkl. Herstellung: %1$@ kg statt %2$@ kg CO₂"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per 100 km incl. production: %1$@ kg instead of %2$@ kg CO₂"
+          }
+        }
+      }
+    },
+    "Energiekosten: %1$@ statt %2$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energiekosten: %1$@ statt %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy cost: %1$@ instead of %2$@"
+          }
+        }
+      }
+    },
+    "Herstellungs-Rucksack eingeholt nach %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herstellungs-Rucksack eingeholt nach %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production footprint paid back after %@"
+          }
+        }
+      }
+    },
+    "Im Betrieb nicht sauberer – der Rucksack wird nie eingeholt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Betrieb nicht sauberer – der Rucksack wird nie eingeholt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not cleaner in use – the production footprint is never paid back"
+          }
+        }
+      }
+    },
+    "Laufleistung (km)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufleistung (km)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifetime mileage (km)"
+          }
+        }
+      }
+    },
+    "Akkugröße (kWh)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akkugröße (kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery size (kWh)"
+          }
+        }
+      }
+    },
+    "CO₂ je kWh Akku (kg)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh Akku (kg)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh of battery (kg)"
+          }
+        }
+      }
+    },
+    "CO₂ mehr über %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ mehr über %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More CO₂ over %@"
           }
         }
       }
