@@ -434,6 +434,21 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/tires/\(id)", method: "DELETE"))
     }
 
+    /// Profilmessungen, neueste zuerst (Server ab 0.30.0).
+    func fetchTreadMeasurements(vehicleId: String? = nil) async throws -> [TireTreadMeasurement] {
+        let path = "/api/tires/tread" + (vehicleId.map { "?vehicle_id=\($0)" } ?? "")
+        return try await send(try makeRequest(path: path))
+    }
+
+    func createTreadMeasurement(tireSetId: String, _ payload: TreadMeasurementPayload) async throws -> TireTreadMeasurement {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/tires/\(tireSetId)/tread", method: "POST", body: body))
+    }
+
+    func deleteTreadMeasurement(id: String) async throws {
+        try await sendNoContent(try makeRequest(path: "/api/tires/tread/\(id)", method: "DELETE"))
+    }
+
     /// Laufleistung, Dauer und Alter je Montage und je Satz.
     func fetchTireOverview(vehicleId: String? = nil) async throws -> TireOverview {
         let path = "/api/tires/overview" + (vehicleId.map { "?vehicle_id=\($0)" } ?? "")

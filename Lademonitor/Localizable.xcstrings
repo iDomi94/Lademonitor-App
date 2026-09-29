@@ -8959,6 +8959,482 @@
           }
         }
       }
+    },
+    "Profil messen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil messen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure tread"
+          }
+        }
+      }
+    },
+    "Noch keine Messung eingetragen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Messung eingetragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No measurement yet."
+          }
+        }
+      }
+    },
+    "Messung eintragen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messung eintragen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add measurement"
+          }
+        }
+      }
+    },
+    "Profiltiefe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profiltiefe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tread depth"
+          }
+        }
+      }
+    },
+    "Gemessen wird in den Hauptrillen an der flachsten Stelle. Gesetzliches Minimum sind 1,6 mm; empfohlen werden mindestens 3 mm bei Sommer- und 4 mm bei Winter- und Ganzjahresreifen. Einen Satz zwischendurch messen: in der Liste der Reifenwechsel nach rechts wischen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemessen wird in den Hauptrillen an der flachsten Stelle. Gesetzliches Minimum sind 1,6 mm; empfohlen werden mindestens 3 mm bei Sommer- und 4 mm bei Winter- und Ganzjahresreifen. Einen Satz zwischendurch messen: in der Liste der Reifenwechsel nach rechts wischen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measure in the main grooves at the shallowest point. The legal minimum is 1.6 mm; at least 3 mm is recommended for summer and 4 mm for winter and all-season tires. To measure a set in between, swipe right in the list of tire changes."
+          }
+        }
+      }
+    },
+    "DOT %@ · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOT %1$@ · %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOT %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "VL/VR/HL/HR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VL/VR/HL/HR"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FL/FR/RL/RR"
+          }
+        }
+      }
+    },
+    "prüfen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prüfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "check"
+          }
+        }
+      }
+    },
+    "tauschen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tauschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "replace"
+          }
+        }
+      }
+    },
+    "unter Empfehlung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unter Empfehlung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "below recommendation"
+          }
+        }
+      }
+    },
+    "Mindestprofil" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindestprofil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "legal minimum"
+          }
+        }
+      }
+    },
+    "DOT (z. B. 2323)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOT (z. B. 2323)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOT (e.g. 2323)"
+          }
+        }
+      }
+    },
+    "DOT hinten (nur wenn abweichend)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOT hinten (nur wenn abweichend)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOT rear (only if different)"
+          }
+        }
+      }
+    },
+    "Alter (DOT)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alter (DOT)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Age (DOT)"
+          }
+        }
+      }
+    },
+    "Die letzten vier Ziffern der DOT-Nummer an der Reifenflanke: Produktionswoche und -jahr (2323 = KW 23/2023). Daraus ergibt sich das Reifenalter – ab 6 Jahren genauer hinsehen, nach spätestens 10 Jahren tauschen. Haben die Reifen einer Achse verschiedene Daten, trag das ältere ein. Bei Wiedermontage desselben Satzes reicht die DOT an einem Eintrag." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die letzten vier Ziffern der DOT-Nummer an der Reifenflanke: Produktionswoche und -jahr (2323 = KW 23/2023). Daraus ergibt sich das Reifenalter – ab 6 Jahren genauer hinsehen, nach spätestens 10 Jahren tauschen. Haben die Reifen einer Achse verschiedene Daten, trag das ältere ein. Bei Wiedermontage desselben Satzes reicht die DOT an einem Eintrag."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The last four digits of the DOT number on the sidewall: production week and year (2323 = week 23 of 2023). This gives the tire age – look more closely from 6 years, replace after 10 years at the latest. If the tires of one axle have different dates, enter the older one. When the same set is fitted again, the DOT on one entry is enough."
+          }
+        }
+      }
+    },
+    "Profil aufgezogener Satz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil aufgezogener Satz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tread of fitted set"
+          }
+        }
+      }
+    },
+    "Optional: die geringste gemessene Tiefe in mm – oder je Reifen, dann zählt der geringste Wert." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional: die geringste gemessene Tiefe in mm – oder je Reifen, dann zählt der geringste Wert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional: the lowest measured depth in mm – or per tire, then the lowest value counts."
+          }
+        }
+      }
+    },
+    "Profil abgenommener Satz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profil abgenommener Satz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tread of removed set"
+          }
+        }
+      }
+    },
+    "Gilt für %@, den bisher montierten Satz. Beide Messungen bekommen Datum und Kilometerstand dieses Wechsels." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gilt für %@, den bisher montierten Satz. Beide Messungen bekommen Datum und Kilometerstand dieses Wechsels."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to %@, the set fitted until now. Both measurements get the date and odometer of this change."
+          }
+        }
+      }
+    },
+    "Geringste Tiefe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geringste Tiefe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lowest depth"
+          }
+        }
+      }
+    },
+    "Je Reifen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je Reifen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per tire"
+          }
+        }
+      }
+    },
+    "VL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VL"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FL"
+          }
+        }
+      }
+    },
+    "VR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VR"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FR"
+          }
+        }
+      }
+    },
+    "HL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HL"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RL"
+          }
+        }
+      }
+    },
+    "HR" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HR"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RR"
+          }
+        }
+      }
+    },
+    "Gemessen am" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemessen am"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Measured on"
+          }
+        }
+      }
+    },
+    "Gesetzliches Minimum sind 1,6 mm; empfohlen werden mindestens 3 mm bei Sommer- und 4 mm bei Winter- und Ganzjahresreifen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesetzliches Minimum sind 1,6 mm; empfohlen werden mindestens 3 mm bei Sommer- und 4 mm bei Winter- und Ganzjahresreifen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The legal minimum is 1.6 mm; at least 3 mm is recommended for summer and 4 mm for winter and all-season tires."
+          }
+        }
+      }
+    },
+    "mm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mm"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

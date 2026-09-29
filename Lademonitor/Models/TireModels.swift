@@ -52,13 +52,18 @@ struct TireSet: Codable, Identifiable, Hashable {
     let brand: String?
     let model: String?
     let notes: String?
+    /// DOT-Datumscode (Woche + Jahr, "2323") je Achse, ab Server 0.30.0 -
+    /// gegen einen aelteren Server einfach nil.
+    let dot: String?
+    let dotRear: String?
 
     enum CodingKeys: String, CodingKey {
-        case id, kind, size, brand, model, notes
+        case id, kind, size, brand, model, notes, dot
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
         case odometerKm = "odometer_km"
         case sizeRear = "size_rear"
+        case dotRear = "dot_rear"
     }
 
     /// Bei Mischbereifung beide Achsen ("vorne / hinten"), sonst die eine
@@ -90,13 +95,22 @@ struct TireSetPayload: Codable {
     let brand: String?
     let model: String?
     let notes: String?
+    let dot: String?
+    let dotRear: String?
+    /// Nur beim Anlegen: Profiltiefe des aufgezogenen und des abgenommenen
+    /// Satzes (die Montage davor an diesem Fahrzeug). Der Server legt daraus
+    /// je eine Messung mit Datum und Kilometerstand des Wechsels an.
+    var tread: TreadInput? = nil
+    var removedTread: TreadInput? = nil
 
     enum CodingKeys: String, CodingKey {
-        case kind, size, brand, model, notes
+        case kind, size, brand, model, notes, dot, tread
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
         case odometerKm = "odometer_km"
         case sizeRear = "size_rear"
+        case dotRear = "dot_rear"
+        case removedTread = "removed_tread"
     }
 
     /// Leere Textfelder werden als `null` GESCHICKT, nicht weggelassen: der
@@ -115,6 +129,78 @@ struct TireSetPayload: Codable {
         try container.encode(brand, forKey: .brand)
         try container.encode(model, forKey: .model)
         try container.encode(notes, forKey: .notes)
+        try container.encode(dot, forKey: .dot)
+        try container.encode(dotRear, forKey: .dotRear)
+        try container.encodeIfPresent(tread, forKey: .tread)
+        try container.encodeIfPresent(removedTread, forKey: .removedTread)
+    }
+}
+
+/// Profiltiefe in mm: ein Gesamtwert und/oder die vier Raeder. Der Server
+/// speichert als `depth_mm` immer den GERINGSTEN Wert.
+struct TreadInput: Codable {
+    var depthMm: Double?
+    var frontLeftMm: Double?
+    var frontRightMm: Double?
+    var rearLeftMm: Double?
+    var rearRightMm: Double?
+
+    var isEmpty: Bool {
+        [depthMm, frontLeftMm, frontRightMm, rearLeftMm, rearRightMm].allSatisfy { $0 == nil }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case depthMm = "depth_mm"
+        case frontLeftMm = "front_left_mm"
+        case frontRightMm = "front_right_mm"
+        case rearLeftMm = "rear_left_mm"
+        case rearRightMm = "rear_right_mm"
+    }
+}
+
+struct TreadMeasurementPayload: Encodable {
+    let measuredOn: Date
+    let odometerKm: Double?
+    let tread: TreadInput
+
+    enum CodingKeys: String, CodingKey {
+        case measuredOn = "measured_on"
+        case odometerKm = "odometer_km"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(measuredOn, forKey: .measuredOn)
+        try container.encode(odometerKm, forKey: .odometerKm)
+        try tread.encode(to: encoder)
+    }
+}
+
+/// Eine Profilmessung an einer Montage (Server ab 0.30.0).
+struct TireTreadMeasurement: Codable, Identifiable {
+    let id: String
+    let tireSetId: String
+    let measuredOn: Date
+    let odometerKm: Double?
+    /// Immer die geringste Tiefe - der Wert fuer Mindestprofil und Austausch.
+    let depthMm: Double
+    let frontLeftMm: Double?
+    let frontRightMm: Double?
+    let rearLeftMm: Double?
+    let rearRightMm: Double?
+
+    var wheels: [Double?] { [frontLeftMm, frontRightMm, rearLeftMm, rearRightMm] }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case tireSetId = "tire_set_id"
+        case measuredOn = "measured_on"
+        case odometerKm = "odometer_km"
+        case depthMm = "depth_mm"
+        case frontLeftMm = "front_left_mm"
+        case frontRightMm = "front_right_mm"
+        case rearLeftMm = "rear_left_mm"
+        case rearRightMm = "rear_right_mm"
     }
 }
 
@@ -136,6 +222,11 @@ struct TireMounting: Codable, Identifiable {
     let kmSource: String?
     let energyKwh: Double
     let avgConsumptionKwhPer100km: Double?
+    /// Juengste Profilmessung dieser Montage; Status "ok" | "low" | "legal_min"
+    /// (Schwellen auf dem Server, tires.py).
+    var treadDepthMm: Double? = nil
+    var treadMeasuredOn: Date? = nil
+    var treadStatus: String? = nil
 
     var id: String { tireSetId }
     var kmIsExact: Bool { kmSource == "odometer" }
@@ -143,6 +234,9 @@ struct TireMounting: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case kind, label, days, drives, km
         case kmSource = "km_source"
+        case treadDepthMm = "tread_depth_mm"
+        case treadMeasuredOn = "tread_measured_on"
+        case treadStatus = "tread_status"
         case tireSetId = "tire_set_id"
         case vehicleId = "vehicle_id"
         case installedOn = "installed_on"
@@ -172,13 +266,36 @@ struct TireSetSummary: Codable, Identifiable {
     let energyKwh: Double
     let isCurrent: Bool
     let avgConsumptionKwhPer100km: Double?
+    /// Aus der DOT (aeltere Achse): Produktionsdatum als "YYYY-MM-DD" (reines
+    /// Datum, deshalb String statt Date), Alter ab da und "ok" | "check" (ab
+    /// 6 Jahren) | "replace" (ab 10). nil ohne DOT oder bei aelterem Server.
+    let producedOn: String?
+    let productionAgeDays: Int?
+    let ageStatus: String?
+    let treadDepthMm: Double?
+    let treadMeasuredOn: Date?
+    let treadStatus: String?
 
     var id: String { key }
     var kmIsExact: Bool { kmSource == "odometer" }
 
+    /// "03/2024" - so, wie man es mit der DOT auf dem Reifen vergleicht.
+    var producedLabel: String? {
+        guard let producedOn, producedOn.count >= 7 else { return nil }
+        let parts = producedOn.split(separator: "-")
+        guard parts.count >= 2 else { return nil }
+        return "\(parts[1])/\(parts[0])"
+    }
+
     enum CodingKeys: String, CodingKey {
         case key, label, kind, mountings, drives, km
         case kmSource = "km_source"
+        case producedOn = "produced_on"
+        case productionAgeDays = "production_age_days"
+        case ageStatus = "age_status"
+        case treadDepthMm = "tread_depth_mm"
+        case treadMeasuredOn = "tread_measured_on"
+        case treadStatus = "tread_status"
         case firstInstalledOn = "first_installed_on"
         case ageDays = "age_days"
         case daysMounted = "days_mounted"
