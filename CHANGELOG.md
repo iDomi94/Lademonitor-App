@@ -7,6 +7,17 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.3.0
+
+- Reifen (nur mit Server ab 0.30.0): DOT-Nummer je Achse eintragen, die
+  Reifensätze zeigen daraus das Reifenalter ab Produktion – ab 6 Jahren mit
+  „prüfen“, ab 10 Jahren mit „tauschen“.
+- Profiltiefe: Messungen zwischendurch (in der Liste der Reifenwechsel nach
+  rechts wischen oder „Messung eintragen“) und direkt beim Reifenwechsel für
+  den aufgezogenen und den abgenommenen Satz – als geringste Tiefe oder je
+  Reifen. Die Reifensätze zeigen die jüngste Messung, mit Hinweis unter der
+  Empfehlung (3 mm Sommer, 4 mm Winter/Ganzjahr) und ab 1,6 mm.
+
 ## 1.1.0
 
 - Neues Tool „Vergleich mit Verbrenner“ mit drei Ansichten oben im Tool:
