@@ -62,6 +62,11 @@ final class LocalProvider {
     var lastPriceAcPerKwh: Double?
     var lastPriceDcPerKwh: Double?
     var notes: String?
+    /// Wo die kWh bei diesem Anbieter abgelesen werden: "charger" | "vehicle"
+    /// (siehe `EnergyMeter`). Optional wie jedes spaeter ergaenzte Feld, damit
+    /// SwiftData leicht migriert - `nil` gilt als Ladesaeule, wie auf dem
+    /// Server fuer Bestandszeilen.
+    var energyMeter: String?
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -74,6 +79,7 @@ final class LocalProvider {
         lastPriceAcPerKwh: Double? = nil,
         lastPriceDcPerKwh: Double? = nil,
         notes: String? = nil,
+        energyMeter: String? = "charger",
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -85,6 +91,7 @@ final class LocalProvider {
         self.lastPriceAcPerKwh = lastPriceAcPerKwh
         self.lastPriceDcPerKwh = lastPriceDcPerKwh
         self.notes = notes
+        self.energyMeter = energyMeter
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -171,6 +178,11 @@ final class LocalChargingSession {
     var source: String
     var needsReview: Bool
     var externalSessionId: String?
+    /// Abweichender Messort der kWh ("charger" | "vehicle"), `nil` = folgt dem
+    /// Anbieter. Optional - leichte Migration, Bestandszeilen folgen ihrem
+    /// Anbieter. Gespeichert wird wie auf dem Server nur eine echte
+    /// Abweichung (siehe `EnergyMeter.storedOverride`).
+    var energyMeter: String?
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -201,6 +213,7 @@ final class LocalChargingSession {
         source: String = "manual",
         needsReview: Bool = false,
         externalSessionId: String? = nil,
+        energyMeter: String? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -230,6 +243,7 @@ final class LocalChargingSession {
         self.source = source
         self.needsReview = needsReview
         self.externalSessionId = externalSessionId
+        self.energyMeter = energyMeter
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -265,7 +279,8 @@ extension LocalProvider {
             name: name,
             lastPriceAcPerKwh: lastPriceAcPerKwh,
             lastPriceDcPerKwh: lastPriceDcPerKwh,
-            notes: notes
+            notes: notes,
+            energyMeter: energyMeter
         )
     }
 }
@@ -310,7 +325,8 @@ extension LocalChargingSession {
             notes: notes,
             source: SessionSource(rawValue: source) ?? .manual,
             needsReview: needsReview,
-            externalSessionId: externalSessionId
+            externalSessionId: externalSessionId,
+            energyMeter: energyMeter
         )
     }
 }

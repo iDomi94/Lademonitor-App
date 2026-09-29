@@ -8857,6 +8857,108 @@
           }
         }
       }
+    },
+    "Ladesäule" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladesäule"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charger"
+          }
+        }
+      }
+    },
+    "kWh abgelesen an" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh abgelesen an"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh read at"
+          }
+        }
+      }
+    },
+    "Messort der kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messort der kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Where kWh are measured"
+          }
+        }
+      }
+    },
+    " (an Fahrzeug abgelesen)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (an Fahrzeug abgelesen)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (read in vehicle)"
+          }
+        }
+      }
+    },
+    "Gilt für alle Ladevorgänge dieses Anbieters, am einzelnen Ladevorgang abweichend einstellbar. Im Fahrzeug abgelesene kWh enthalten keine Ladeverluste – solche Ladevorgänge fehlen deshalb bei den Ladeverlusten, zählen aber im Akku-Index mit." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gilt für alle Ladevorgänge dieses Anbieters, am einzelnen Ladevorgang abweichend einstellbar. Im Fahrzeug abgelesene kWh enthalten keine Ladeverluste – solche Ladevorgänge fehlen deshalb bei den Ladeverlusten, zählen aber im Akku-Index mit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to all charging sessions of this provider and can be changed per session. kWh read in the vehicle contain no charging losses – such sessions are left out of the charging losses but still count for the battery index."
+          }
+        }
+      }
+    },
+    "%lld Ladevorgänge im Fahrzeug abgelesen – zählen im Akku-Index, nicht bei den Ladeverlusten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladevorgänge im Fahrzeug abgelesen – zählen im Akku-Index, nicht bei den Ladeverlusten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charging sessions read in the vehicle – they count for the battery index, not for the charging losses"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

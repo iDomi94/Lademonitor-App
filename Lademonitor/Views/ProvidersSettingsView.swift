@@ -122,6 +122,7 @@ struct AddEditProviderView: View {
     @State private var lastPriceAcPerKwh: String
     @State private var lastPriceDcPerKwh: String
     @State private var notes: String
+    @State private var energyMeter: EnergyMeter
     @State private var isSaving = false
     @State private var errorMessage: String?
 
@@ -132,6 +133,7 @@ struct AddEditProviderView: View {
         _lastPriceAcPerKwh = State(initialValue: provider?.lastPriceAcPerKwh.map { String(format: "%.4f", $0) } ?? "")
         _lastPriceDcPerKwh = State(initialValue: provider?.lastPriceDcPerKwh.map { String(format: "%.4f", $0) } ?? "")
         _notes = State(initialValue: provider?.notes ?? "")
+        _energyMeter = State(initialValue: provider?.energyMeterDefault ?? .charger)
     }
 
     private var isEditing: Bool { provider != nil }
@@ -166,6 +168,18 @@ struct AddEditProviderView: View {
                     Text("Preise")
                 } footer: {
                     Text("Diese Preise dienen als Vorschlag und werden bei jedem Ladevorgang mit Preis automatisch aktualisiert.")
+                }
+
+                Section {
+                    Picker("kWh abgelesen an", selection: $energyMeter) {
+                        ForEach(EnergyMeter.allCases) { meter in
+                            Text(meter.displayName).tag(meter)
+                        }
+                    }
+                } header: {
+                    Text("Messort der kWh")
+                } footer: {
+                    Text("Gilt für alle Ladevorgänge dieses Anbieters, am einzelnen Ladevorgang abweichend einstellbar. Im Fahrzeug abgelesene kWh enthalten keine Ladeverluste – solche Ladevorgänge fehlen deshalb bei den Ladeverlusten, zählen aber im Akku-Index mit.")
                 }
 
                 if let provider {
@@ -216,7 +230,8 @@ struct AddEditProviderView: View {
             name: name.trimmingCharacters(in: .whitespaces),
             lastPriceAcPerKwh: Double(lastPriceAcPerKwh.replacingOccurrences(of: ",", with: ".")),
             lastPriceDcPerKwh: Double(lastPriceDcPerKwh.replacingOccurrences(of: ",", with: ".")),
-            notes: trimmedNotes.isEmpty ? nil : trimmedNotes
+            notes: trimmedNotes.isEmpty ? nil : trimmedNotes,
+            energyMeter: energyMeter.rawValue
         )
 
         do {

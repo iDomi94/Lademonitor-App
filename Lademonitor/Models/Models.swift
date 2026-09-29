@@ -20,6 +20,50 @@ enum SessionSource: String, Codable {
     }
 }
 
+/// Wo die kWh eines Ladevorgangs abgelesen wurden (Server ab 0.29.0): an der
+/// Ladesaeule bzw. Wallbox ("charger") oder im Fahrzeug ("vehicle"). Im
+/// Fahrzeug gemessene kWh enthalten keine Ladeverluste - die Akku-Auswertung
+/// laesst solche Vorgaenge deshalb bei den Ladeverlusten weg, zaehlt sie aber
+/// im Akku-Index mit.
+///
+/// Der Anbieter traegt die Voreinstellung, ein Ladevorgang optional eine
+/// Abweichung davon (`nil` = folgt dem Anbieter). Rohwerte wie vom Server.
+enum EnergyMeter: String, CaseIterable, Identifiable {
+    case charger
+    case vehicle
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .charger: return String(localized: "Ladesäule")
+        case .vehicle: return String(localized: "Fahrzeug")
+        }
+    }
+
+    /// Unbekannte oder fehlende Werte (aelterer Server) gelten als Ladesaeule,
+    /// wie serverseitig.
+    init(raw: String?) {
+        self = raw.flatMap(EnergyMeter.init(rawValue:)) ?? .charger
+    }
+
+    /// Wirksamer Messort: Abweichung am Vorgang, sonst die Voreinstellung des
+    /// Anbieters, sonst Ladesaeule. Gleiche Regel wie
+    /// `energy_meter_effective` auf dem Server.
+    static func effective(override: String?, providerDefault: String?) -> EnergyMeter {
+        EnergyMeter(raw: override ?? providerDefault)
+    }
+
+    /// Was am Vorgang gespeichert wird: `nil`, wenn die Wahl der Voreinstellung
+    /// des Anbieters entspricht, sonst die Wahl selbst - dieselbe
+    /// Normalisierung wie auf dem Server. So folgt ein Vorgang ohne echte
+    /// Abweichung weiter seinem Anbieter, auch wenn dessen Einstellung sich
+    /// spaeter aendert.
+    static func storedOverride(choice: EnergyMeter, providerDefault: String?) -> String? {
+        choice == EnergyMeter(raw: providerDefault) ? nil : choice.rawValue
+    }
+}
+
 struct Vehicle: Codable, Identifiable, Hashable {
     let id: String
     var externalId: String
@@ -43,12 +87,19 @@ struct Provider: Codable, Identifiable, Hashable {
     var lastPriceAcPerKwh: Double?
     var lastPriceDcPerKwh: Double?
     var notes: String?
+    /// Voreinstellung "charger" | "vehicle" (Server ab 0.29.0). Optional, damit
+    /// ein aelterer Server ohne das Feld weiter decodiert - fehlend heisst
+    /// Ladesaeule, siehe `energyMeterDefault`.
+    var energyMeter: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, name, notes
         case lastPriceAcPerKwh = "last_price_ac_per_kwh"
         case lastPriceDcPerKwh = "last_price_dc_per_kwh"
+        case energyMeter = "energy_meter"
     }
+
+    var energyMeterDefault: EnergyMeter { EnergyMeter(raw: energyMeter) }
 }
 
 struct ChargingLocation: Codable, Identifiable, Hashable {
@@ -155,6 +206,11 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     /// in `priceTotal` vor - das bleibt der Saeulenpreis. Nur lesend und
     /// lokal immer frisch berechnet (LocalFeeAllocator), wie der Verbrauch.
     var feeShare: Double? = nil
+    /// Abweichender Messort der kWh ("charger" | "vehicle"), `nil` = folgt dem
+    /// Anbieter (Server ab 0.29.0). Bewusst der ROHE Wert, nicht
+    /// `energy_meter_effective` - sonst wuerde eine spaetere Aenderung am
+    /// Anbieter diesen Vorgang nicht mehr erreichen. Wirksam: `EnergyMeter.effective`.
+    var energyMeter: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, notes, source, latitude, longitude
@@ -179,6 +235,16 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case needsReview = "needs_review"
         case externalSessionId = "external_session_id"
         case feeShare = "fee_share"
+        case energyMeter = "energy_meter"
+    }
+
+    /// Wirksamer Messort der kWh - Abweichung am Vorgang, sonst die
+    /// Voreinstellung seines Anbieters.
+    func effectiveEnergyMeter(providers: [Provider]) -> EnergyMeter {
+        EnergyMeter.effective(
+            override: energyMeter,
+            providerDefault: providers.first { $0.id == providerId }?.energyMeter
+        )
     }
 
     /// Saeulenpreis plus Grundgebuehranteil - das, was der Vorgang effektiv
@@ -235,6 +301,12 @@ struct ChargingSessionPayload: Codable {
     var geocodedPlace: String?
     var notes: String?
     var needsReview: Bool?
+    /// Gewaehlter Messort der kWh ("charger" | "vehicle"). Bewusst die
+    /// WIRKSAME Wahl, nicht die gespeicherte Abweichung: `nil` wird wie bei
+    /// den uebrigen Feldern gar nicht gesendet und hiesse "unveraendert" - das
+    /// Zuruecksetzen auf die Anbieter-Voreinstellung kaeme so nie an. Server
+    /// und LocalDataStore normalisieren beide (gleich Voreinstellung -> null).
+    var energyMeter: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case notes
@@ -254,6 +326,7 @@ struct ChargingSessionPayload: Codable {
         case outsideTempC = "outside_temp_c"
         case geocodedPlace = "geocoded_place"
         case needsReview = "needs_review"
+        case energyMeter = "energy_meter"
     }
 }
 
@@ -281,11 +354,15 @@ struct ProviderPayload: Codable {
     var lastPriceAcPerKwh: Double?
     var lastPriceDcPerKwh: Double?
     var notes: String?
+    /// "charger" | "vehicle" (Server ab 0.29.0); ein aelterer Server
+    /// ignoriert das unbekannte Feld.
+    var energyMeter: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case name, notes
         case lastPriceAcPerKwh = "last_price_ac_per_kwh"
         case lastPriceDcPerKwh = "last_price_dc_per_kwh"
+        case energyMeter = "energy_meter"
     }
 }
 

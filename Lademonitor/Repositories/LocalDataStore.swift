@@ -153,7 +153,8 @@ final class LocalDataStore {
             name: payload.name ?? "",
             lastPriceAcPerKwh: payload.lastPriceAcPerKwh,
             lastPriceDcPerKwh: payload.lastPriceDcPerKwh,
-            notes: payload.notes
+            notes: payload.notes,
+            energyMeter: EnergyMeter(raw: payload.energyMeter).rawValue
         )
         context.insert(provider)
         try context.save()
@@ -166,6 +167,7 @@ final class LocalDataStore {
         if let ac = payload.lastPriceAcPerKwh { provider.lastPriceAcPerKwh = ac }
         if let dc = payload.lastPriceDcPerKwh { provider.lastPriceDcPerKwh = dc }
         if let notes = payload.notes { provider.notes = notes }
+        if let energyMeter = payload.energyMeter { provider.energyMeter = EnergyMeter(raw: energyMeter).rawValue }
         provider.updatedAt = Date()
         provider.isDirty = true
         try context.save()
@@ -399,7 +401,8 @@ final class LocalDataStore {
             geocodedPlace: payload.geocodedPlace,
             notes: payload.notes,
             source: "manual",
-            needsReview: payload.needsReview ?? false
+            needsReview: payload.needsReview ?? false,
+            energyMeter: try storedEnergyMeter(payload.energyMeter, providerId: payload.providerId)
         )
         context.insert(session)
         try updateProviderPriceMemory(providerId: payload.providerId, chargingType: payload.chargingType, pricePerKwh: payload.pricePerKwh)
@@ -445,6 +448,12 @@ final class LocalDataStore {
         if let geocodedPlace = payload.geocodedPlace { session.geocodedPlace = geocodedPlace }
         if let notes = payload.notes { session.notes = notes }
         if let needsReview = payload.needsReview { session.needsReview = needsReview }
+        if let energyMeter = payload.energyMeter {
+            // Gegen den Anbieter NACH obiger Zuweisung normalisiert - wer im
+            // Formular zugleich den Anbieter wechselt, vergleicht mit dessen
+            // Voreinstellung.
+            session.energyMeter = try storedEnergyMeter(energyMeter, providerId: session.providerId)
+        }
         session.updatedAt = Date()
         session.isDirty = true
         try updateProviderPriceMemory(providerId: session.providerId, chargingType: payload.chargingType, pricePerKwh: payload.pricePerKwh)
@@ -468,6 +477,15 @@ final class LocalDataStore {
         return try context.fetch(FetchDescriptor<LocalChargingSession>(
             predicate: #Predicate { $0.serverId == id || $0.localId == uuid }
         )).first
+    }
+
+    /// Messort der kWh, wie er am Vorgang gespeichert wird: `nil`, wenn die
+    /// Wahl der Voreinstellung des Anbieters entspricht - dieselbe
+    /// Normalisierung wie in update_session() im Backend.
+    private func storedEnergyMeter(_ choice: String?, providerId: String?) throws -> String? {
+        guard let choice else { return nil }
+        let providerDefault = try providerId.flatMap { try findProvider(id: $0) }?.energyMeter
+        return EnergyMeter.storedOverride(choice: EnergyMeter(raw: choice), providerDefault: providerDefault)
     }
 
     /// Anbieter-"Preis-Gedaechtnis": last_price_ac/dc_per_kwh nachziehen, analog zum
