@@ -86,7 +86,10 @@ struct SessionDetailView: View {
                 if let kwh = session.energyKwh {
                     LabeledContent(
                         "kWh",
-                        value: String(format: "%.2f kWh", kwh) + (session.energyIsEstimated ? String(localized: " (geschätzt)") : "")
+                        value: String(format: "%.2f kWh", kwh)
+                            + (session.energyIsEstimated ? String(localized: " (geschätzt)") : "")
+                            + (session.effectiveEnergyMeter(providers: providers) == .vehicle
+                               ? String(localized: " (an Fahrzeug abgelesen)") : "")
                     )
                 }
                 if let odo = session.odometerKm {

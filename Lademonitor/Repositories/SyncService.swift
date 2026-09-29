@@ -328,7 +328,8 @@ final class SyncService: ObservableObject {
                 }
                 let payload = ProviderPayload(
                     name: provider.name, lastPriceAcPerKwh: provider.lastPriceAcPerKwh,
-                    lastPriceDcPerKwh: provider.lastPriceDcPerKwh, notes: provider.notes
+                    lastPriceDcPerKwh: provider.lastPriceDcPerKwh, notes: provider.notes,
+                    energyMeter: provider.energyMeter
                 )
                 if let serverId = provider.serverId {
                     _ = try await APIClient.shared.updateProvider(id: serverId, payload)
@@ -455,7 +456,13 @@ final class SyncService: ObservableObject {
                     longitude: session.longitude,
                     geocodedPlace: session.geocodedPlace,
                     notes: session.notes,
-                    needsReview: session.needsReview
+                    needsReview: session.needsReview,
+                    // Die WIRKSAME Wahl statt der gespeicherten Abweichung:
+                    // `nil` fiele aus dem JSON heraus, und eine zurueckgenommene
+                    // Abweichung kaeme nie am Server an. Der normalisiert
+                    // selbst (gleich Anbieter-Voreinstellung -> null); die
+                    // Anbieter sind in diesem Durchlauf schon hochgeladen.
+                    energyMeter: try effectiveEnergyMeter(of: session).rawValue
                 )
                 if let serverId = session.serverId {
                     _ = try await APIClient.shared.updateSession(id: serverId, payload)
@@ -558,11 +565,16 @@ final class SyncService: ObservableObject {
                     existing.lastPriceAcPerKwh = sp.lastPriceAcPerKwh
                     existing.lastPriceDcPerKwh = sp.lastPriceDcPerKwh
                     existing.notes = sp.notes
+                    // Nur uebernehmen, wenn der Server das Feld kennt (ab
+                    // 0.29.0) - ein aelterer schickt es nicht und wuerde die
+                    // lokale Einstellung sonst bei jedem Sync zuruecksetzen.
+                    if sp.energyMeter != nil { existing.energyMeter = sp.energyMeterDefault.rawValue }
                 }
             } else {
                 context.insert(LocalProvider(
                     serverId: sp.id, name: sp.name, lastPriceAcPerKwh: sp.lastPriceAcPerKwh,
-                    lastPriceDcPerKwh: sp.lastPriceDcPerKwh, notes: sp.notes, isDirty: false
+                    lastPriceDcPerKwh: sp.lastPriceDcPerKwh, notes: sp.notes,
+                    energyMeter: sp.energyMeterDefault.rawValue, isDirty: false
                 ))
             }
         }
@@ -638,7 +650,8 @@ final class SyncService: ObservableObject {
                     priceTotal: ss.priceTotal,
                     pricePerKwh: ss.pricePerKwh, latitude: ss.latitude, longitude: ss.longitude,
                     geocodedPlace: ss.geocodedPlace, notes: ss.notes, source: ss.source.rawValue,
-                    needsReview: ss.needsReview, externalSessionId: ss.externalSessionId, isDirty: false
+                    needsReview: ss.needsReview, externalSessionId: ss.externalSessionId,
+                    energyMeter: ss.energyMeter, isDirty: false
                 ))
             }
         }
@@ -669,6 +682,19 @@ final class SyncService: ObservableObject {
         session.source = dto.source.rawValue
         session.needsReview = dto.needsReview
         session.externalSessionId = dto.externalSessionId
+        // Roher Wert (nil = folgt dem Anbieter), nicht energy_meter_effective.
+        session.energyMeter = dto.energyMeter
+    }
+
+    private func effectiveEnergyMeter(of session: LocalChargingSession) throws -> EnergyMeter {
+        guard session.energyMeter == nil, let ref = session.providerId else {
+            return EnergyMeter(raw: session.energyMeter)
+        }
+        let uuid = UUID(uuidString: ref) ?? UUID()
+        let provider = try context.fetch(FetchDescriptor<LocalProvider>(
+            predicate: #Predicate { $0.serverId == ref || $0.localId == uuid }
+        )).first
+        return EnergyMeter(raw: provider?.energyMeter)
     }
 
     /// ACHTUNG: entfernt lokale Spiegel-Zeilen bewusst NICHT, nur weil sie in einer

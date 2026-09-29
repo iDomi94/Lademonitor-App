@@ -22,6 +22,13 @@ struct AddEditSessionView: View {
     @State private var socStartValue: Double
     @State private var socEndValue: Double
     @State private var energyKwh: String
+    /// Messort der kWh, vorbelegt mit dem wirksamen Wert (Abweichung am
+    /// Vorgang, sonst Voreinstellung des Anbieters).
+    @State private var energyMeter: EnergyMeter
+    /// Zuletzt gewaehlter echter Anbieter - damit das Zuruecksetzen nach dem
+    /// "Neuer Anbieter…"-Eintrag nicht als Anbieterwechsel zaehlt und eine
+    /// Abweichung am Vorgang nicht verwirft.
+    @State private var meterProviderId: String?
     @State private var pricePerKwh: String
     @State private var priceTotal: String
     @State private var odometerKm: String
@@ -64,6 +71,8 @@ struct AddEditSessionView: View {
         _socStartValue = State(initialValue: Double(session?.socStart ?? 20))
         _socEndValue = State(initialValue: Double(session?.socEnd ?? 80))
         _energyKwh = State(initialValue: session?.energyKwh.map { String(format: "%.2f", $0) } ?? "")
+        _energyMeter = State(initialValue: session?.effectiveEnergyMeter(providers: providers) ?? .charger)
+        _meterProviderId = State(initialValue: session?.providerId)
         _pricePerKwh = State(initialValue: session?.pricePerKwh.map { String(format: "%.4f", $0) } ?? "")
         _priceTotal = State(initialValue: session?.priceTotal.map { String(format: "%.2f", $0) } ?? "")
         _odometerKm = State(initialValue: session?.odometerKm.map(String.init) ?? "")
@@ -100,6 +109,11 @@ struct AddEditSessionView: View {
                             providerId = session?.providerId
                             showingAddProviderSheet = true
                         } else {
+                            if newValue != meterProviderId {
+                                // Neuer Anbieter -> dessen Voreinstellung.
+                                energyMeter = selectedProvider?.energyMeterDefault ?? .charger
+                                meterProviderId = newValue
+                            }
                             suggestPrice()
                         }
                     }
@@ -135,6 +149,19 @@ struct AddEditSessionView: View {
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                     }
+                    // Wo die kWh abgelesen wurden - im Fahrzeug gemessene
+                    // enthalten keine Ladeverluste (Akku-Auswertung des Servers).
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("kWh abgelesen an")
+                        Picker("kWh abgelesen an", selection: $energyMeter) {
+                            ForEach(EnergyMeter.allCases) { meter in
+                                Text(meter.displayName).tag(meter)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                    }
+                    .padding(.vertical, 2)
                     HStack {
                         Text("Preis/kWh (€)")
                         Spacer()
@@ -295,6 +322,11 @@ struct AddEditSessionView: View {
         }
     }
 
+    private var selectedProvider: Provider? {
+        guard let providerId else { return nil }
+        return providers.first { $0.id == providerId }
+    }
+
     private var assignedLocation: ChargingLocation? {
         guard let locationId else { return nil }
         return locations.first { $0.id == locationId }
@@ -394,7 +426,10 @@ struct AddEditSessionView: View {
             // Manuelles Öffnen + Speichern gilt als Review: automatisch erkannte
             // Ladevorgänge verlieren dadurch ihr needs_review-Flag, ohne dass es
             // ein eigenes UI-Element dafür braucht.
-            needsReview: isEditing ? false : nil
+            needsReview: isEditing ? false : nil,
+            // Die gewaehlte Variante; LocalDataStore speichert daraus nil, wenn
+            // sie der Voreinstellung des Anbieters entspricht (wie der Server).
+            energyMeter: energyMeter.rawValue
         )
 
         do {

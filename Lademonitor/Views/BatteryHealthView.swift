@@ -52,6 +52,9 @@ struct BatteryHealthView: View {
                     if v.excluded.total > 0 {
                         Text("\(v.excluded.total) Ladevorgänge nicht berücksichtigt, davon \(v.excluded.estimatedEnergy) mit geschätzter Energie")
                     }
+                    if let vehicleMeasured = v.excluded.vehicleMeasured, vehicleMeasured > 0 {
+                        Text("\(vehicleMeasured) Ladevorgänge im Fahrzeug abgelesen – zählen im Akku-Index, nicht bei den Ladeverlusten")
+                    }
                 }
                 .font(.footnote)
                 .foregroundStyle(.secondary)

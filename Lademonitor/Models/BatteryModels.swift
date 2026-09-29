@@ -51,6 +51,8 @@ struct BatteryPoint: Codable, Identifiable {
     let energyKwh: Double
     let apparentCapacityKwh: Double
     let lossPct: Double?
+    /// "charger" | "vehicle" (Server ab 0.29.0, fehlt bei aelteren).
+    var energyMeter: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case sessionId = "session_id"
@@ -60,6 +62,7 @@ struct BatteryPoint: Codable, Identifiable {
         case energyKwh = "energy_kwh"
         case apparentCapacityKwh = "apparent_capacity_kwh"
         case lossPct = "loss_pct"
+        case energyMeter = "energy_meter"
     }
 }
 
@@ -103,6 +106,10 @@ struct BatteryExclusions: Codable {
     let missingValues: Int
     let smallSocDelta: Int
     let implausible: Int
+    /// Im Fahrzeug abgelesene Vorgaenge (Server ab 0.29.0). Kein Ausschluss im
+    /// eigentlichen Sinn: sie zaehlen im Akku-Index, nur nicht bei den
+    /// Ladeverlusten - deshalb NICHT in `total`.
+    var vehicleMeasured: Int? = nil
 
     var total: Int { estimatedEnergy + missingValues + smallSocDelta + implausible }
 
@@ -111,5 +118,6 @@ struct BatteryExclusions: Codable {
         case missingValues = "missing_values"
         case smallSocDelta = "small_soc_delta"
         case implausible
+        case vehicleMeasured = "vehicle_measured"
     }
 }
