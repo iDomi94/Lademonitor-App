@@ -1,0 +1,108 @@
+{
+  "sourceLanguage" : "de",
+  "strings" : {
+    "Lademonitor" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lademonitor"
+          }
+        }
+      }
+    },
+    "Kosten und Energie des laufenden Monats und der letzte Ladevorgang." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten und Energie des laufenden Monats und der letzte Ladevorgang."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cost and energy for the current month and your last charging session."
+          }
+        }
+      }
+    },
+    "Öffne die App einmal, dann erscheinen hier deine Zahlen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne die App einmal, dann erscheinen hier deine Zahlen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the app once and your figures will appear here."
+          }
+        }
+      }
+    },
+    "%lld Ladevorgänge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladevorgänge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charging sessions"
+          }
+        }
+      }
+    },
+    "Zuletzt geladen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt geladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last charged"
+          }
+        }
+      }
+    },
+    "Noch kein Ladevorgang" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch kein Ladevorgang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No charging session yet"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

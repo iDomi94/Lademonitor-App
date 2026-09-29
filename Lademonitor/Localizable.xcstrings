@@ -7650,6 +7650,1213 @@
           }
         }
       }
+    },
+    "Vergleich mit Verbrenner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vergleich mit Verbrenner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compared with a combustion car"
+          }
+        }
+      }
+    },
+    "Was dieselben Kilometer mit Benzin oder Diesel gekostet hätten, und wie viel CO₂" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was dieselben Kilometer mit Benzin oder Diesel gekostet hätten, und wie viel CO₂"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What the same distance would have cost with petrol or diesel, and how much CO₂"
+          }
+        }
+      }
+    },
+    "Akku und Ladeverluste" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku und Ladeverluste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery and charging losses"
+          }
+        }
+      }
+    },
+    "Wie viel beim Laden verloren geht und ob der Akku mit der Zeit weniger aufnimmt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viel beim Laden verloren geht und ob der Akku mit der Zeit weniger aufnimmt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How much is lost while charging and whether the battery takes less over time"
+          }
+        }
+      }
+    },
+    "Letzte 12 Monate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte 12 Monate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last 12 months"
+          }
+        }
+      }
+    },
+    "Gesamte Aufzeichnung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamte Aufzeichnung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All records"
+          }
+        }
+      }
+    },
+    "Gefahren" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gefahren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Driven"
+          }
+        }
+      }
+    },
+    "Geladen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geladen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charged"
+          }
+        }
+      }
+    },
+    "Bezahlt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezahlt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid"
+          }
+        }
+      }
+    },
+    "Für den Zeitraum fehlen Ladevorgänge mit Kilometerstand." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für den Zeitraum fehlen Ladevorgänge mit Kilometerstand."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no charging sessions with an odometer reading in this period."
+          }
+        }
+      }
+    },
+    "Deine Daten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Daten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data"
+          }
+        }
+      }
+    },
+    "Kilometer aus dem Kilometerstand deiner Ladevorgänge, Kosten inklusive Grundgebühren. Was du ohne Preis eingetragen hast (z. B. kostenlos an der Wallbox beim Arbeitgeber), zählt mit 0 €." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilometer aus dem Kilometerstand deiner Ladevorgänge, Kosten inklusive Grundgebühren. Was du ohne Preis eingetragen hast (z. B. kostenlos an der Wallbox beim Arbeitgeber), zählt mit 0 €."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distance from the odometer readings of your charging sessions, costs including base fees. Sessions entered without a price (e.g. free charging at work) count as €0."
+          }
+        }
+      }
+    },
+    "Kraftstoff" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftstoff"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuel"
+          }
+        }
+      }
+    },
+    "Benzin" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benzin"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Petrol"
+          }
+        }
+      }
+    },
+    "Diesel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesel"
+          }
+        }
+      }
+    },
+    "Preis pro Liter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preis pro Liter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Price per litre"
+          }
+        }
+      }
+    },
+    "Vergleichsfahrzeug" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vergleichsfahrzeug"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparison vehicle"
+          }
+        }
+      }
+    },
+    "Die Markierung zeigt den Richtwert für einen vergleichbaren Verbrenner. Wartung, Steuer und Wertverlust sind nicht enthalten." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Markierung zeigt den Richtwert für einen vergleichbaren Verbrenner. Wartung, Steuer und Wertverlust sind nicht enthalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The marker shows a typical value for a comparable combustion car. Maintenance, tax and depreciation are not included."
+          }
+        }
+      }
+    },
+    "CO₂ je kWh Strom" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh Strom"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh of electricity"
+          }
+        }
+      }
+    },
+    "CO₂" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂"
+          }
+        }
+      }
+    },
+    "Gespart gegenüber Verbrenner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespart gegenüber Verbrenner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved compared with combustion"
+          }
+        }
+      }
+    },
+    "Mehrkosten gegenüber Verbrenner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrkosten gegenüber Verbrenner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra cost compared with combustion"
+          }
+        }
+      }
+    },
+    "Verbrenner %1$@ (%2$@ l), elektrisch %3$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrenner %1$@ (%2$@ l), elektrisch %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Combustion %1$@ (%2$@ l), electric %3$@"
+          }
+        }
+      }
+    },
+    "CO₂: %1$@ kg statt %2$@ kg" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂: %1$@ kg statt %2$@ kg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂: %1$@ kg instead of %2$@ kg"
+          }
+        }
+      }
+    },
+    "Gleich teuer bei %@ pro Liter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleich teuer bei %@ pro Liter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break-even at %@ per litre"
+          }
+        }
+      }
+    },
+    "Verbrauch (l/100 km)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch (l/100 km)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption (l/100 km)"
+          }
+        }
+      }
+    },
+    "Preis pro Liter (€)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preis pro Liter (€)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Price per litre (€)"
+          }
+        }
+      }
+    },
+    "CO₂ je kWh (g)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh (g)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh (g)"
+          }
+        }
+      }
+    },
+    "Nur mit Server" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur mit Server"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server only"
+          }
+        }
+      }
+    },
+    "Die Auswertung rechnet der Lademonitor-Server. Im Modus „Nur lokal auf diesem Gerät“ steht sie nicht zur Verfügung." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Auswertung rechnet der Lademonitor-Server. Im Modus „Nur lokal auf diesem Gerät“ steht sie nicht zur Verfügung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Lademonitor server does this analysis. It is not available in “Local only on this device” mode."
+          }
+        }
+      }
+    },
+    "Nach Lade-Art" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Lade-Art"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By charging type"
+          }
+        }
+      }
+    },
+    "Nach Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By provider"
+          }
+        }
+      }
+    },
+    "Grundlage sind nur Ladevorgänge mit echter kWh-Angabe (Rechnung, Wallbox, Import) und mindestens %lld Prozentpunkten SoC-Hub. Die scheinbare Kapazität ist, was eine Ladung von 0 auf 100 % am Zähler kosten würde. Der Verlust ist der Mehrbedarf gegenüber der Akkukapazität des Fahrzeugs – bei einem gealterten Akku fällt er etwas zu klein aus; belastbar ist vor allem der Unterschied zwischen AC und DC." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundlage sind nur Ladevorgänge mit echter kWh-Angabe (Rechnung, Wallbox, Import) und mindestens %lld Prozentpunkten SoC-Hub. Die scheinbare Kapazität ist, was eine Ladung von 0 auf 100 % am Zähler kosten würde. Der Verlust ist der Mehrbedarf gegenüber der Akkukapazität des Fahrzeugs – bei einem gealterten Akku fällt er etwas zu klein aus; belastbar ist vor allem der Unterschied zwischen AC und DC."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only charging sessions with a real kWh figure (invoice, wallbox, import) and at least %lld percentage points of SoC gain are used. The apparent capacity is what charging from 0 to 100 % would take at the meter. The loss is the extra energy compared with the vehicle's battery capacity – with an aged battery it comes out slightly too low; the difference between AC and DC is the reliable part."
+          }
+        }
+      }
+    },
+    "Noch keine Daten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Daten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No data yet"
+          }
+        }
+      }
+    },
+    "Es gibt noch keine Ladevorgänge mit gemessener kWh-Angabe und ausreichend SoC-Hub. Automatisch erkannte Vorgänge zählen nicht mit, ihre Energie ist selbst geschätzt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es gibt noch keine Ladevorgänge mit gemessener kWh-Angabe und ausreichend SoC-Hub. Automatisch erkannte Vorgänge zählen nicht mit, ihre Energie ist selbst geschätzt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no charging sessions with a measured kWh value and enough SoC gain yet. Automatically detected sessions don't count because their energy is itself estimated."
+          }
+        }
+      }
+    },
+    "Akku-Index gegenüber Beginn der Aufzeichnung, letztes Quartal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku-Index gegenüber Beginn der Aufzeichnung, letztes Quartal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery index compared with the start of your records, latest quarter"
+          }
+        }
+      }
+    },
+    "Trend %@ pro Jahr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend %@ pro Jahr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend %@ per year"
+          }
+        }
+      }
+    },
+    "Quartal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quartal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quarter"
+          }
+        }
+      }
+    },
+    "Index" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Index"
+          }
+        }
+      }
+    },
+    "Für einen Verlauf reichen die Daten noch nicht (mindestens drei Ladevorgänge je Lade-Art und zwei je Quartal)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für einen Verlauf reichen die Daten noch nicht (mindestens drei Ladevorgänge je Lade-Art und zwei je Quartal)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough data for a history yet (at least three sessions per charging type and two per quarter)."
+          }
+        }
+      }
+    },
+    "Akku-Gesundheit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akku-Gesundheit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery health"
+          }
+        }
+      }
+    },
+    "100 % = wie zu Beginn der Aufzeichnung. AC und DC werden getrennt auf ihren eigenen Anfang bezogen. Kein absoluter Gesundheitswert (SoH), zeigt aber, ob der Akku mit der Zeit weniger aufnimmt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "100 % = wie zu Beginn der Aufzeichnung. AC und DC werden getrennt auf ihren eigenen Anfang bezogen. Kein absoluter Gesundheitswert (SoH), zeigt aber, ob der Akku mit der Zeit weniger aufnimmt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "100 % = as at the start of your records. AC and DC are each compared with their own start. Not an absolute state of health (SoH), but it shows whether the battery takes less over time."
+          }
+        }
+      }
+    },
+    "%1$lld Vorgänge · scheinbar %2$@ kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld Vorgänge · scheinbar %2$@ kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld sessions · apparent %2$@ kWh"
+          }
+        }
+      }
+    },
+    "Ohne hinterlegte Akkukapazität am Fahrzeug lassen sich keine Verluste in Prozent angeben." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne hinterlegte Akkukapazität am Fahrzeug lassen sich keine Verluste in Prozent angeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a battery capacity on the vehicle, losses cannot be shown in percent."
+          }
+        }
+      }
+    },
+    "Ohne Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No provider"
+          }
+        }
+      }
+    },
+    "Lade-Art unbekannt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lade-Art unbekannt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging type unknown"
+          }
+        }
+      }
+    },
+    "Die Auswertung braucht Lademonitor-Server 0.28.0 oder neuer und eine Verbindung dorthin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Auswertung braucht Lademonitor-Server 0.28.0 oder neuer und eine Verbindung dorthin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This analysis needs Lademonitor server 0.28.0 or newer and a connection to it."
+          }
+        }
+      }
+    },
+    "%lld Ladevorgänge nicht berücksichtigt, davon %lld mit geschätzter Energie" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld Ladevorgänge nicht berücksichtigt, davon %2$lld mit geschätzter Energie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld charging sessions not included, %2$lld of them with estimated energy"
+          }
+        }
+      }
+    },
+    "Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (%@ kg je Liter), ohne Vorkette – die kommt in der Ansicht „Lebenszyklus“ dazu." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (%@ kg je Liter), ohne Vorkette – die kommt in der Ansicht „Lebenszyklus“ dazu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The default is the German grid mix. Lower it for green electricity or your own solar power. For fuel only combustion counts (%@ kg per litre), without the upstream chain – the Lifecycle view adds it."
+          }
+        }
+      }
+    },
+    "Ansicht" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View"
+          }
+        }
+      }
+    },
+    "Pro 100 km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per 100 km"
+          }
+        }
+      }
+    },
+    "Lebenszyklus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebenszyklus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifecycle"
+          }
+        }
+      }
+    },
+    "Laufleistung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufleistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifetime mileage"
+          }
+        }
+      }
+    },
+    "Akkugröße" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akkugröße"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery size"
+          }
+        }
+      }
+    },
+    "CO₂ je kWh Akku" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh Akku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh of battery"
+          }
+        }
+      }
+    },
+    "Markierung: Akkukapazität deines Fahrzeugs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markierung: Akkukapazität deines Fahrzeugs"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marker: your vehicle's battery capacity"
+          }
+        }
+      }
+    },
+    "Die Herstellung des Fahrzeugs ohne Akku zählt für beide gleich (rund 7 t CO₂), beim E-Auto kommt der Akku dazu. Studien nennen dafür 60 bis 100 kg je kWh. Beim Kraftstoff zählt hier zusätzlich die Vorkette (Förderung, Raffinerie, Transport), beim Strom steckt sie schon im Emissionsfaktor. Verbrauch und Kosten pro km kommen aus deinem gewählten Zeitraum." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Herstellung des Fahrzeugs ohne Akku zählt für beide gleich (rund 7 t CO₂), beim E-Auto kommt der Akku dazu. Studien nennen dafür 60 bis 100 kg je kWh. Beim Kraftstoff zählt hier zusätzlich die Vorkette (Förderung, Raffinerie, Transport), beim Strom steckt sie schon im Emissionsfaktor. Verbrauch und Kosten pro km kommen aus deinem gewählten Zeitraum."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Building the vehicle without its battery counts the same for both (about 7 t CO₂); the EV adds its battery. Studies put that at 60 to 100 kg per kWh. For fuel the upstream chain (extraction, refinery, transport) is added here; for electricity it is already part of the emission factor. Consumption and cost per km come from the period you selected."
+          }
+        }
+      }
+    },
+    "Pro 100 km günstiger" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km günstiger"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cheaper per 100 km"
+          }
+        }
+      }
+    },
+    "Pro 100 km teurer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km teurer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More expensive per 100 km"
+          }
+        }
+      }
+    },
+    "CO₂ weniger über %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ weniger über %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less CO₂ over %@"
+          }
+        }
+      }
+    },
+    "%1$@ kWh statt %2$@ l %3$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh statt %2$@ l %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh instead of %2$@ l %3$@"
+          }
+        }
+      }
+    },
+    "Kosten: %1$@ statt %2$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten: %1$@ statt %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cost: %1$@ instead of %2$@"
+          }
+        }
+      }
+    },
+    "Gesamt %1$@ statt %2$@, davon Herstellung %3$@ statt %4$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesamt %1$@ statt %2$@, davon Herstellung %3$@ statt %4$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total %1$@ instead of %2$@, of which production %3$@ instead of %4$@"
+          }
+        }
+      }
+    },
+    "Pro 100 km inkl. Herstellung: %1$@ kg statt %2$@ kg CO₂" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 100 km inkl. Herstellung: %1$@ kg statt %2$@ kg CO₂"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per 100 km incl. production: %1$@ kg instead of %2$@ kg CO₂"
+          }
+        }
+      }
+    },
+    "Energiekosten: %1$@ statt %2$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energiekosten: %1$@ statt %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy cost: %1$@ instead of %2$@"
+          }
+        }
+      }
+    },
+    "Herstellungs-Rucksack eingeholt nach %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herstellungs-Rucksack eingeholt nach %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production footprint paid back after %@"
+          }
+        }
+      }
+    },
+    "Im Betrieb nicht sauberer – der Rucksack wird nie eingeholt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Betrieb nicht sauberer – der Rucksack wird nie eingeholt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not cleaner in use – the production footprint is never paid back"
+          }
+        }
+      }
+    },
+    "Laufleistung (km)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laufleistung (km)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lifetime mileage (km)"
+          }
+        }
+      }
+    },
+    "Akkugröße (kWh)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akkugröße (kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery size (kWh)"
+          }
+        }
+      }
+    },
+    "CO₂ je kWh Akku (kg)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh Akku (kg)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh of battery (kg)"
+          }
+        }
+      }
+    },
+    "CO₂ mehr über %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ mehr über %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More CO₂ over %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
