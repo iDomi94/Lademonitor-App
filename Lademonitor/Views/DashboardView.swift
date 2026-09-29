@@ -157,6 +157,9 @@ struct DashboardView: View {
         do {
             stats = try await AppRepository.shared.fetchStatsSummary(dateRange: sessionFilter.dateRange)
             errorMessage = nil
+            // Nach dem Sync ist die lokale Kopie frisch - guter Moment, auch
+            // das Homescreen-Widget nachzuziehen.
+            WidgetSnapshotWriter.refresh()
             await loadTemperature()
         } catch {
             // Fehlgeschlagener Refresh soll bestehende Daten nicht verwerfen.

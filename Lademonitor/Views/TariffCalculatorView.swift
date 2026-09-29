@@ -561,7 +561,8 @@ struct TariffCalculatorView: View {
 }
 
 /// Eine Zeile mit Titel, antippbarem Wert, Regler und grauer Herkunftszeile.
-private struct SliderRow: View {
+/// Auch vom Verbrenner-Vergleich benutzt.
+struct SliderRow: View {
     let title: LocalizedStringKey
     let valueText: String
     @Binding var value: Double

@@ -118,18 +118,21 @@ final class AppRepository {
     func createSession(_ payload: ChargingSessionPayload) async throws -> ChargingSession {
         let session = try LocalDataStore.shared.createSession(payload)
         syncAfterWrite()
+        WidgetSnapshotWriter.refresh()
         return session
     }
 
     func updateSession(id: String, _ payload: ChargingSessionPayload) async throws -> ChargingSession {
         let session = try LocalDataStore.shared.updateSession(id: id, payload)
         syncAfterWrite()
+        WidgetSnapshotWriter.refresh()
         return session
     }
 
     func deleteSession(id: String) async throws {
         try LocalDataStore.shared.deleteSession(id: id)
         syncAfterWrite()
+        WidgetSnapshotWriter.refresh()
     }
 
     // MARK: - Stats

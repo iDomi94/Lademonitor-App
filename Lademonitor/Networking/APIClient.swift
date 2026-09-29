@@ -468,4 +468,10 @@ final class APIClient {
         let path = "/api/stats/temperature" + (items.isEmpty ? "" : "?" + items.joined(separator: "&"))
         return try await send(try makeRequest(path: path))
     }
+
+    /// Akku-Index und Ladeverluste je Fahrzeug (Server ab 0.28.0). Nur im
+    /// Server-Modus - siehe `BatteryStats`.
+    func fetchBatteryStats() async throws -> BatteryStats {
+        try await send(try makeRequest(path: "/api/stats/battery"))
+    }
 }
