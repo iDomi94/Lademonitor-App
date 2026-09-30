@@ -22,6 +22,13 @@
 # Der Key braucht die Rolle "App Manager" (oder Admin), damit xcodebuild das
 # Distributionszertifikat und das Provisioning-Profil selbst anlegen darf -
 # ein .p12 im Repo ist dadurch nicht noetig.
+#
+# Zertifikate: der Runner ist bei jedem Lauf frisch, die automatische
+# Signierung legt deshalb jedes Mal neue an. Apple begrenzt die Anzahl je Team
+# (v1.3.0 scheiterte daran). Der Lauf merkt sich deshalb vorher die
+# vorhandenen und widerruft am Ende genau die, die er selbst angelegt hat
+# (.github/scripts/asc_certificates.py). Die Pruefung vorher zeigt im Log,
+# wie viele Entwicklerzertifikate das Team hat.
 # Optionale Repository-Variable TESTFLIGHT_LOCALE (Standard de-DE), nur falls
 # der Build noch keine TestFlight-Lokalisierung hat.
 name: TestFlight Upload
@@ -69,6 +76,13 @@ jobs:
         with:
           xcode-version: ${{ inputs.xcode_version || 'latest-stable' }}
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python-Pakete fuer die App-Store-Connect-API
+        run: pip install --quiet "pyjwt[crypto]" requests
+
       - name: Version und Build-Nummer festlegen
         id: numbers
         run: |
@@ -101,6 +115,14 @@ jobs:
           # das exakte PEM-Format (sonst: invalidPEMDocument).
           python3 .github/scripts/normalize_p8.py > "$KEY_PATH"
           echo "ASC_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: API-Key und Zertifikate pruefen
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          ASC_KEY_P8="$(cat "$ASC_KEY_PATH")" python .github/scripts/asc_certificates.py \
+            snapshot "$RUNNER_TEMP/certificates-before.txt"
 
       - name: Archivieren
         run: |
@@ -141,6 +163,15 @@ jobs:
             -authenticationKeyPath "$ASC_KEY_PATH" \
             -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
             -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}"
+
+      - name: Zertifikate dieses Laufs widerrufen
+        if: always() && env.ASC_KEY_PATH != ''
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          ASC_KEY_P8="$(cat "$ASC_KEY_PATH")" python .github/scripts/asc_certificates.py \
+            revoke-new "$RUNNER_TEMP/certificates-before.txt"
 
       - name: API-Key entfernen
         if: always()
