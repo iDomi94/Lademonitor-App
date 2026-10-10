@@ -40,6 +40,7 @@ final class LocalDataStore {
         if try context.fetchCount(FetchDescriptor<LocalChargingLocation>()) > 0 { return true }
         if try context.fetchCount(FetchDescriptor<LocalProviderFee>()) > 0 { return true }
         if try context.fetchCount(FetchDescriptor<LocalVehicleCost>()) > 0 { return true }
+        if try context.fetchCount(FetchDescriptor<LocalReminder>()) > 0 { return true }
         return false
     }
 
@@ -51,6 +52,7 @@ final class LocalDataStore {
         let sessions = try context.fetchCount(FetchDescriptor<LocalChargingSession>())
         let fees = try context.fetchCount(FetchDescriptor<LocalProviderFee>())
         let costs = try context.fetchCount(FetchDescriptor<LocalVehicleCost>())
+        let reminders = try context.fetchCount(FetchDescriptor<LocalReminder>())
         var parts: [String] = []
         if vehicles > 0 { parts.append(String(localized: "\(vehicles) Fahrzeuge")) }
         if providers > 0 { parts.append(String(localized: "\(providers) Anbieter")) }
@@ -58,10 +60,12 @@ final class LocalDataStore {
         if sessions > 0 { parts.append(String(localized: "\(sessions) Ladevorgänge")) }
         if fees > 0 { parts.append(String(localized: "\(fees) Grundgebühren")) }
         if costs > 0 { parts.append(String(localized: "\(costs) Fahrzeugkosten")) }
+        if reminders > 0 { parts.append(String(localized: "\(reminders) Erinnerungen")) }
         return parts.joined(separator: ", ")
     }
 
     func resetAllData() throws {
+        try context.delete(model: LocalReminder.self)
         try context.delete(model: LocalVehicleCost.self)
         try context.delete(model: LocalProviderFee.self)
         try context.delete(model: LocalChargingSession.self)
@@ -69,6 +73,8 @@ final class LocalDataStore {
         try context.delete(model: LocalProvider.self)
         try context.delete(model: LocalVehicle.self)
         try context.save()
+        // Geplante Mitteilungen der geloeschten Erinnerungen mit entfernen.
+        ReminderNotificationScheduler.reschedule()
     }
 
     // MARK: - Vehicles
@@ -129,15 +135,16 @@ final class LocalDataStore {
     /// (Local-Only-Modus oder offline angelegt) werden weiterhin sofort hart geloescht,
     /// da der Server nichts von ihnen weiss.
     ///
-    /// Die Fahrzeugkosten gehen sofort und hart mit, wie die Grundgebuehren
-    /// beim Anbieter: der Server loescht sie beim Loeschen des Fahrzeugs selbst
-    /// (mit Grabsteinen).
+    /// Die Fahrzeugkosten und Erinnerungen gehen sofort und hart mit, wie die
+    /// Grundgebuehren beim Anbieter: der Server loescht sie beim Loeschen des
+    /// Fahrzeugs selbst (mit Grabsteinen).
     func deleteVehicle(id: String) throws {
         guard let vehicle = try findVehicle(id: id) else { throw LocalStoreError.notFound }
         let refs = Set([vehicle.localId.uuidString] + (vehicle.serverId.map { [$0] } ?? []))
         try context.fetch(FetchDescriptor<LocalVehicleCost>())
             .filter { refs.contains($0.vehicleId) }
             .forEach { context.delete($0) }
+        try deleteReminders(ofVehicleRefs: refs)
         let sessions = try context.fetch(FetchDescriptor<LocalChargingSession>(
             predicate: #Predicate { $0.vehicleId == id }
         ))
@@ -490,6 +497,90 @@ final class LocalDataStore {
     private func findVehicleCost(id: String) throws -> LocalVehicleCost? {
         let uuid = UUID(uuidString: id) ?? UUID()
         return try context.fetch(FetchDescriptor<LocalVehicleCost>(
+            predicate: #Predicate { $0.serverId == id || $0.localId == uuid }
+        )).first
+    }
+
+    // MARK: - Erinnerungen
+
+    /// Alle Erinnerungen (ohne die zum Loeschen vorgemerkten), Fahrzeug-IDs
+    /// vereinheitlicht wie bei den Fahrzeugkosten.
+    func fetchReminders(vehicleId: String? = nil) throws -> [Reminder] {
+        let canonical = try canonicalVehicleIds()
+        let rows = try context.fetch(FetchDescriptor<LocalReminder>(
+            predicate: #Predicate { !$0.pendingDelete },
+            sortBy: [SortDescriptor(\.createdAt)]
+        ))
+        var reminders = rows.map { row -> Reminder in
+            var reminder = row.asDTO
+            reminder.vehicleId = canonical[reminder.vehicleId] ?? reminder.vehicleId
+            return reminder
+        }
+        if let vehicleId {
+            let wanted = canonical[vehicleId] ?? vehicleId
+            reminders = reminders.filter { $0.vehicleId == wanted }
+        }
+        return reminders
+    }
+
+    func createReminder(_ payload: ReminderPayload) throws -> Reminder {
+        let reminder = LocalReminder(vehicleId: payload.vehicleId, kind: payload.kind)
+        apply(payload, to: reminder)
+        context.insert(reminder)
+        try context.save()
+        return reminder.asDTO
+    }
+
+    /// Ersetzt alle Felder, wie der PATCH der App (siehe ReminderPayload).
+    func updateReminder(id: String, _ payload: ReminderPayload) throws -> Reminder {
+        guard let reminder = try findReminder(id: id) else { throw LocalStoreError.notFound }
+        apply(payload, to: reminder)
+        reminder.updatedAt = Date()
+        reminder.isDirty = true
+        try context.save()
+        return reminder.asDTO
+    }
+
+    /// Wie der Server: Datumsangaben nur als Kalendertag, unbekannte Art = "Eigene".
+    private func apply(_ payload: ReminderPayload, to reminder: LocalReminder) {
+        let day = { (date: Date?) in date.map { Calendar.current.startOfDay(for: $0) } }
+        reminder.vehicleId = payload.vehicleId
+        reminder.kind = ReminderKind(raw: payload.kind).rawValue
+        reminder.title = payload.title
+        reminder.dueDate = day(payload.dueDate)
+        reminder.dueKm = payload.dueKm
+        reminder.repeatMonths = payload.repeatMonths
+        reminder.repeatKm = payload.repeatKm
+        reminder.leadDays = payload.leadDays
+        reminder.leadKm = payload.leadKm
+        reminder.notes = payload.notes
+        reminder.lastDoneDate = day(payload.lastDoneDate)
+        reminder.lastDoneKm = payload.lastDoneKm
+    }
+
+    func deleteReminder(id: String) throws {
+        guard let reminder = try findReminder(id: id) else { throw LocalStoreError.notFound }
+        if reminder.serverId != nil {
+            reminder.pendingDelete = true
+            reminder.isDirty = true
+        } else {
+            context.delete(reminder)
+        }
+        try context.save()
+    }
+
+    /// Hart, ohne Speichern - fuer das Loeschen eines Fahrzeugs (lokal, per
+    /// Push oder per Grabstein). Der Server raeumt seine Erinnerungen selbst
+    /// mit weg und legt dafuer Grabsteine an.
+    func deleteReminders(ofVehicleRefs refs: Set<String>) throws {
+        try context.fetch(FetchDescriptor<LocalReminder>())
+            .filter { refs.contains($0.vehicleId) }
+            .forEach { context.delete($0) }
+    }
+
+    private func findReminder(id: String) throws -> LocalReminder? {
+        let uuid = UUID(uuidString: id) ?? UUID()
+        return try context.fetch(FetchDescriptor<LocalReminder>(
             predicate: #Predicate { $0.serverId == id || $0.localId == uuid }
         )).first
     }

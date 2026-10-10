@@ -49,6 +49,7 @@ final class AppRepository {
     func deleteVehicle(id: String) async throws {
         try LocalDataStore.shared.deleteVehicle(id: id)
         syncAfterWrite()
+        ReminderNotificationScheduler.reschedule()
     }
 
     // MARK: - Providers
@@ -121,6 +122,8 @@ final class AppRepository {
         let session = try LocalDataStore.shared.createSession(payload)
         syncAfterWrite()
         WidgetSnapshotWriter.refresh()
+        // Der km-Stand verschiebt die Prognose der Erinnerungen.
+        ReminderNotificationScheduler.reschedule()
         return session
     }
 
@@ -128,6 +131,8 @@ final class AppRepository {
         let session = try LocalDataStore.shared.updateSession(id: id, payload)
         syncAfterWrite()
         WidgetSnapshotWriter.refresh()
+        // Der km-Stand verschiebt die Prognose der Erinnerungen.
+        ReminderNotificationScheduler.reschedule()
         return session
     }
 
@@ -135,6 +140,8 @@ final class AppRepository {
         try LocalDataStore.shared.deleteSession(id: id)
         syncAfterWrite()
         WidgetSnapshotWriter.refresh()
+        // Der km-Stand verschiebt die Prognose der Erinnerungen.
+        ReminderNotificationScheduler.reschedule()
     }
 
     // MARK: - Stats
@@ -210,6 +217,50 @@ final class AppRepository {
     func deleteVehicleCost(id: String) async throws {
         try LocalDataStore.shared.deleteVehicleCost(id: id)
         syncAfterWrite()
+    }
+
+    // MARK: - Erinnerungen
+
+    /// Alle Erinnerungen (optional eines Fahrzeugs) mit lokal gerechnetem
+    /// Zustand, dringendste zuerst - in beiden Modi gleich.
+    func fetchReminderItems(vehicleId: String? = nil) async throws -> [ReminderItem] {
+        await syncBeforeRead()
+        return try reminderItemsNow(vehicleId: vehicleId)
+    }
+
+    private func reminderItemsNow(vehicleId: String?) throws -> [ReminderItem] {
+        let store = LocalDataStore.shared
+        return LocalReminderCalculator.items(
+            reminders: try store.fetchReminders(vehicleId: vehicleId),
+            sessions: try store.sessionsWithCanonicalVehicles(),
+            vehicles: try store.fetchVehicles()
+        )
+    }
+
+    func createReminder(_ payload: ReminderPayload) async throws -> Reminder {
+        let reminder = try LocalDataStore.shared.createReminder(payload)
+        syncAfterWrite()
+        await remindersChanged()
+        return reminder
+    }
+
+    func updateReminder(id: String, _ payload: ReminderPayload) async throws -> Reminder {
+        let reminder = try LocalDataStore.shared.updateReminder(id: id, payload)
+        syncAfterWrite()
+        await remindersChanged()
+        return reminder
+    }
+
+    func deleteReminder(id: String) async throws {
+        try LocalDataStore.shared.deleteReminder(id: id)
+        syncAfterWrite()
+        await ReminderNotificationScheduler.rescheduleNow()
+    }
+
+    /// Nach dem Speichern: beim ersten Mal um Erlaubnis fragen, dann neu planen.
+    private func remindersChanged() async {
+        await ReminderNotificationScheduler.requestAuthorizationIfNeeded()
+        await ReminderNotificationScheduler.rescheduleNow()
     }
 
     // MARK: - Tarifrechner

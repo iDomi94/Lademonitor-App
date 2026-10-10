@@ -33,6 +33,17 @@ nach TestFlight.
   Wertverlust bzw. Leasing, Kosten je km, Anteil des Ladens und einem Balken
   je Kategorie. Er erscheint, sobald es Kosten oder eine Kauf-/Leasingangabe
   gibt. Funktioniert auch ohne Server; synchronisiert wird ab Server 0.32.0.
+- Erinnerungen: unter „Fahrzeuge → Fahrzeug → Erinnerungen“ an HU,
+  Inspektion, Bremsflüssigkeit, Reifenwechsel, Versicherung, Kfz-Steuer,
+  THG-Quote oder Eigenes erinnern lassen – fällig nach Datum und/oder
+  km-Stand, mit Wiederholung und Vorlauf. Den km-Stand nimmt die App aus den
+  Ladevorgängen und schätzt aus der Fahrleistung, wann er erreicht ist.
+  „Erledigt“ setzt die nächste Fälligkeit und bietet danach einen passenden
+  Kosteneintrag an.
+- Dashboard: bald fällige und überfällige Erinnerungen stehen ganz oben.
+- Mitteilungen für Erinnerungen zu Beginn des Vorlaufs und am Fälligkeitstag
+  um 9 Uhr, auch ohne Server; abschaltbar in den Einstellungen. Erinnerungen
+  funktionieren auch ohne Server; synchronisiert wird ab Server 0.33.0.
 
 ## 1.3.0
 

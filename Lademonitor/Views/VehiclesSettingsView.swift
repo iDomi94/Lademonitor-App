@@ -320,6 +320,11 @@ struct AddEditVehicleView: View {
                         } label: {
                             Label("Kosten", systemImage: "eurosign.circle")
                         }
+                        NavigationLink {
+                            RemindersView(vehicle: vehicle)
+                        } label: {
+                            Label("Erinnerungen", systemImage: "bell")
+                        }
                     } footer: {
                         Text("Versicherung, Steuer, Wartung und alles Weitere rund ums Auto.")
                     }

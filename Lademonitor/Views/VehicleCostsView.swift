@@ -188,6 +188,17 @@ private struct VehicleCostRow: View {
     }
 }
 
+/// Vorbelegung des Kostenformulars, z. B. nach "Erledigt" einer Erinnerung
+/// (Kategorie, Datum, km-Stand und Bezeichnung).
+struct VehicleCostPrefill: Identifiable {
+    let id = UUID()
+    let vehicleId: String
+    let category: CostCategory
+    let date: Date
+    let odometerKm: Int?
+    let label: String?
+}
+
 struct AddEditVehicleCostView: View {
     let cost: VehicleCost?
     let vehicleId: String
@@ -207,20 +218,22 @@ struct AddEditVehicleCostView: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
 
-    init(cost: VehicleCost?, vehicleId: String, onSaved: @escaping () -> Void) {
+    /// `prefill` gilt nur beim Anlegen (ohne `cost`).
+    init(cost: VehicleCost?, vehicleId: String, prefill: VehicleCostPrefill? = nil, onSaved: @escaping () -> Void) {
         self.cost = cost
         self.vehicleId = vehicleId
         self.onSaved = onSaved
-        let start = cost?.startDate ?? Calendar.current.startOfDay(for: Date())
-        _category = State(initialValue: cost?.categoryValue ?? .insurance)
+        let preset = cost == nil ? prefill : nil
+        let start = cost?.startDate ?? preset?.date ?? Calendar.current.startOfDay(for: Date())
+        _category = State(initialValue: cost?.categoryValue ?? preset?.category ?? .insurance)
         _amount = State(initialValue: cost.map { String(format: "%.2f", $0.amount) } ?? "")
         _interval = State(initialValue: cost?.interval ?? .once)
         _startDate = State(initialValue: start)
         _hasEndDate = State(initialValue: cost?.endDate != nil)
         _endDate = State(initialValue: cost?.endDate
             ?? Calendar.current.date(byAdding: .year, value: 1, to: start) ?? start)
-        _odometerKm = State(initialValue: cost?.odometerKm.map { String($0) } ?? "")
-        _label = State(initialValue: cost?.label ?? "")
+        _odometerKm = State(initialValue: (cost?.odometerKm ?? preset?.odometerKm).map { String($0) } ?? "")
+        _label = State(initialValue: cost?.label ?? preset?.label ?? "")
         _notes = State(initialValue: cost?.notes ?? "")
     }
 

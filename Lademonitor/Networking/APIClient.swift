@@ -326,6 +326,30 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/vehicle-costs/\(id)", method: "DELETE"))
     }
 
+    // MARK: - Erinnerungen (Server ab 0.33.0)
+    //
+    // Wie bei den Fahrzeugkosten: ein aelterer Server antwortet mit 404, der
+    // SyncService laesst die Erinnerungen dann lokal liegen. `/complete`
+    // benutzt die App bewusst nicht (siehe ReminderPayload).
+
+    func fetchReminders() async throws -> [Reminder] {
+        try await send(try makeRequest(path: "/api/reminders"))
+    }
+
+    func createReminder(_ payload: ReminderPayload) async throws -> Reminder {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/reminders", method: "POST", body: body))
+    }
+
+    func updateReminder(id: String, _ payload: ReminderPayload) async throws -> Reminder {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/reminders/\(id)", method: "PATCH", body: body))
+    }
+
+    func deleteReminder(id: String) async throws {
+        try await sendNoContent(try makeRequest(path: "/api/reminders/\(id)", method: "DELETE"))
+    }
+
     // MARK: - Locations
 
     func fetchLocations() async throws -> [ChargingLocation] {
