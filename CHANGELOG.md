@@ -22,6 +22,17 @@ nach TestFlight.
   bei 10 % und 100 %. In den Einstellungen unter „Darstellung → Ladebalken“
   lassen sich beide Markierungen einzeln abschalten und in 5-%-Schritten
   verschieben, mit Vorschau. Die Einstellung gilt nur auf diesem Gerät.
+- Fahrzeugkosten: unter „Fahrzeuge → Fahrzeug → Kosten“ lassen sich
+  Versicherung, Kfz-Steuer, Wartung, Reparaturen, Reifen, Wallbox, Parken,
+  Maut, Wäsche und Sonstiges eintragen – einmalig, monatlich oder jährlich,
+  mit optionaler letzter Zahlung. Dazu eine Übersicht der Kosten je Jahr.
+- Kauf oder Leasing am Fahrzeug: beim Kauf schätzt die App den heutigen Wert
+  und schlägt einen monatlichen Wertverlust vor (überschreibbar), beim
+  Leasing zählt die Monatsrate plus anteilige Sonderzahlung.
+- Dashboard: neuer Abschnitt „Gesamtkosten“ mit Laden, sonstigen Kosten und
+  Wertverlust bzw. Leasing, Kosten je km, Anteil des Ladens und einem Balken
+  je Kategorie. Er erscheint, sobald es Kosten oder eine Kauf-/Leasingangabe
+  gibt. Funktioniert auch ohne Server; synchronisiert wird ab Server 0.32.0.
 
 ## 1.3.0
 

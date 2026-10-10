@@ -303,6 +303,29 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/provider-fees/\(id)", method: "DELETE"))
     }
 
+    // MARK: - Fahrzeugkosten (Server ab 0.32.0)
+    //
+    // Wie bei den Grundgebuehren: ein aelterer Server antwortet mit 404, der
+    // SyncService laesst die Kosten dann lokal liegen.
+
+    func fetchVehicleCosts() async throws -> [VehicleCost] {
+        try await send(try makeRequest(path: "/api/vehicle-costs"))
+    }
+
+    func createVehicleCost(_ payload: VehicleCostPayload) async throws -> VehicleCost {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/vehicle-costs", method: "POST", body: body))
+    }
+
+    func updateVehicleCost(id: String, _ payload: VehicleCostPayload) async throws -> VehicleCost {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/vehicle-costs/\(id)", method: "PATCH", body: body))
+    }
+
+    func deleteVehicleCost(id: String) async throws {
+        try await sendNoContent(try makeRequest(path: "/api/vehicle-costs/\(id)", method: "DELETE"))
+    }
+
     // MARK: - Locations
 
     func fetchLocations() async throws -> [ChargingLocation] {

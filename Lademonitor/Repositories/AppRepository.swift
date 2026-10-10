@@ -159,9 +159,57 @@ final class AppRepository {
                 unallocated = unallocated.filter { from <= $0.start && $0.start <= to }
             }
         }
-        return LocalStatsCalculator.compute(
+        var summary = LocalStatsCalculator.compute(
             sessions: sessions, vehicles: vehicles, providers: providers, unallocatedFees: unallocated
         )
+        // Gesamtkosten wie stats.py::build_vehicle_costs: Ladekosten und km
+        // aus der Zusammenfassung, Kosten und km-Staende fuer die
+        // Restwertkurve aus der GANZEN Historie der betrachteten Fahrzeuge.
+        let basis = try costBasisNow()
+        summary.vehicleCosts = LocalVehicleCostCalculator.summary(
+            vehicles: vehicleId.map { id in basis.vehicles.filter { $0.id == id } } ?? basis.vehicles,
+            costs: basis.costs,
+            sessions: basis.sessions,
+            dateRange: dateRange,
+            chargingCost: summary.totalCost,
+            kmDriven: summary.totalKmDriven
+        )
+        return summary
+    }
+
+    // MARK: - Fahrzeugkosten
+
+    /// Fahrzeuge, Kosten und Ladevorgaenge mit EINER Fahrzeug-ID-Form
+    /// (= `Vehicle.id`) - alles, was LocalVehicleCostCalculator braucht.
+    func vehicleCostBasis() async throws -> VehicleCostBasis {
+        await syncBeforeRead()
+        return try costBasisNow()
+    }
+
+    private func costBasisNow() throws -> VehicleCostBasis {
+        let store = LocalDataStore.shared
+        return VehicleCostBasis(
+            vehicles: try store.fetchVehicles(),
+            costs: try store.fetchVehicleCosts(),
+            sessions: try store.sessionsWithCanonicalVehicles()
+        )
+    }
+
+    func createVehicleCost(_ payload: VehicleCostPayload) async throws -> VehicleCost {
+        let cost = try LocalDataStore.shared.createVehicleCost(payload)
+        syncAfterWrite()
+        return cost
+    }
+
+    func updateVehicleCost(id: String, _ payload: VehicleCostPayload) async throws -> VehicleCost {
+        let cost = try LocalDataStore.shared.updateVehicleCost(id: id, payload)
+        syncAfterWrite()
+        return cost
+    }
+
+    func deleteVehicleCost(id: String) async throws {
+        try LocalDataStore.shared.deleteVehicleCost(id: id)
+        syncAfterWrite()
     }
 
     // MARK: - Tarifrechner
@@ -211,6 +259,13 @@ final class AppRepository {
         try LocalDataStore.shared.deleteFee(id: id)
         syncAfterWrite()
     }
+}
+
+struct VehicleCostBasis {
+    let vehicles: [Vehicle]
+    let costs: [VehicleCost]
+    /// Mit `feeShare`, Fahrzeug-ID vereinheitlicht.
+    let sessions: [ChargingSession]
 }
 
 struct TariffBasis {

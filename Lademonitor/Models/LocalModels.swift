@@ -20,6 +20,19 @@ final class LocalVehicle {
     var model: String?
     var batteryCapacityKwh: Double?
     var isActive: Bool
+    // Kauf/Leasing (siehe Vehicle in Models.swift). Alle optional, damit
+    // SwiftData leicht migriert - Bestandszeilen haben schlicht keine Angabe.
+    // Bewusst nicht im init: gesetzt werden sie ueber `applyOwnership`.
+    var ownership: String? = nil
+    var purchasePrice: Double? = nil
+    var purchaseDate: Date? = nil
+    var firstRegistration: Date? = nil
+    var purchaseOdometerKm: Int? = nil
+    var depreciationMonthlyOverride: Double? = nil
+    var leasingRateMonthly: Double? = nil
+    var leasingStart: Date? = nil
+    var leasingEnd: Date? = nil
+    var leasingDownPayment: Double? = nil
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -273,8 +286,39 @@ extension LocalVehicle {
             brand: brand,
             model: model,
             batteryCapacityKwh: batteryCapacityKwh,
-            isActive: isActive
+            isActive: isActive,
+            ownership: ownership,
+            purchasePrice: purchasePrice,
+            purchaseDate: purchaseDate,
+            firstRegistration: firstRegistration,
+            purchaseOdometerKm: purchaseOdometerKm,
+            depreciationMonthlyOverride: depreciationMonthlyOverride,
+            leasingRateMonthly: leasingRateMonthly,
+            leasingStart: leasingStart,
+            leasingEnd: leasingEnd,
+            leasingDownPayment: leasingDownPayment
         )
+    }
+
+    /// Uebernimmt ALLE Kauf-/Leasingfelder, auch `nil` - so wie der PATCH der
+    /// App sie schickt (siehe VehiclePayload.sendsOwnership). Datumsangaben
+    /// werden auf den Kalendertag gekuerzt, wie der Server es tut.
+    func applyOwnership(
+        ownership: String?, purchasePrice: Double?, purchaseDate: Date?, firstRegistration: Date?,
+        purchaseOdometerKm: Int?, depreciationMonthlyOverride: Double?, leasingRateMonthly: Double?,
+        leasingStart: Date?, leasingEnd: Date?, leasingDownPayment: Double?
+    ) {
+        let day = { (date: Date?) in date.map { Calendar.current.startOfDay(for: $0) } }
+        self.ownership = Ownership(raw: ownership).rawValue
+        self.purchasePrice = purchasePrice
+        self.purchaseDate = day(purchaseDate)
+        self.firstRegistration = day(firstRegistration)
+        self.purchaseOdometerKm = purchaseOdometerKm
+        self.depreciationMonthlyOverride = depreciationMonthlyOverride
+        self.leasingRateMonthly = leasingRateMonthly
+        self.leasingStart = day(leasingStart)
+        self.leasingEnd = day(leasingEnd)
+        self.leasingDownPayment = leasingDownPayment
     }
 }
 

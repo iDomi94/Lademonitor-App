@@ -7,7 +7,7 @@ import Combine
 /// LocalModels schlicht nie konsultiert.
 ///
 /// Ablauf pro Sync: erst PUSH (alle lokal geaenderten/geloeschten Zeilen hoch, in
-/// FK-Reihenfolge Vehicles -> Providers -> Gebuehren -> Locations -> Sessions, damit z.B. eine neu
+/// FK-Reihenfolge Vehicles -> Providers -> Gebuehren -> Fahrzeugkosten -> Locations -> Sessions, damit z.B. eine neu
 /// angelegte Session ihre Fahrzeug-serverId schon kennt), dann PULL (Server-Stand
 /// herunterladen und mergen). Konfliktstrategie: lokal dirty gewinnt (wird beim naechsten
 /// Push ueberschrieben statt beim Pull ueberschrieben zu werden) - siehe Konzept-Diskussion,
@@ -47,6 +47,9 @@ final class SyncService: ObservableObject {
     /// neu ermittelt (pushFees), damit ein Server-Update ohne App-Neustart
     /// greift.
     private var serverSupportsFees = false
+
+    /// Dasselbe fuer die Fahrzeugkosten (ab 0.32.0, pushVehicleCosts).
+    private var serverSupportsVehicleCosts = false
 
     private init() {
         // Sobald die Verbindung nach einer Offline-Phase wiederkommt, gepufferte
@@ -193,11 +196,13 @@ final class SyncService: ObservableObject {
             try await pushVehicles()
             try await pushProviders()
             try await pushFees()
+            try await pushVehicleCosts()
             try await pushLocations()
             try await pushSessions()
             try await pullVehicles()
             try await pullProviders()
             try await pullFees()
+            try await pullVehicleCosts()
             try await pullLocations()
             try await pullSessions()
             // Zum Schluss, nach den Pulls: die legen fehlende Zeilen an, und eine
@@ -244,11 +249,23 @@ final class SyncService: ObservableObject {
                 if let ref = localRef[fee.providerId] { fee.providerId = ref }
             }
         }
+        // Dasselbe fuer die Fahrzeugkosten und ihr Fahrzeug.
+        if let vehicles = try? context.fetch(FetchDescriptor<LocalVehicle>()),
+           let costs = try? context.fetch(FetchDescriptor<LocalVehicleCost>()) {
+            var localRef: [String: String] = [:]
+            for vehicle in vehicles {
+                if let serverId = vehicle.serverId { localRef[serverId] = vehicle.localId.uuidString }
+            }
+            for cost in costs {
+                if let ref = localRef[cost.vehicleId] { cost.vehicleId = ref }
+            }
+        }
         resetSyncState(for: LocalVehicle.self)
         resetSyncState(for: LocalProvider.self)
         resetSyncState(for: LocalChargingLocation.self)
         resetSyncState(for: LocalChargingSession.self)
         resetSyncState(for: LocalProviderFee.self)
+        resetSyncState(for: LocalVehicleCost.self)
         try? context.save()
     }
 
@@ -293,13 +310,31 @@ final class SyncService: ObservableObject {
                         predicate: #Predicate<LocalChargingSession> { $0.vehicleId == vehicleRef }
                     ))
                     sessions.forEach { context.delete($0) }
+                    // Ebenso seine Kosten (Grabsteine legt der Server selbst an).
+                    let refs = Set([vehicle.localId.uuidString] + (vehicle.serverId.map { [$0] } ?? []))
+                    try context.fetch(FetchDescriptor<LocalVehicleCost>())
+                        .filter { refs.contains($0.vehicleId) }
+                        .forEach { context.delete($0) }
                     context.delete(vehicle)
                     continue
                 }
                 let payload = VehiclePayload(
                     externalId: vehicle.serverId == nil ? vehicle.externalId : nil,
                     name: vehicle.name, brand: vehicle.brand, model: vehicle.model,
-                    batteryCapacityKwh: vehicle.batteryCapacityKwh, isActive: vehicle.isActive
+                    batteryCapacityKwh: vehicle.batteryCapacityKwh, isActive: vehicle.isActive,
+                    // Kauf/Leasing immer vollstaendig, auch leere Felder als
+                    // null - sonst kaeme ein geleerter Wert nie am Server an.
+                    sendsOwnership: true,
+                    ownership: vehicle.ownership,
+                    purchasePrice: vehicle.purchasePrice,
+                    purchaseDate: vehicle.purchaseDate,
+                    firstRegistration: vehicle.firstRegistration,
+                    purchaseOdometerKm: vehicle.purchaseOdometerKm,
+                    depreciationMonthlyOverride: vehicle.depreciationMonthlyOverride,
+                    leasingRateMonthly: vehicle.leasingRateMonthly,
+                    leasingStart: vehicle.leasingStart,
+                    leasingEnd: vehicle.leasingEnd,
+                    leasingDownPayment: vehicle.leasingDownPayment
                 )
                 if let serverId = vehicle.serverId {
                     _ = try await APIClient.shared.updateVehicle(id: serverId, payload)
@@ -388,6 +423,50 @@ final class SyncService: ObservableObject {
                 fee.isDirty = false
             } catch {
                 itemErrors.append(String(localized: "Grundgebühr „\(fee.label ?? fee.amount.formatted(.currency(code: "EUR")))“: \(error.localizedDescription)"))
+            }
+        }
+        try context.save()
+    }
+
+    /// Fahrzeugkosten nach den Fahrzeugen, damit ein neuer Eintrag die
+    /// serverId seines gerade erst hochgeladenen Fahrzeugs schon kennt. Gegen
+    /// einen Server aelter als 0.32.0 (404) bleibt alles lokal und dirty, wie
+    /// bei den Grundgebuehren.
+    private func pushVehicleCosts() async throws {
+        do {
+            _ = try await APIClient.shared.fetchVehicleCosts()
+            serverSupportsVehicleCosts = true
+        } catch APIError.server(let statusCode, _) where statusCode == 404 {
+            serverSupportsVehicleCosts = false
+            return
+        }
+        let dirty = try context.fetch(FetchDescriptor<LocalVehicleCost>(predicate: #Predicate { $0.isDirty }))
+        for cost in dirty {
+            do {
+                if cost.pendingDelete {
+                    if let serverId = cost.serverId {
+                        try? await APIClient.shared.deleteVehicleCost(id: serverId)
+                    }
+                    context.delete(cost)
+                    continue
+                }
+                let vehicleId = try resolvedVehicleServerId(cost.vehicleId)
+                let payload = VehicleCostPayload(
+                    vehicleId: vehicleId, amount: cost.amount, category: cost.category,
+                    interval: CostInterval(rawValue: cost.interval) ?? .once,
+                    startDate: cost.startDate, endDate: cost.endDate, odometerKm: cost.odometerKm,
+                    label: cost.label, notes: cost.notes
+                )
+                if let serverId = cost.serverId {
+                    _ = try await APIClient.shared.updateVehicleCost(id: serverId, payload)
+                } else {
+                    let created = try await APIClient.shared.createVehicleCost(payload)
+                    cost.serverId = created.id
+                }
+                cost.vehicleId = vehicleId
+                cost.isDirty = false
+            } catch {
+                itemErrors.append(String(localized: "Fahrzeugkosten „\(cost.label ?? CostCategory.displayName(raw: cost.category))“: \(error.localizedDescription)"))
             }
         }
         try context.save()
@@ -542,17 +621,33 @@ final class SyncService: ObservableObject {
                     existing.model = sv.model
                     existing.batteryCapacityKwh = sv.batteryCapacityKwh
                     existing.isActive = sv.isActive
+                    // Nur von einem Server, der Kauf/Leasing kennt (ab 0.32.0,
+                    // schickt `ownership` immer mit) - ein aelterer wuerde die
+                    // lokale Angabe sonst bei jedem Sync leeren.
+                    if sv.ownership != nil { applyOwnership(of: sv, to: existing) }
                 }
             } else {
-                context.insert(LocalVehicle(
+                let vehicle = LocalVehicle(
                     serverId: sv.id, externalId: sv.externalId, name: sv.name, brand: sv.brand,
                     model: sv.model, batteryCapacityKwh: sv.batteryCapacityKwh, isActive: sv.isActive,
                     isDirty: false
-                ))
+                )
+                if sv.ownership != nil { applyOwnership(of: sv, to: vehicle) }
+                context.insert(vehicle)
             }
         }
         try removeVanishedMirrors(LocalVehicle.self, stillOnServer: serverIds)
         try context.save()
+    }
+
+    private func applyOwnership(of dto: Vehicle, to vehicle: LocalVehicle) {
+        vehicle.applyOwnership(
+            ownership: dto.ownership, purchasePrice: dto.purchasePrice, purchaseDate: dto.purchaseDate,
+            firstRegistration: dto.firstRegistration, purchaseOdometerKm: dto.purchaseOdometerKm,
+            depreciationMonthlyOverride: dto.depreciationMonthlyOverride,
+            leasingRateMonthly: dto.leasingRateMonthly, leasingStart: dto.leasingStart,
+            leasingEnd: dto.leasingEnd, leasingDownPayment: dto.leasingDownPayment
+        )
     }
 
     private func pullProviders() async throws {
@@ -605,6 +700,33 @@ final class SyncService: ObservableObject {
                     serverId: sf.id, providerId: sf.providerId, amount: sf.amount,
                     interval: sf.interval.rawValue, startDate: sf.startDate, endDate: sf.endDate,
                     label: sf.label, notes: sf.notes, isDirty: false
+                ))
+            }
+        }
+        try context.save()
+    }
+
+    private func pullVehicleCosts() async throws {
+        guard serverSupportsVehicleCosts else { return }
+        let serverCosts = try await APIClient.shared.fetchVehicleCosts()
+        for sc in serverCosts {
+            if let existing = try findLocalVehicleCost(serverId: sc.id) {
+                if !existing.isDirty {
+                    existing.vehicleId = sc.vehicleId
+                    existing.amount = sc.amount
+                    existing.category = sc.category
+                    existing.interval = sc.interval.rawValue
+                    existing.startDate = sc.startDate
+                    existing.endDate = sc.endDate
+                    existing.odometerKm = sc.odometerKm
+                    existing.label = sc.label
+                    existing.notes = sc.notes
+                }
+            } else {
+                context.insert(LocalVehicleCost(
+                    serverId: sc.id, vehicleId: sc.vehicleId, amount: sc.amount, category: sc.category,
+                    interval: sc.interval.rawValue, startDate: sc.startDate, endDate: sc.endDate,
+                    odometerKm: sc.odometerKm, label: sc.label, notes: sc.notes, isDirty: false
                 ))
             }
         }
@@ -755,7 +877,14 @@ final class SyncService: ObservableObject {
         for record in response.deletions {
             switch record.entityType {
             case "vehicle":
-                if let row = try findLocalVehicle(serverId: record.entityId) { context.delete(row) }
+                if let row = try findLocalVehicle(serverId: record.entityId) {
+                    // Seine Kosten mit, wie die Gebuehren beim Anbieter.
+                    let refs = Set([row.localId.uuidString, record.entityId])
+                    try context.fetch(FetchDescriptor<LocalVehicleCost>())
+                        .filter { refs.contains($0.vehicleId) }
+                        .forEach { context.delete($0) }
+                    context.delete(row)
+                }
             case "provider":
                 if let row = try findLocalProvider(serverId: record.entityId) {
                     // Seine Gebuehren mit: eine noch nie hochgeladene haette sonst
@@ -772,6 +901,8 @@ final class SyncService: ObservableObject {
                 if let row = try findLocalSession(serverId: record.entityId) { context.delete(row) }
             case "provider_fee":
                 if let row = try findLocalFee(serverId: record.entityId) { context.delete(row) }
+            case "vehicle_cost":
+                if let row = try findLocalVehicleCost(serverId: record.entityId) { context.delete(row) }
             default:
                 // Unbekannter Typ aus einem neueren Server: ueberspringen statt
                 // zu raten. Eine aeltere App soll an einem neueren Server nicht
@@ -798,9 +929,12 @@ final class SyncService: ObservableObject {
     private func findLocalFee(serverId: String) throws -> LocalProviderFee? {
         try context.fetch(FetchDescriptor<LocalProviderFee>(predicate: #Predicate { $0.serverId == serverId })).first
     }
+    private func findLocalVehicleCost(serverId: String) throws -> LocalVehicleCost? {
+        try context.fetch(FetchDescriptor<LocalVehicleCost>(predicate: #Predicate { $0.serverId == serverId })).first
+    }
 }
 
-/// Gemeinsames Protokoll der LocalModels-Typen (plus LocalProviderFee), nur damit removeVanishedMirrors()/
+/// Gemeinsames Protokoll der LocalModels-Typen (plus LocalProviderFee/LocalVehicleCost), nur damit removeVanishedMirrors()/
 /// resetSyncState() generisch auf serverId/isDirty/pendingDelete zugreifen koennen.
 protocol SyncMirrorable: AnyObject {
     var serverId: String? { get set }

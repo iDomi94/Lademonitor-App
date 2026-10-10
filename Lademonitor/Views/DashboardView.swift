@@ -88,6 +88,21 @@ struct DashboardView: View {
                         .padding(.bottom, 24)
                     }
 
+                    // Gesamtkosten inkl. sonstiger Kosten und Wertverlust/
+                    // Leasing - nur, wenn es zu einem Fahrzeug Kosten oder
+                    // eine Kauf-/Leasingangabe gibt. Die Kennzahlen oben
+                    // bleiben bewusst reine Ladekosten.
+                    if let costs = stats.vehicleCosts {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Gesamtkosten")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            TotalCostCard(summary: costs)
+                                .padding(.horizontal)
+                        }
+                        .padding(.bottom, 24)
+                    }
+
                     // Anbieter-Kuchendiagramme
                     if !stats.byProvider.isEmpty {
                         ProviderPieChartsSection(providers: stats.byProvider)
@@ -331,6 +346,57 @@ private struct PlaceSplitCard: View {
                 }
             }
         }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Gesamtkosten
+
+/// Gegenstueck zum Abschnitt "Gesamtkosten" im Web-Dashboard: Summe aus
+/// Laden, sonstigen Kosten und Wertverlust bzw. Leasing, Kosten je km, der
+/// Anteil des Ladens und ein Balken je Kategorie.
+private struct TotalCostCard: View {
+    let summary: VehicleCostSummary
+
+    private var chargingShare: Double? {
+        summary.totalCost > 0 ? summary.chargingCost / summary.totalCost * 100 : nil
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(summary.totalCost.formatted(.currency(code: "EUR")))
+                        .font(.title2.bold())
+                    Text("Laden, sonstige Kosten und Wertverlust bzw. Leasing")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            HStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Kosten je km")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(summary.costPerKm.map { String(format: "%.2f €", $0) } ?? "–")
+                        .font(.subheadline.weight(.semibold))
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("davon Laden")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(chargingShare.map { String(format: "%.0f %%", $0) } ?? "–")
+                        .font(.subheadline.weight(.semibold))
+                }
+            }
+            if !summary.byCategory.isEmpty {
+                CostCategoryBars(categories: summary.byCategory)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
