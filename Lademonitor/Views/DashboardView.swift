@@ -75,6 +75,19 @@ struct DashboardView: View {
                         .padding(.bottom, 24)
                     }
 
+                    // Zuhause/Arbeit/Unterwegs - nur, wenn mindestens ein
+                    // Vorgang Zuhause oder Arbeit ist (byPlace sonst leer).
+                    if let places = stats.byPlace, !places.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Zuhause, Arbeit, unterwegs")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            PlaceSplitCard(places: places)
+                                .padding(.horizontal)
+                        }
+                        .padding(.bottom, 24)
+                    }
+
                     // Anbieter-Kuchendiagramme
                     if !stats.byProvider.isEmpty {
                         ProviderPieChartsSection(providers: stats.byProvider)
@@ -247,6 +260,74 @@ private struct AcDcBar: View {
                     Text(String(format: "DC  %.0f%% · %.1f kWh", (1 - acFraction) * 100, dcKwh))
                         .font(.caption)
                     Circle().fill(Color.orange).frame(width: 10, height: 10)
+                }
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Zuhause/Arbeit/Unterwegs
+
+/// Oben die kWh-Anteile als geteilter Balken wie bei AC/DC, darunter je Ort
+/// kWh, Kosten und Preis je kWh - der ist die eigentliche Antwort.
+private struct PlaceSplitCard: View {
+    let places: [PlaceStat]
+
+    private var totalKwh: Double { places.reduce(0) { $0 + $1.totalKwh } }
+
+    static func color(_ place: ChargingPlace) -> Color {
+        switch place {
+        case .home: return .green
+        case .work: return .blue
+        case .public: return .orange
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if totalKwh > 0 {
+                GeometryReader { geo in
+                    let shown = places.filter { $0.totalKwh > 0 }
+                    let gaps = CGFloat(max(shown.count - 1, 0)) * 2
+                    HStack(spacing: 2) {
+                        ForEach(shown) { stat in
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Self.color(stat.place))
+                                .frame(width: max((geo.size.width - gaps) * stat.totalKwh / totalKwh, 0))
+                        }
+                    }
+                }
+                .frame(height: 24)
+            }
+            ForEach(places) { stat in
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 6) {
+                            Circle().fill(Self.color(stat.place)).frame(width: 10, height: 10)
+                            Text(stat.place.displayName).font(.subheadline.weight(.semibold))
+                        }
+                        Text(stat.sessionCount == 1
+                             ? String(localized: "1 Ladevorgang")
+                             : String(localized: "\(stat.sessionCount) Ladevorgänge"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(stat.avgPricePerKwh.map { String(format: String(localized: "%.3f € je kWh"), $0) } ?? "–")
+                            .font(.subheadline.weight(.semibold))
+                        Text(String(
+                            format: "%.1f kWh · %.0f%% · %.2f €",
+                            stat.totalKwh,
+                            totalKwh > 0 ? stat.totalKwh / totalKwh * 100 : 0,
+                            stat.totalCost
+                        ))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
                 }
             }
         }

@@ -48,14 +48,6 @@ struct SettingsView: View {
                     }
                 }
 
-                Section("Tools") {
-                    NavigationLink {
-                        PublicProvidersView()
-                    } label: {
-                        Label("Tarifrechner: öffentliche Anbieter", systemImage: "eurosign.circle")
-                    }
-                }
-
                 Section("Server") {
                     NavigationLink {
                         ServerSettingsView()

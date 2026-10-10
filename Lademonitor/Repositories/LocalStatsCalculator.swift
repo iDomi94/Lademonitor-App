@@ -84,6 +84,10 @@ enum LocalStatsCalculator {
                 )
             }
 
+        let byPlace = placeStats(
+            sessions: sorted, providers: providers, unallocatedFees: unallocatedFees, cost: cost
+        )
+
         // Monatlicher Verbrauch: km-gewichtet gemittelt ueber die Consumption-Ergebnisse
         // pro Fahrzeug (dieselbe Fallback-Kette wie pro Ladevorgang).
         var consumptionByVehicle: [String: LocalConsumptionCalculator.Result] = [:]
@@ -150,8 +154,50 @@ enum LocalStatsCalculator {
             byProvider: byProvider,
             monthly: monthly,
             totalFees: round2(totalFees),
-            unallocatedFees: round2(unallocatedSum)
+            unallocatedFees: round2(unallocatedSum),
+            byPlace: byPlace
         )
+    }
+
+    /// Zuhause/Arbeit/Unterwegs, gleiche Regeln wie stats.py::build_by_place():
+    /// ohne Anbieter zaehlt als unterwegs, nicht umgelegte Gebuehren beim Ort
+    /// ihres Anbieters, und leer, solange kein Vorgang Zuhause oder Arbeit ist
+    /// - eine Aufteilung "100 % unterwegs" sagt nichts.
+    static func placeStats(
+        sessions: [ChargingSession],
+        providers: [Provider],
+        unallocatedFees: [LocalFeeAllocator.Period],
+        cost: (ChargingSession) -> Double
+    ) -> [PlaceStat] {
+        func place(of providerId: String?) -> ChargingPlace {
+            providers.first { $0.id == providerId }?.place ?? .public
+        }
+        var count: [ChargingPlace: Int] = [:]
+        var kwh: [ChargingPlace: Double] = [:]
+        var total: [ChargingPlace: Double] = [:]
+        for session in sessions {
+            let p = place(of: session.providerId)
+            count[p, default: 0] += 1
+            kwh[p, default: 0] += session.energyKwh ?? 0
+            total[p, default: 0] += cost(session)
+        }
+        guard (count[.home] ?? 0) > 0 || (count[.work] ?? 0) > 0 else { return [] }
+        for period in unallocatedFees {
+            total[place(of: period.providerId), default: 0] += period.amount
+        }
+        return [ChargingPlace.home, .work, .public].compactMap { p in
+            let n = count[p] ?? 0
+            let k = kwh[p] ?? 0
+            let c = total[p] ?? 0
+            guard n > 0 || c > 0 else { return nil }
+            return PlaceStat(
+                placeRaw: p.rawValue,
+                sessionCount: n,
+                totalKwh: round2(k),
+                totalCost: round2(c),
+                avgPricePerKwh: k > 0 ? round4(c / k) : nil
+            )
+        }
     }
 
     private static func round1(_ v: Double) -> Double { (v * 10).rounded() / 10 }

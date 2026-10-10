@@ -64,6 +64,31 @@ enum EnergyMeter: String, CaseIterable, Identifiable {
     }
 }
 
+/// Wo geladen wird (Server ab 0.31.0, `Provider.charging_place`). Trennt im
+/// Dashboard Zuhause/Arbeit/Unterwegs und bestimmt, welche Anbieter der
+/// Tarifrechner als "ohne Tarif" heranzieht.
+enum ChargingPlace: String, CaseIterable, Identifiable {
+    case home
+    case work
+    case `public`
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .home: return String(localized: "Zuhause")
+        case .work: return String(localized: "Arbeit")
+        case .public: return String(localized: "Unterwegs")
+        }
+    }
+
+    /// Unbekannt oder fehlend (aelterer Server) heisst unterwegs, wie
+    /// serverseitig.
+    init(raw: String?) {
+        self = raw.flatMap(ChargingPlace.init(rawValue:)) ?? .public
+    }
+}
+
 struct Vehicle: Codable, Identifiable, Hashable {
     let id: String
     var externalId: String
@@ -91,15 +116,20 @@ struct Provider: Codable, Identifiable, Hashable {
     /// ein aelterer Server ohne das Feld weiter decodiert - fehlend heisst
     /// Ladesaeule, siehe `energyMeterDefault`.
     var energyMeter: String? = nil
+    /// "home" | "work" | "public" (Server ab 0.31.0), fehlend heisst
+    /// unterwegs, siehe `place`.
+    var chargingPlace: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, name, notes
         case lastPriceAcPerKwh = "last_price_ac_per_kwh"
         case lastPriceDcPerKwh = "last_price_dc_per_kwh"
         case energyMeter = "energy_meter"
+        case chargingPlace = "charging_place"
     }
 
     var energyMeterDefault: EnergyMeter { EnergyMeter(raw: energyMeter) }
+    var place: ChargingPlace { ChargingPlace(raw: chargingPlace) }
 }
 
 struct ChargingLocation: Codable, Identifiable, Hashable {
@@ -357,12 +387,16 @@ struct ProviderPayload: Codable {
     /// "charger" | "vehicle" (Server ab 0.29.0); ein aelterer Server
     /// ignoriert das unbekannte Feld.
     var energyMeter: String? = nil
+    /// "home" | "work" | "public" (Server ab 0.31.0); ein aelterer Server
+    /// ignoriert das unbekannte Feld.
+    var chargingPlace: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case name, notes
         case lastPriceAcPerKwh = "last_price_ac_per_kwh"
         case lastPriceDcPerKwh = "last_price_dc_per_kwh"
         case energyMeter = "energy_meter"
+        case chargingPlace = "charging_place"
     }
 }
 
@@ -556,6 +590,28 @@ struct ProviderStat: Codable, Identifiable {
     }
 }
 
+/// Kennzahlen je Ladeort (by_place, Server ab 0.31.0). Leer, solange kein
+/// Vorgang im Zeitraum "Zuhause" oder "Arbeit" ist.
+struct PlaceStat: Codable, Identifiable {
+    var id: String { placeRaw }
+    let placeRaw: String
+    let sessionCount: Int
+    let totalKwh: Double
+    /// Inklusive Grundgebuehren.
+    let totalCost: Double
+    let avgPricePerKwh: Double?
+
+    var place: ChargingPlace { ChargingPlace(raw: placeRaw) }
+
+    enum CodingKeys: String, CodingKey {
+        case placeRaw = "place"
+        case sessionCount = "session_count"
+        case totalKwh = "total_kwh"
+        case totalCost = "total_cost"
+        case avgPricePerKwh = "avg_price_per_kwh"
+    }
+}
+
 struct MonthlyStat: Codable, Identifiable {
     var id: String { month }
     let month: String
@@ -629,6 +685,8 @@ struct StatsSummary: Codable {
     var totalFees: Double? = nil
     /// Davon Perioden, in denen es keinen Ladevorgang des Anbieters gab.
     var unallocatedFees: Double? = nil
+    /// Zuhause/Arbeit/Unterwegs, siehe `PlaceStat`.
+    var byPlace: [PlaceStat]? = nil
 
     enum CodingKeys: String, CodingKey {
         case totalSessions = "total_sessions"
@@ -646,6 +704,7 @@ struct StatsSummary: Codable {
         case monthly
         case totalFees = "total_fees"
         case unallocatedFees = "unallocated_fees"
+        case byPlace = "by_place"
     }
 }
 

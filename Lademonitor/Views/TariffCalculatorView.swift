@@ -30,7 +30,7 @@ struct TariffCalculatorView: View {
         var consumption: Double?
         var sharePct: Double?
         /// Der Anteil stammt vom gewaehlten Anbieter selbst (sonst: Anteil
-        /// aller oeffentlichen Anbieter).
+        /// aller Anbieter "Unterwegs").
         var shareFromProvider = false
         var price: Double?
         var fee: Double?
@@ -215,11 +215,8 @@ struct TariffCalculatorView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
-                    Text("Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe die Auswahl der öffentlichen Anbieter.")
+                    Text("Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe den Ladeort deiner Anbieter.")
                         .foregroundStyle(.secondary)
-                }
-                NavigationLink("Öffentliche Anbieter auswählen") {
-                    PublicProvidersView()
                 }
             } else {
                 HStack {
@@ -235,7 +232,7 @@ struct TariffCalculatorView: View {
             Text("Preis ohne Tarif")
         } footer: {
             if comparisonMode == .automatic {
-                Text("Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten an öffentlichen Ladesäulen pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Welche Anbieter als öffentlich zählen, stellst du unter „Öffentliche Anbieter“ ein.")
+                Text("Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten unterwegs pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Es zählen alle Anbieter mit Ladeort „Unterwegs“.")
             } else {
                 Text("Der Preis, den du ohne diesen Tarif pro kWh zahlen würdest, z. B. der Ad-hoc-Preis an der Säule.")
             }
@@ -393,7 +390,7 @@ struct TariffCalculatorView: View {
         if suggestions.shareFromProvider, let name = selectedProvider?.name {
             return String(localized: "Vorschlag \(Self.percent(suggested)): bisheriger Anteil von \(name), letzte 3 Monate")
         }
-        return String(localized: "Vorschlag \(Self.percent(suggested)): bisheriger Anteil öffentlicher Anbieter, letzte 3 Monate")
+        return String(localized: "Vorschlag \(Self.percent(suggested)): bisheriger Anteil unterwegs, letzte 3 Monate")
     }
 
     private var priceCaption: String? {
@@ -450,7 +447,7 @@ struct TariffCalculatorView: View {
         if let providerId {
             // Ein Anbieter ohne eigene Ladungen (z. B. gerade erst angelegt, um
             // ein Abo durchzurechnen) bekaeme sonst 0 % - dann ist der Anteil
-            // des oeffentlichen Ladens die bessere Schaetzung.
+            // des Ladens unterwegs die bessere Schaetzung.
             let own = TariffCalculator.suggestedSharePct(sessions: sessions) { $0.providerId == providerId }
             if let own, own > 0 {
                 s.sharePct = own

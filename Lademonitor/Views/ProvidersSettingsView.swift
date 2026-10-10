@@ -107,6 +107,11 @@ private struct ProviderRow: View {
                 }
             }
             Spacer()
+            if provider.place != .public {
+                Text(provider.place.displayName)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.vertical, 2)
     }
@@ -123,6 +128,7 @@ struct AddEditProviderView: View {
     @State private var lastPriceDcPerKwh: String
     @State private var notes: String
     @State private var energyMeter: EnergyMeter
+    @State private var chargingPlace: ChargingPlace
     @State private var isSaving = false
     @State private var errorMessage: String?
 
@@ -134,6 +140,7 @@ struct AddEditProviderView: View {
         _lastPriceDcPerKwh = State(initialValue: provider?.lastPriceDcPerKwh.map { String(format: "%.4f", $0) } ?? "")
         _notes = State(initialValue: provider?.notes ?? "")
         _energyMeter = State(initialValue: provider?.energyMeterDefault ?? .charger)
+        _chargingPlace = State(initialValue: provider?.place ?? .public)
     }
 
     private var isEditing: Bool { provider != nil }
@@ -145,8 +152,17 @@ struct AddEditProviderView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Anbieter") {
+                Section {
                     TextField("Name", text: $name)
+                    Picker("Ladeort", selection: $chargingPlace) {
+                        ForEach(ChargingPlace.allCases) { place in
+                            Text(place.displayName).tag(place)
+                        }
+                    }
+                } header: {
+                    Text("Anbieter")
+                } footer: {
+                    Text("Das Dashboard trennt Kosten und Preis je kWh nach Zuhause, Arbeit und unterwegs. Der Tarifrechner vergleicht nur mit Anbietern „Unterwegs“.")
                 }
 
                 Section {
@@ -231,7 +247,8 @@ struct AddEditProviderView: View {
             lastPriceAcPerKwh: Double(lastPriceAcPerKwh.replacingOccurrences(of: ",", with: ".")),
             lastPriceDcPerKwh: Double(lastPriceDcPerKwh.replacingOccurrences(of: ",", with: ".")),
             notes: trimmedNotes.isEmpty ? nil : trimmedNotes,
-            energyMeter: energyMeter.rawValue
+            energyMeter: energyMeter.rawValue,
+            chargingPlace: chargingPlace.rawValue
         )
 
         do {
