@@ -236,6 +236,12 @@ private struct SessionRow: View {
     /// z.B. bei automatisch importierten Sessions ohne freien Ortstext.
     let locationName: String?
 
+    // Ladebalken-Einstellungen (nur lokal, siehe ChargeBarSettingsView).
+    @AppStorage(ChargeBarSettings.lowerMarkerEnabledKey) private var lowerMarkerEnabled = true
+    @AppStorage(ChargeBarSettings.lowerMarkerKey) private var lowerMarker = ChargeBarSettings.defaultLowerMarker
+    @AppStorage(ChargeBarSettings.upperMarkerEnabledKey) private var upperMarkerEnabled = true
+    @AppStorage(ChargeBarSettings.upperMarkerKey) private var upperMarker = ChargeBarSettings.defaultUpperMarker
+
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateStyle = .medium
@@ -308,6 +314,16 @@ private struct SessionRow: View {
                     Text(detailsLine)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
+                }
+                // Ladebalken nur bei vollstaendigem, plausiblem SoC-Verlauf.
+                if let start = session.socStart, let end = session.socEnd, end >= start {
+                    ChargeBar(
+                        socStart: start,
+                        socEnd: end,
+                        lowerMarker: lowerMarkerEnabled ? lowerMarker : nil,
+                        upperMarker: upperMarkerEnabled ? upperMarker : nil
+                    )
+                    .padding(.vertical, 2)
                 }
                 if let consumption = session.consumptionKwhPer100km,
                    let method = session.consumptionMethodValue,

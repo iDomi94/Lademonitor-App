@@ -69,6 +69,23 @@
         }
       }
     },
+    "Darstellung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darstellung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        }
+      }
+    },
     "Das Dashboard trennt Kosten und Preis je kWh nach Zuhause, Arbeit und unterwegs. Der Tarifrechner vergleicht nur mit Anbietern „Unterwegs“." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -82,6 +99,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The dashboard splits cost and price per kWh into home, work and on the road. The tariff calculator only compares against providers set to “On the road”."
+          }
+        }
+      }
+    },
+    "Geladen von %lld %% auf %lld %%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geladen von %lld %% auf %lld %%"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charged from %lld %% to %lld %%"
           }
         }
       }
@@ -103,6 +137,74 @@
         }
       }
     },
+    "Ladebalken" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladebalken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge Bar"
+          }
+        }
+      }
+    },
+    "Obere Markierung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obere Markierung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upper Marker"
+          }
+        }
+      }
+    },
+    "Rote Markierungen im Ladebalken der Ladevorgangsliste, z. B. für deinen Mindest- und Zielladestand. Gilt nur auf diesem Gerät." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rote Markierungen im Ladebalken der Ladevorgangsliste, z. B. für deinen Mindest- und Zielladestand. Gilt nur auf diesem Gerät."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red markers in the charge bar of the charging session list, e.g. for your minimum and target charge level. Applies to this device only."
+          }
+        }
+      }
+    },
+    "Untere Markierung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untere Markierung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower Marker"
+          }
+        }
+      }
+    },
     "Unterwegs" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -116,6 +218,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "On the road"
+          }
+        }
+      }
+    },
+    "Vorschau" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
           }
         }
       }

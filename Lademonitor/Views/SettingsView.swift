@@ -48,6 +48,14 @@ struct SettingsView: View {
                     }
                 }
 
+                Section("Darstellung") {
+                    NavigationLink {
+                        ChargeBarSettingsView()
+                    } label: {
+                        Label("Ladebalken", systemImage: "battery.75percent")
+                    }
+                }
+
                 Section("Server") {
                     NavigationLink {
                         ServerSettingsView()

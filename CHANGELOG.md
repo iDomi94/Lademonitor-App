@@ -17,6 +17,11 @@ nach TestFlight.
   mit Ladeort „Unterwegs“. Die frühere Auswahl „Öffentliche Anbieter“ entfällt;
   dort abgewählte Anbieter werden beim ersten Start einmalig auf „Zuhause“
   gestellt.
+- Ladevorgangsliste: unter dem SoC-Text zeigt ein schmaler Ladebalken (0–100 %)
+  den geladenen Bereich in Grün, dazu zwei rote Markierungen – standardmäßig
+  bei 10 % und 100 %. In den Einstellungen unter „Darstellung → Ladebalken“
+  lassen sich beide Markierungen einzeln abschalten und in 5-%-Schritten
+  verschieben, mit Vorschau. Die Einstellung gilt nur auf diesem Gerät.
 
 ## 1.3.0
 
