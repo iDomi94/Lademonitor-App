@@ -154,7 +154,8 @@ final class LocalDataStore {
             lastPriceAcPerKwh: payload.lastPriceAcPerKwh,
             lastPriceDcPerKwh: payload.lastPriceDcPerKwh,
             notes: payload.notes,
-            energyMeter: EnergyMeter(raw: payload.energyMeter).rawValue
+            energyMeter: EnergyMeter(raw: payload.energyMeter).rawValue,
+            chargingPlace: ChargingPlace(raw: payload.chargingPlace).rawValue
         )
         context.insert(provider)
         try context.save()
@@ -168,6 +169,7 @@ final class LocalDataStore {
         if let dc = payload.lastPriceDcPerKwh { provider.lastPriceDcPerKwh = dc }
         if let notes = payload.notes { provider.notes = notes }
         if let energyMeter = payload.energyMeter { provider.energyMeter = EnergyMeter(raw: energyMeter).rawValue }
+        if let place = payload.chargingPlace { provider.chargingPlace = ChargingPlace(raw: place).rawValue }
         provider.updatedAt = Date()
         provider.isDirty = true
         try context.save()
@@ -191,6 +193,24 @@ final class LocalDataStore {
             context.delete(provider)
         }
         try context.save()
+    }
+
+    /// Einmalig: Anbieter, die in der frueheren, nur lokalen Auswahl des
+    /// Tarifrechners als "nicht oeffentlich" abgewaehlt waren, werden
+    /// "Zuhause" - das war praktisch immer die eigene Wallbox. Dirty markiert,
+    /// damit der Ladeort mit dem naechsten Sync zum Server geht. Der alte
+    /// Schluessel faellt erst nach erfolgreichem Speichern weg; ein zweiter
+    /// Lauf waere ohnehin folgenlos.
+    func migrateLegacyTariffExclusions() throws {
+        guard let ids = TariffCalculatorSettings.legacyExcludedProviderIds else { return }
+        for id in ids {
+            guard let provider = try findProvider(id: id), !provider.pendingDelete else { continue }
+            provider.chargingPlace = ChargingPlace.home.rawValue
+            provider.updatedAt = Date()
+            provider.isDirty = true
+        }
+        try context.save()
+        TariffCalculatorSettings.clearLegacyExcluded()
     }
 
     private func findProvider(id: String) throws -> LocalProvider? {

@@ -7,6 +7,17 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.4.0
+
+- Anbieter haben einen Ladeort: Zuhause, Arbeit oder Unterwegs (Standard).
+  Das Dashboard zeigt dann kWh, Kosten und Preis je kWh getrennt nach
+  Ladeort – sobald im Zeitraum mindestens ein Ladevorgang zuhause oder bei der
+  Arbeit liegt. Der Ladeort wird mit dem Server synchronisiert (ab 0.31.0).
+- Tarifrechner: der automatische Preis ohne Tarif zählt jetzt alle Anbieter
+  mit Ladeort „Unterwegs“. Die frühere Auswahl „Öffentliche Anbieter“ entfällt;
+  dort abgewählte Anbieter werden beim ersten Start einmalig auf „Zuhause“
+  gestellt.
+
 ## 1.3.0
 
 - Reifen (nur mit Server ab 0.30.0): DOT-Nummer je Achse eintragen, die

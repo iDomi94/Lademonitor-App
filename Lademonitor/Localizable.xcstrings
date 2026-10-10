@@ -18,6 +18,142 @@
         }
       }
     },
+    "%.3f € je kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.3f € je kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.3f € per kWh"
+          }
+        }
+      }
+    },
+    "1 Ladevorgang" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 Ladevorgang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 charging session"
+          }
+        }
+      }
+    },
+    "Arbeit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Work"
+          }
+        }
+      }
+    },
+    "Das Dashboard trennt Kosten und Preis je kWh nach Zuhause, Arbeit und unterwegs. Der Tarifrechner vergleicht nur mit Anbietern „Unterwegs“." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Dashboard trennt Kosten und Preis je kWh nach Zuhause, Arbeit und unterwegs. Der Tarifrechner vergleicht nur mit Anbietern „Unterwegs“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The dashboard splits cost and price per kWh into home, work and on the road. The tariff calculator only compares against providers set to “On the road”."
+          }
+        }
+      }
+    },
+    "Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe den Ladeort deiner Anbieter." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe den Ladeort deiner Anbieter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No matching charging sessions in the last year. Enter the price yourself or check the charging place of your providers."
+          }
+        }
+      }
+    },
+    "Unterwegs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterwegs"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On the road"
+          }
+        }
+      }
+    },
+    "Zuhause" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuhause"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        }
+      }
+    },
+    "Zuhause, Arbeit, unterwegs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuhause, Arbeit, unterwegs"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home, work, on the road"
+          }
+        }
+      }
+    },
     "– keiner –" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6631,23 +6767,6 @@
         }
       }
     },
-    "Öffentliche Anbieter auswählen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffentliche Anbieter auswählen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose public providers"
-          }
-        }
-      }
-    },
     "Preis ohne Tarif" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6699,19 +6818,19 @@
         }
       }
     },
-    "Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten an öffentlichen Ladesäulen pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Welche Anbieter als öffentlich zählen, stellst du unter „Öffentliche Anbieter“ ein." : {
+    "Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten unterwegs pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Es zählen alle Anbieter mit Ladeort „Unterwegs“." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten an öffentlichen Ladesäulen pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Welche Anbieter als öffentlich zählen, stellst du unter „Öffentliche Anbieter“ ein."
+            "value" : "Automatik: Durchschnitt dessen, was du in den letzten 12 Monaten unterwegs pro kWh bezahlt hast, inklusive Grundgebührenanteilen, gewichtet nach kWh und nur für die gewählte Lade-Art. Der Anbieter, dessen Werte übernommen wurden, zählt nicht mit. Es zählen alle Anbieter mit Ladeort „Unterwegs“."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatic: the average you paid per kWh at public chargers over the last 12 months, including base fee shares, weighted by kWh and only for the selected charging type. The provider whose values were taken does not count. Choose which providers count as public under “Public providers”."
+            "value" : "Automatic: the average you paid per kWh on the road over the last 12 months, including base fee shares, weighted by kWh and only for the selected charging type. The provider whose values were taken does not count. All providers with charging place “On the road” count."
           }
         }
       }
@@ -6814,23 +6933,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No sessions with a price in the last year"
-          }
-        }
-      }
-    },
-    "Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe die Auswahl der öffentlichen Anbieter." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine passenden Ladevorgänge im letzten Jahr. Trag den Preis selbst ein oder prüfe die Auswahl der öffentlichen Anbieter."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No matching sessions in the last year. Enter the price yourself or check which providers count as public."
           }
         }
       }
@@ -7430,19 +7532,19 @@
         }
       }
     },
-    "Vorschlag %@: bisheriger Anteil öffentlicher Anbieter, letzte 3 Monate" : {
+    "Vorschlag %@: bisheriger Anteil unterwegs, letzte 3 Monate" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorschlag %@: bisheriger Anteil öffentlicher Anbieter, letzte 3 Monate"
+            "value" : "Vorschlag %@: bisheriger Anteil unterwegs, letzte 3 Monate"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suggested %@: previous share of public providers, last 3 months"
+            "value" : "Suggested %@: previous share on the road, last 3 months"
           }
         }
       }
@@ -7515,23 +7617,6 @@
         }
       }
     },
-    "Öffentliche Anbieter" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffentliche Anbieter"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Public providers"
-          }
-        }
-      }
-    },
     "Anteil beim Tarif" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7596,23 +7681,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uses the saved prices and base fees of this provider."
-          }
-        }
-      }
-    },
-    "Tarifrechner: öffentliche Anbieter" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tarifrechner: öffentliche Anbieter"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tariff calculator: public providers"
           }
         }
       }

@@ -229,9 +229,10 @@ enum TariffCalculator {
         return PaidPrice(pricePerKwh: paid / kwh, sessionCount: relevant.count)
     }
 
-    /// Automatischer Vergleichspreis "ohne Tarif": was an oeffentlichen
-    /// Anbietern bezahlt wurde, ohne den gerade betrachteten (dort wurde ja
-    /// schon zum Tarifpreis geladen) und nur fuer dieselbe Lade-Art.
+    /// Automatischer Vergleichspreis "ohne Tarif": was an Anbietern
+    /// "Unterwegs" bezahlt wurde (`excludedProviderIds` = Zuhause/Arbeit),
+    /// ohne den gerade betrachteten (dort wurde ja schon zum Tarifpreis
+    /// geladen) und nur fuer dieselbe Lade-Art.
     static func automaticComparisonPrice(
         sessions: [ChargingSession],
         excludedProviderIds: Set<String>,
@@ -248,21 +249,20 @@ enum TariffCalculator {
     }
 }
 
-/// Lokale Einstellungen des Tarifrechners. Bewusst NICHT synchronisiert
-/// (Entscheidung 23.09.2026): auf einem zweiten Geraet waehlt man die privaten
-/// Anbieter neu ab. Gespeichert werden die ABGEWAEHLTEN Anbieter, damit neue
-/// Anbieter automatisch als oeffentlich zaehlen.
+/// Ueberbleibsel der frueheren, nur lokal gespeicherten Auswahl "oeffentliche
+/// Anbieter" (bis zum Ladeort am Anbieter, Server 0.31.0). Gespeichert waren
+/// die ABGEWAEHLTEN Anbieter; LocalDataStore.migrateLegacyTariffExclusions()
+/// macht sie einmalig zu "Zuhause" und entfernt danach den Schluessel.
 enum TariffCalculatorSettings {
-    private static let excludedKey = "tariffCalculator.excludedProviderIds"
+    private static let legacyExcludedKey = "tariffCalculator.excludedProviderIds"
 
-    /// Roh gespeicherte IDs. Ein Anbieter kann hier noch unter seiner lokalen
-    /// UUID stehen, obwohl er inzwischen eine Server-ID hat - AppRepository
-    /// bildet sie deshalb vor der Verwendung ab (tariffBasis()).
-    static var storedExcludedProviderIds: Set<String> {
-        Set(UserDefaults.standard.stringArray(forKey: excludedKey) ?? [])
+    /// `nil`, wenn nichts (mehr) zu uebernehmen ist. Die IDs koennen lokale
+    /// UUIDs oder Server-IDs sein.
+    static var legacyExcludedProviderIds: Set<String>? {
+        UserDefaults.standard.stringArray(forKey: legacyExcludedKey).map(Set.init)
     }
 
-    static func setExcluded(_ ids: Set<String>) {
-        UserDefaults.standard.set(Array(ids).sorted(), forKey: excludedKey)
+    static func clearLegacyExcluded() {
+        UserDefaults.standard.removeObject(forKey: legacyExcludedKey)
     }
 }

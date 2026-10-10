@@ -53,8 +53,8 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   km im Monat es sich lohnt. Tarifpreis, Grundgebühr, km im Monat und Anteil
   beim Tarif sind Schieberegler, das Ergebnis rechnet beim Schieben live mit.
   Vorbelegt aus den eigenen Ladevorgängen, der Preis ohne Tarif wahlweise
-  automatisch aus dem, was an öffentlichen Anbietern bezahlt wurde (welche das
-  sind, unter Einstellungen → Tools). Rechnet komplett auf dem Gerät, auch im
+  automatisch aus dem, was an Anbietern mit Ladeort „Unterwegs“ bezahlt wurde
+  (einstellbar beim Anbieter). Rechnet komplett auf dem Gerät, auch im
   Local-Only-Modus
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als

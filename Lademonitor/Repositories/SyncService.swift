@@ -329,7 +329,8 @@ final class SyncService: ObservableObject {
                 let payload = ProviderPayload(
                     name: provider.name, lastPriceAcPerKwh: provider.lastPriceAcPerKwh,
                     lastPriceDcPerKwh: provider.lastPriceDcPerKwh, notes: provider.notes,
-                    energyMeter: provider.energyMeter
+                    energyMeter: provider.energyMeter,
+                    chargingPlace: ChargingPlace(raw: provider.chargingPlace).rawValue
                 )
                 if let serverId = provider.serverId {
                     _ = try await APIClient.shared.updateProvider(id: serverId, payload)
@@ -569,12 +570,15 @@ final class SyncService: ObservableObject {
                     // 0.29.0) - ein aelterer schickt es nicht und wuerde die
                     // lokale Einstellung sonst bei jedem Sync zuruecksetzen.
                     if sp.energyMeter != nil { existing.energyMeter = sp.energyMeterDefault.rawValue }
+                    // Dasselbe fuer den Ladeort (Server ab 0.31.0).
+                    if sp.chargingPlace != nil { existing.chargingPlace = sp.place.rawValue }
                 }
             } else {
                 context.insert(LocalProvider(
                     serverId: sp.id, name: sp.name, lastPriceAcPerKwh: sp.lastPriceAcPerKwh,
                     lastPriceDcPerKwh: sp.lastPriceDcPerKwh, notes: sp.notes,
-                    energyMeter: sp.energyMeterDefault.rawValue, isDirty: false
+                    energyMeter: sp.energyMeterDefault.rawValue,
+                    chargingPlace: sp.place.rawValue, isDirty: false
                 ))
             }
         }

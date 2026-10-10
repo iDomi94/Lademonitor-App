@@ -67,6 +67,10 @@ final class LocalProvider {
     /// SwiftData leicht migriert - `nil` gilt als Ladesaeule, wie auf dem
     /// Server fuer Bestandszeilen.
     var energyMeter: String?
+    /// Zuhause/Arbeit/Unterwegs: "home" | "work" | "public" (siehe
+    /// `ChargingPlace`). Optional aus demselben Grund, `nil` gilt als
+    /// unterwegs.
+    var chargingPlace: String?
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -80,6 +84,7 @@ final class LocalProvider {
         lastPriceDcPerKwh: Double? = nil,
         notes: String? = nil,
         energyMeter: String? = "charger",
+        chargingPlace: String? = "public",
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -92,6 +97,7 @@ final class LocalProvider {
         self.lastPriceDcPerKwh = lastPriceDcPerKwh
         self.notes = notes
         self.energyMeter = energyMeter
+        self.chargingPlace = chargingPlace
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -280,7 +286,8 @@ extension LocalProvider {
             lastPriceAcPerKwh: lastPriceAcPerKwh,
             lastPriceDcPerKwh: lastPriceDcPerKwh,
             notes: notes,
-            energyMeter: energyMeter
+            energyMeter: energyMeter,
+            chargingPlace: chargingPlace
         )
     }
 }

@@ -17,6 +17,8 @@ final class AppRepository {
     private var isServerMode: Bool { AppSettings.shared.appMode == .server }
 
     private func syncBeforeRead() async {
+        // Vor dem Sync, damit ein uebernommener Ladeort gleich mitgeht.
+        try? LocalDataStore.shared.migrateLegacyTariffExclusions()
         if isServerMode { await SyncService.shared.syncIfNeeded() }
     }
 
@@ -165,9 +167,9 @@ final class AppRepository {
     // MARK: - Tarifrechner
 
     /// Alles, was der Tarifrechner fuer seine Vorschlagswerte braucht, mit
-    /// EINER Anbieter-ID-Form (= `Provider.id`): Ladevorgaenge und die
-    /// gespeicherte Abwahl koennen einen Anbieter noch ueber seine lokale UUID
-    /// kennen, obwohl er inzwischen eine Server-ID hat.
+    /// EINER Anbieter-ID-Form (= `Provider.id`): Ladevorgaenge koennen einen
+    /// Anbieter noch ueber seine lokale UUID kennen, obwohl er inzwischen
+    /// eine Server-ID hat.
     func tariffBasis() async throws -> TariffBasis {
         await syncBeforeRead()
         let store = LocalDataStore.shared
@@ -177,12 +179,12 @@ final class AppRepository {
             s.providerId = s.providerId.map { canonical[$0] ?? $0 }
             return s
         }
-        let excluded = Set(TariffCalculatorSettings.storedExcludedProviderIds.map { canonical[$0] ?? $0 })
+        let providers = try store.fetchProviders()
         return TariffBasis(
             sessions: sessions,
-            providers: try store.fetchProviders(),
+            providers: providers,
             fees: try store.fetchFees(),
-            excludedProviderIds: excluded
+            excludedProviderIds: Set(providers.filter { $0.place != .public }.map(\.id))
         )
     }
 
@@ -215,6 +217,6 @@ struct TariffBasis {
     let sessions: [ChargingSession]
     let providers: [Provider]
     let fees: [ProviderFee]
-    /// Als privat abgewaehlte Anbieter (zaehlen nicht zum Vergleichspreis).
+    /// Anbieter "Zuhause"/"Arbeit" (zaehlen nicht zum Vergleichspreis).
     var excludedProviderIds: Set<String>
 }
