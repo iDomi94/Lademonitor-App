@@ -57,6 +57,13 @@ Public beta access via TestFlight:
   price without tariff can be taken automatically from what you paid at
   providers set to "On the road" (set on the provider). Runs entirely
   on the device, including local-only mode
+- **Range calculator** tool: how far you get from charge level A to B at a
+  given outside temperature. In server mode (Lademonitor-Server 0.34.0 or
+  newer) the consumption follows the server's real-world range curve
+  (consumption from the battery, charging loss removed when known); otherwise
+  your own average of the last year applies. Plus the dashboard tile
+  "Real-world range (100 → 0 %)" per temperature – server mode only, and only
+  when exactly one vehicle with a battery capacity is analysed
 - Charging sessions, vehicles, providers and charging locations deleted on the
   server now disappear from the app on the next sync. Previously they lingered
   as "ghost rows" until you deleted them here too - the app must not infer a

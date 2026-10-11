@@ -56,6 +56,13 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   automatisch aus dem, was an Anbietern mit Ladeort „Unterwegs“ bezahlt wurde
   (einstellbar beim Anbieter). Rechnet komplett auf dem Gerät, auch im
   Local-Only-Modus
+- Tool **Reichweitenrechner**: wie weit man von Ladestand A bis B bei einer
+  bestimmten Außentemperatur kommt. Im Server-Modus (ab Lademonitor-Server
+  0.34.0) folgt der Verbrauch der realen Reichweitenkurve des Servers (Verbrauch
+  ab Akku, Ladeverlust herausgerechnet, sofern bekannt), sonst gilt der eigene
+  Durchschnitt des letzten Jahres. Dazu im Dashboard die Kachel „Reale
+  Reichweite (100 → 0 %)“ je Temperatur – nur im Server-Modus und nur, wenn
+  genau ein Fahrzeug mit Akkukapazität ausgewertet wird
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
   „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem

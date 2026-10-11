@@ -4,6 +4,7 @@ struct ContentView: View {
     @ObservedObject private var session = SessionManager.shared
     @ObservedObject private var settings = AppSettings.shared
     @ObservedObject private var syncService = SyncService.shared
+    @ObservedObject private var navigation = AppNavigation.shared
 
     var body: some View {
         content
@@ -60,21 +61,28 @@ struct ContentView: View {
     }
 
     private var mainTabView: some View {
-        TabView {
+        // Die Auswahl liegt in AppNavigation, damit das Dashboard direkt in
+        // ein Tool springen kann (Reichweite -> Reichweitenrechner).
+        TabView(selection: $navigation.selectedTab) {
             DashboardView()
                 .tabItem { Label("Dashboard", systemImage: "chart.bar.fill") }
+                .tag(AppNavigation.Tab.dashboard)
 
             SessionsListView()
                 .tabItem { Label("Ladevorgänge", systemImage: "bolt.fill") }
+                .tag(AppNavigation.Tab.sessions)
 
             MapOverviewView()
                 .tabItem { Label("Karte", systemImage: "map.fill") }
+                .tag(AppNavigation.Tab.map)
 
             ToolsView()
                 .tabItem { Label("Tools", systemImage: "wrench.and.screwdriver.fill") }
+                .tag(AppNavigation.Tab.tools)
 
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape.fill") }
+                .tag(AppNavigation.Tab.settings)
         }
     }
 }

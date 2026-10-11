@@ -5,23 +5,22 @@ import SwiftUI
 /// iOS alles hinter "Mehr".
 struct ToolsView: View {
     @ObservedObject private var settings = AppSettings.shared
+    @ObservedObject private var navigation = AppNavigation.shared
 
     var body: some View {
-        NavigationStack {
+        // Wertbasierte Links ueber einen gemeinsamen Pfad: so kann das
+        // Dashboard direkt ein Tool oeffnen (AppNavigation.openRangeCalculator).
+        NavigationStack(path: $navigation.toolsPath) {
             List {
                 Section {
-                    NavigationLink {
-                        TariffCalculatorView()
-                    } label: {
+                    NavigationLink(value: ToolRoute.tariff) {
                         ToolLabel(
                             title: "Lohnt sich der Tarif?",
                             subtitle: "Effektiver Preis pro kWh mit Grundgebühr, verglichen mit dem Laden ohne Tarif",
                             icon: "eurosign.circle"
                         )
                     }
-                    NavigationLink {
-                        CombustionComparisonView()
-                    } label: {
+                    NavigationLink(value: ToolRoute.combustion) {
                         ToolLabel(
                             title: "Vergleich mit Verbrenner",
                             subtitle: "Was dieselben Kilometer mit Benzin oder Diesel gekostet hätten, und wie viel CO₂",
@@ -31,9 +30,7 @@ struct ToolsView: View {
                     // Nur im Server-Modus, wie die Reifen in den Einstellungen:
                     // die Auswertung rechnet allein der Server (battery.py).
                     if settings.appMode == .server {
-                        NavigationLink {
-                            BatteryHealthView()
-                        } label: {
+                        NavigationLink(value: ToolRoute.battery) {
                             ToolLabel(
                                 title: "Akku und Ladeverluste",
                                 subtitle: "Wie viel beim Laden verloren geht und ob der Akku mit der Zeit weniger aufnimmt",
@@ -41,9 +38,24 @@ struct ToolsView: View {
                             )
                         }
                     }
+                    NavigationLink(value: ToolRoute.range) {
+                        ToolLabel(
+                            title: "Reichweitenrechner",
+                            subtitle: "Wie weit du mit einem Ladestand bei einer bestimmten Außentemperatur kommst",
+                            icon: "road.lanes"
+                        )
+                    }
                 }
             }
             .navigationTitle("Tools")
+            .navigationDestination(for: ToolRoute.self) { route in
+                switch route {
+                case .tariff: TariffCalculatorView()
+                case .combustion: CombustionComparisonView()
+                case .battery: BatteryHealthView()
+                case .range: RangeCalculatorView()
+                }
+            }
         }
     }
 }

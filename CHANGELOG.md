@@ -7,6 +7,21 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.5.0
+
+- Neues Tool „Reichweitenrechner“: Ladestand Start und Ziel, Außentemperatur
+  und Verbrauch als Schieberegler, das Ergebnis („≈ 312 km“) rechnet live mit.
+  Im Server-Modus (ab Server 0.34.0) folgt der Verbrauch der realen
+  Reichweitenkurve deines Fahrzeugs bei der gewählten Temperatur – Verbrauch
+  ab Akku, der Ladeverlust ist herausgerechnet, sofern bekannt. Verschiebst du
+  ihn selbst, holt „Zurück zum Datenwert“ ihn wieder an die Kurve. Ohne Server
+  gilt der eigene Durchschnitt des letzten Jahres, ohne Temperatur.
+- Dashboard: neue Kachel „Reale Reichweite (100 → 0 %)“ im Abschnitt
+  Außentemperatur – die Reichweite je Temperatur als Balken, Hochrechnungen
+  außerhalb der gemessenen Temperaturen mit Sternchen. Nur im Server-Modus und
+  nur, wenn genau ein Fahrzeug mit Akkukapazität ausgewertet wird. Darunter
+  führt „Reichweitenrechner“ direkt ins Tool.
+
 ## 1.4.0
 
 - Anbieter haben einen Ladeort: Zuhause, Arbeit oder Unterwegs (Standard).

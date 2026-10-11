@@ -11679,6 +11679,448 @@
           }
         }
       }
+    },
+    "Reichweitenrechner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reichweitenrechner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Range calculator"
+          }
+        }
+      }
+    },
+    "Wie weit du mit einem Ladestand bei einer bestimmten Außentemperatur kommst" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie weit du mit einem Ladestand bei einer bestimmten Außentemperatur kommst"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How far a state of charge gets you at a given outside temperature"
+          }
+        }
+      }
+    },
+    "Reale Reichweite (100 → 0 %)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reale Reichweite (100 → 0 %)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real-world range (100 → 0 %)"
+          }
+        }
+      }
+    },
+    "* hochgerechnet, außerhalb der gemessenen Temperaturen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* hochgerechnet, außerhalb der gemessenen Temperaturen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* extrapolated, outside the measured temperatures"
+          }
+        }
+      }
+    },
+    "%@ kWh nutzbar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh nutzbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh usable"
+          }
+        }
+      }
+    },
+    "%1$@ kWh nutzbar, gemessen zwischen %2$@ und %3$@ °C" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh nutzbar, gemessen zwischen %2$@ und %3$@ °C"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh usable, measured between %2$@ and %3$@ °C"
+          }
+        }
+      }
+    },
+    "Ladeverlust von %@ herausgerechnet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladeverlust von %@ herausgerechnet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging loss of %@ removed"
+          }
+        }
+      }
+    },
+    "Ladeverlust unbekannt – Reichweite eher zu niedrig" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladeverlust unbekannt – Reichweite eher zu niedrig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging loss unknown – range rather too low"
+          }
+        }
+      }
+    },
+    "Akkukapazität" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akkukapazität"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery capacity"
+          }
+        }
+      }
+    },
+    "Am Fahrzeug ist keine Akkukapazität hinterlegt – trag sie in den Einstellungen unter „Fahrzeuge“ ein oder stell sie hier ein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Am Fahrzeug ist keine Akkukapazität hinterlegt – trag sie in den Einstellungen unter „Fahrzeuge“ ein oder stell sie hier ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No battery capacity is set for this vehicle – enter it in Settings under “Vehicles” or set it here."
+          }
+        }
+      }
+    },
+    "Ladestand Start" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestand Start"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start charge level"
+          }
+        }
+      }
+    },
+    "Ladestand Ziel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestand Ziel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target charge level"
+          }
+        }
+      }
+    },
+    "Ladestand" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestand"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge level"
+          }
+        }
+      }
+    },
+    "Das Ziel bleibt immer unter dem Start. Ein Tipp auf einen Wert erlaubt die genaue Eingabe." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Ziel bleibt immer unter dem Start. Ein Tipp auf einen Wert erlaubt die genaue Eingabe."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The target always stays below the start. Tap a value to enter it exactly."
+          }
+        }
+      }
+    },
+    "Zurück zum Datenwert" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück zum Datenwert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back to data value"
+          }
+        }
+      }
+    },
+    "Bedingungen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bedingungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conditions"
+          }
+        }
+      }
+    },
+    "Der Verbrauch folgt der Außentemperatur, bis du ihn selbst verschiebst." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Verbrauch folgt der Außentemperatur, bis du ihn selbst verschiebst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The consumption follows the outside temperature until you move it yourself."
+          }
+        }
+      }
+    },
+    "Reichweite" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reichweite"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Range"
+          }
+        }
+      }
+    },
+    "%1$@ kWh aus dem Akku (%2$@ → %3$@) bei %4$@ kWh/100 km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh aus dem Akku (%2$@ → %3$@) bei %4$@ kWh/100 km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kWh from the battery (%2$@ → %3$@) at %4$@ kWh/100 km"
+          }
+        }
+      }
+    },
+    "Datenwert bei dieser Temperatur: %@ kWh/100 km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenwert bei dieser Temperatur: %@ kWh/100 km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data value at this temperature: %@ kWh/100 km"
+          }
+        }
+      }
+    },
+    "Aus deinen Fahrten bei dieser Außentemperatur" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus deinen Fahrten bei dieser Außentemperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From your drives at this outside temperature"
+          }
+        }
+      }
+    },
+    "Durchschnitt des letzten Jahres, ohne Temperatur" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durchschnitt des letzten Jahres, ohne Temperatur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average of the last year, without temperature"
+          }
+        }
+      }
+    },
+    "Verbrauch ab Akku (Ladeverlust %@ herausgerechnet)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch ab Akku (Ladeverlust %@ herausgerechnet)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption from the battery (charging loss of %@ removed)"
+          }
+        }
+      }
+    },
+    "Ladestand Start (%)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestand Start (%)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start charge level (%)"
+          }
+        }
+      }
+    },
+    "Ladestand Ziel (%)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladestand Ziel (%)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target charge level (%)"
+          }
+        }
+      }
+    },
+    "Außentemperatur (°C)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Außentemperatur (°C)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outside temperature (°C)"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

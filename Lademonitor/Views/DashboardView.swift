@@ -848,6 +848,24 @@ private struct TemperatureSection: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal)
 
+            // Reale Reichweite je Temperatur (Server ab 0.34.0) - nur, wenn
+            // genau ein Fahrzeug mit Akkukapazitaet in die Auswertung faellt.
+            if let range = stats.range, !range.rows.isEmpty {
+                Text("Reale Reichweite (100 → 0 %)")
+                    .font(.headline)
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+                RangeCard(range: range, color: Self.pointColor)
+                    .padding(.horizontal)
+                Button {
+                    AppNavigation.shared.openRangeCalculator()
+                } label: {
+                    Label("Reichweitenrechner", systemImage: "road.lanes")
+                        .font(.subheadline)
+                }
+                .padding(.horizontal)
+            }
+
             if !seasonData.isEmpty {
                 Text("Verbrauch nach Jahreszeit")
                     .font(.headline)
@@ -905,6 +923,79 @@ private struct TemperatureSection: View {
         .chartYScale(domain: consumptionDomain)
         .chartXAxisLabel("°C")
         .chartYAxisLabel("kWh/100km")
+    }
+}
+
+/// Reichweite von 100 auf 0 % je Temperatur als liegende Balken, nullbasiert
+/// wie die Jahreszeiten. Hochgerechnete Zeilen (ausserhalb der gemessenen
+/// Temperaturen) tragen ein Sternchen und sind blasser.
+private struct RangeCard: View {
+    let range: TempRange
+    let color: Color
+
+    private var maxKm: Double { max(range.rows.map(\.rangeKm).max() ?? 0, 1) }
+
+    private func tempLabel(_ row: TempRangeRow) -> String {
+        String(format: "%.0f °C", row.tempC) + (row.extrapolated ? "*" : "")
+    }
+
+    private func degrees(_ v: Double) -> String {
+        TariffCalculatorView.number(v, digits: 0)
+    }
+
+    private var measuredLine: String {
+        let capacity = TariffCalculatorView.number(range.capacityKwh, digits: 0)
+        guard let from = range.measuredFromC, let to = range.measuredToC else {
+            return String(format: String(localized: "%@ kWh nutzbar"), capacity)
+        }
+        return String(format: String(localized: "%1$@ kWh nutzbar, gemessen zwischen %2$@ und %3$@ °C"),
+                      capacity, degrees(from), degrees(to))
+    }
+
+    private var lossLine: String {
+        guard let loss = range.lossPct else {
+            return String(localized: "Ladeverlust unbekannt – Reichweite eher zu niedrig")
+        }
+        return String(format: String(localized: "Ladeverlust von %@ herausgerechnet"),
+                      TariffCalculatorView.number(loss, digits: 1) + " %")
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(range.rows) { row in
+                HStack {
+                    Text(tempLabel(row))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                        .frame(width: 56, alignment: .leading)
+                    GeometryReader { geo in
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(color.opacity(row.extrapolated ? 0.4 : 1))
+                            .frame(width: max(geo.size.width * (row.rangeKm / maxKm), 4))
+                    }
+                    .frame(height: 20)
+                    Text(TariffCalculatorView.kmText(row.rangeKm))
+                        .font(.caption)
+                        .monospacedDigit()
+                        .frame(width: 64, alignment: .trailing)
+                }
+                .accessibilityElement(children: .combine)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                if range.rows.contains(where: \.extrapolated) {
+                    Text("* hochgerechnet, außerhalb der gemessenen Temperaturen")
+                }
+                Text(measuredLine)
+                Text(lossLine)
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .padding(.top, 4)
+        }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
