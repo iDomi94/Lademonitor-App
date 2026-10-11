@@ -37,6 +37,18 @@ struct SettingsView: View {
                     } label: {
                         Label("Grundgebühren", systemImage: "creditcard")
                     }
+                    // Kosten und Erinnerungen hingen frueher in der
+                    // Fahrzeug-Detailansicht - dort waren sie zu versteckt.
+                    NavigationLink {
+                        VehicleScopedView(title: "Kosten") { VehicleCostsView(vehicle: $0) }
+                    } label: {
+                        Label("Kosten", systemImage: "eurosign.circle")
+                    }
+                    NavigationLink {
+                        VehicleScopedView(title: "Erinnerungen") { RemindersView(vehicle: $0) }
+                    } label: {
+                        Label("Erinnerungen", systemImage: "bell")
+                    }
                     // Reifen gibt es bewusst nur im Server-Modus: die Zuordnung
                     // der Fahrten und der temperaturbereinigte Vergleich liegen
                     // komplett auf dem Server (siehe TireModels.swift).

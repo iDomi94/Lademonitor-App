@@ -313,23 +313,6 @@ struct AddEditVehicleView: View {
                     }
                 }
 
-                if let vehicle {
-                    Section {
-                        NavigationLink {
-                            VehicleCostsView(vehicle: vehicle)
-                        } label: {
-                            Label("Kosten", systemImage: "eurosign.circle")
-                        }
-                        NavigationLink {
-                            RemindersView(vehicle: vehicle)
-                        } label: {
-                            Label("Erinnerungen", systemImage: "bell")
-                        }
-                    } footer: {
-                        Text("Versicherung, Steuer, Wartung und alles Weitere rund ums Auto.")
-                    }
-                }
-
                 if let errorMessage {
                     Section {
                         Text(errorMessage).foregroundStyle(.red)

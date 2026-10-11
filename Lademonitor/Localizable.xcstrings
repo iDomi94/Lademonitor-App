@@ -13022,6 +13022,40 @@
           }
         }
       }
+    },
+    "Noch kein Fahrzeug" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch kein Fahrzeug"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No vehicle yet"
+          }
+        }
+      }
+    },
+    "Lege zuerst unter Einstellungen → Fahrzeuge eines an." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lege zuerst unter Einstellungen → Fahrzeuge eines an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add one first under Settings → Vehicles."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

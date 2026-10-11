@@ -27,6 +27,10 @@ nach TestFlight.
   Dienstwagen-Angaben und Erstattungssätze synchronisiert; dort lässt sich
   zusätzlich der Monatsbericht per E-Mail einschalten. Ältere Server ignorieren
   die neuen Angaben, sie bleiben dann auf dem Gerät.
+- „Kosten“ und „Erinnerungen“ stehen jetzt direkt im Hauptmenü der
+  Einstellungen statt versteckt in den Fahrzeug-Einstellungen. Bei einem
+  Fahrzeug geht es direkt hinein, bei mehreren wird zuerst das Fahrzeug gewählt.
+- Behoben: Das Dashboard ließ sich seitlich nach links und rechts verschieben.
 
 ## 1.5.0
 

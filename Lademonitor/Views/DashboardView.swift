@@ -39,7 +39,11 @@ struct DashboardView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollView(.vertical) {
+                // Inhalt fest auf die Breite des Bildschirms begrenzt: ragte ein
+                // Abschnitt auch nur ein paar Punkte darueber hinaus, liess sich
+                // das ganze Dashboard seitlich verschieben.
+                VStack {
                 if let errorMessage {
                     ContentUnavailableView {
                         Label("Keine Verbindung", systemImage: "wifi.slash")
@@ -173,7 +177,11 @@ struct DashboardView: View {
                     ProgressView("Lade Statistiken…")
                         .padding(.top, 60)
                 }
+                }
+                .containerRelativeFrame(.horizontal)
+                .clipped()
             }
+            .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
             .navigationTitle("Dashboard")
             .toolbar {
                 FilterToolbarItem(isPresented: $showingFilterSheet)
