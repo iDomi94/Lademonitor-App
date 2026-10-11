@@ -8,11 +8,17 @@ struct LademonitorApp: App {
         WindowGroup {
             ContentView()
         }
-        .onChange(of: scenePhase) { _, phase in
+        .onChange(of: scenePhase, initial: true) { _, phase in
             // Beim Verlassen der App den Widget-Stand festhalten - danach
             // hat das Widget keine andere Quelle mehr (siehe WidgetSnapshot).
             if phase == .background, AppSettings.shared.isReadyForDataAccess {
                 WidgetSnapshotWriter.refresh()
+            }
+            // Beim Start und bei jeder Rueckkehr die Mitteilungen der
+            // Erinnerungen neu planen - die km-Prognose und "heute" haben sich
+            // seit dem letzten Mal womoeglich verschoben.
+            if phase == .active {
+                ReminderNotificationScheduler.reschedule()
             }
         }
     }

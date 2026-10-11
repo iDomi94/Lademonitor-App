@@ -49,6 +49,7 @@ final class AppRepository {
     func deleteVehicle(id: String) async throws {
         try LocalDataStore.shared.deleteVehicle(id: id)
         syncAfterWrite()
+        ReminderNotificationScheduler.reschedule()
     }
 
     // MARK: - Providers
@@ -121,6 +122,8 @@ final class AppRepository {
         let session = try LocalDataStore.shared.createSession(payload)
         syncAfterWrite()
         WidgetSnapshotWriter.refresh()
+        // Der km-Stand verschiebt die Prognose der Erinnerungen.
+        ReminderNotificationScheduler.reschedule()
         return session
     }
 
@@ -128,6 +131,8 @@ final class AppRepository {
         let session = try LocalDataStore.shared.updateSession(id: id, payload)
         syncAfterWrite()
         WidgetSnapshotWriter.refresh()
+        // Der km-Stand verschiebt die Prognose der Erinnerungen.
+        ReminderNotificationScheduler.reschedule()
         return session
     }
 
@@ -135,6 +140,8 @@ final class AppRepository {
         try LocalDataStore.shared.deleteSession(id: id)
         syncAfterWrite()
         WidgetSnapshotWriter.refresh()
+        // Der km-Stand verschiebt die Prognose der Erinnerungen.
+        ReminderNotificationScheduler.reschedule()
     }
 
     // MARK: - Stats
@@ -159,9 +166,101 @@ final class AppRepository {
                 unallocated = unallocated.filter { from <= $0.start && $0.start <= to }
             }
         }
-        return LocalStatsCalculator.compute(
+        var summary = LocalStatsCalculator.compute(
             sessions: sessions, vehicles: vehicles, providers: providers, unallocatedFees: unallocated
         )
+        // Gesamtkosten wie stats.py::build_vehicle_costs: Ladekosten und km
+        // aus der Zusammenfassung, Kosten und km-Staende fuer die
+        // Restwertkurve aus der GANZEN Historie der betrachteten Fahrzeuge.
+        let basis = try costBasisNow()
+        summary.vehicleCosts = LocalVehicleCostCalculator.summary(
+            vehicles: vehicleId.map { id in basis.vehicles.filter { $0.id == id } } ?? basis.vehicles,
+            costs: basis.costs,
+            sessions: basis.sessions,
+            dateRange: dateRange,
+            chargingCost: summary.totalCost,
+            kmDriven: summary.totalKmDriven
+        )
+        return summary
+    }
+
+    // MARK: - Fahrzeugkosten
+
+    /// Fahrzeuge, Kosten und Ladevorgaenge mit EINER Fahrzeug-ID-Form
+    /// (= `Vehicle.id`) - alles, was LocalVehicleCostCalculator braucht.
+    func vehicleCostBasis() async throws -> VehicleCostBasis {
+        await syncBeforeRead()
+        return try costBasisNow()
+    }
+
+    private func costBasisNow() throws -> VehicleCostBasis {
+        let store = LocalDataStore.shared
+        return VehicleCostBasis(
+            vehicles: try store.fetchVehicles(),
+            costs: try store.fetchVehicleCosts(),
+            sessions: try store.sessionsWithCanonicalVehicles()
+        )
+    }
+
+    func createVehicleCost(_ payload: VehicleCostPayload) async throws -> VehicleCost {
+        let cost = try LocalDataStore.shared.createVehicleCost(payload)
+        syncAfterWrite()
+        return cost
+    }
+
+    func updateVehicleCost(id: String, _ payload: VehicleCostPayload) async throws -> VehicleCost {
+        let cost = try LocalDataStore.shared.updateVehicleCost(id: id, payload)
+        syncAfterWrite()
+        return cost
+    }
+
+    func deleteVehicleCost(id: String) async throws {
+        try LocalDataStore.shared.deleteVehicleCost(id: id)
+        syncAfterWrite()
+    }
+
+    // MARK: - Erinnerungen
+
+    /// Alle Erinnerungen (optional eines Fahrzeugs) mit lokal gerechnetem
+    /// Zustand, dringendste zuerst - in beiden Modi gleich.
+    func fetchReminderItems(vehicleId: String? = nil) async throws -> [ReminderItem] {
+        await syncBeforeRead()
+        return try reminderItemsNow(vehicleId: vehicleId)
+    }
+
+    private func reminderItemsNow(vehicleId: String?) throws -> [ReminderItem] {
+        let store = LocalDataStore.shared
+        return LocalReminderCalculator.items(
+            reminders: try store.fetchReminders(vehicleId: vehicleId),
+            sessions: try store.sessionsWithCanonicalVehicles(),
+            vehicles: try store.fetchVehicles()
+        )
+    }
+
+    func createReminder(_ payload: ReminderPayload) async throws -> Reminder {
+        let reminder = try LocalDataStore.shared.createReminder(payload)
+        syncAfterWrite()
+        await remindersChanged()
+        return reminder
+    }
+
+    func updateReminder(id: String, _ payload: ReminderPayload) async throws -> Reminder {
+        let reminder = try LocalDataStore.shared.updateReminder(id: id, payload)
+        syncAfterWrite()
+        await remindersChanged()
+        return reminder
+    }
+
+    func deleteReminder(id: String) async throws {
+        try LocalDataStore.shared.deleteReminder(id: id)
+        syncAfterWrite()
+        await ReminderNotificationScheduler.rescheduleNow()
+    }
+
+    /// Nach dem Speichern: beim ersten Mal um Erlaubnis fragen, dann neu planen.
+    private func remindersChanged() async {
+        await ReminderNotificationScheduler.requestAuthorizationIfNeeded()
+        await ReminderNotificationScheduler.rescheduleNow()
     }
 
     // MARK: - Tarifrechner
@@ -211,6 +310,13 @@ final class AppRepository {
         try LocalDataStore.shared.deleteFee(id: id)
         syncAfterWrite()
     }
+}
+
+struct VehicleCostBasis {
+    let vehicles: [Vehicle]
+    let costs: [VehicleCost]
+    /// Mit `feeShare`, Fahrzeug-ID vereinheitlicht.
+    let sessions: [ChargingSession]
 }
 
 struct TariffBasis {

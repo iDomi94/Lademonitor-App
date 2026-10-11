@@ -97,12 +97,40 @@ struct Vehicle: Codable, Identifiable, Hashable {
     var model: String?
     var batteryCapacityKwh: Double?
     var isActive: Bool
+    // Kauf/Leasing (Server ab 0.32.0). Alle optional, damit ein aelterer
+    // Server ohne die Felder weiter decodiert - ein neuerer schickt
+    // `ownership` immer mit, daran erkennt der SyncService, ob er die
+    // uebrigen Felder uebernehmen darf. Datumsangaben sind reine Kalendertage.
+    // Die nur lesenden Kennzahlen des Servers (estimated_value usw.) werden
+    // bewusst nicht gelesen: die App rechnet sie selbst
+    // (LocalVehicleCostCalculator.ownershipInfo), auch im Local-Only-Modus.
+    var ownership: String? = nil
+    var purchasePrice: Double? = nil
+    var purchaseDate: Date? = nil
+    var firstRegistration: Date? = nil
+    var purchaseOdometerKm: Int? = nil
+    var depreciationMonthlyOverride: Double? = nil
+    var leasingRateMonthly: Double? = nil
+    var leasingStart: Date? = nil
+    var leasingEnd: Date? = nil
+    var leasingDownPayment: Double? = nil
+
+    var ownershipValue: Ownership { Ownership(raw: ownership) }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, brand, model
+        case id, name, brand, model, ownership
         case externalId = "external_id"
         case batteryCapacityKwh = "battery_capacity_kwh"
         case isActive = "is_active"
+        case purchasePrice = "purchase_price"
+        case purchaseDate = "purchase_date"
+        case firstRegistration = "first_registration"
+        case purchaseOdometerKm = "purchase_odometer_km"
+        case depreciationMonthlyOverride = "depreciation_monthly_override"
+        case leasingRateMonthly = "leasing_rate_monthly"
+        case leasingStart = "leasing_start"
+        case leasingEnd = "leasing_end"
+        case leasingDownPayment = "leasing_down_payment"
     }
 }
 
@@ -362,6 +390,12 @@ struct ChargingSessionPayload: Codable {
 
 /// Payload fuer Fahrzeuge. Bei PATCH werden nur gesetzte (non-nil) Felder gesendet.
 /// `externalId` nur beim Anlegen setzen - es ist serverseitig unveraenderlich.
+///
+/// Ausnahme Kauf/Leasing: mit `sendsOwnership` gehen ALLE diese Felder mit,
+/// auch `nil` als `null` (wie bei ProviderFeePayload) - sonst liesse sich z.B.
+/// ein ueberschriebener Wertverlust nie wieder leeren. `ownership` selbst
+/// geht dabei immer als Wert raus ("none" statt null), weil der Server beim
+/// Anlegen kein null annimmt. Ein aelterer Server ignoriert die Felder.
 struct VehiclePayload: Codable {
     var externalId: String?
     var name: String?
@@ -369,12 +403,53 @@ struct VehiclePayload: Codable {
     var model: String?
     var batteryCapacityKwh: Double?
     var isActive: Bool?
+    var sendsOwnership = false
+    var ownership: String? = nil
+    var purchasePrice: Double? = nil
+    var purchaseDate: Date? = nil
+    var firstRegistration: Date? = nil
+    var purchaseOdometerKm: Int? = nil
+    var depreciationMonthlyOverride: Double? = nil
+    var leasingRateMonthly: Double? = nil
+    var leasingStart: Date? = nil
+    var leasingEnd: Date? = nil
+    var leasingDownPayment: Double? = nil
 
     enum CodingKeys: String, CodingKey {
-        case name, brand, model
+        case name, brand, model, ownership
         case externalId = "external_id"
         case batteryCapacityKwh = "battery_capacity_kwh"
         case isActive = "is_active"
+        case purchasePrice = "purchase_price"
+        case purchaseDate = "purchase_date"
+        case firstRegistration = "first_registration"
+        case purchaseOdometerKm = "purchase_odometer_km"
+        case depreciationMonthlyOverride = "depreciation_monthly_override"
+        case leasingRateMonthly = "leasing_rate_monthly"
+        case leasingStart = "leasing_start"
+        case leasingEnd = "leasing_end"
+        case leasingDownPayment = "leasing_down_payment"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encodeIfPresent(externalId, forKey: .externalId)
+        try c.encodeIfPresent(name, forKey: .name)
+        try c.encodeIfPresent(brand, forKey: .brand)
+        try c.encodeIfPresent(model, forKey: .model)
+        try c.encodeIfPresent(batteryCapacityKwh, forKey: .batteryCapacityKwh)
+        try c.encodeIfPresent(isActive, forKey: .isActive)
+        guard sendsOwnership else { return }
+        try c.encode(Ownership(raw: ownership).rawValue, forKey: .ownership)
+        try c.encode(purchasePrice, forKey: .purchasePrice)
+        try c.encode(purchaseDate, forKey: .purchaseDate)
+        try c.encode(firstRegistration, forKey: .firstRegistration)
+        try c.encode(purchaseOdometerKm, forKey: .purchaseOdometerKm)
+        try c.encode(depreciationMonthlyOverride, forKey: .depreciationMonthlyOverride)
+        try c.encode(leasingRateMonthly, forKey: .leasingRateMonthly)
+        try c.encode(leasingStart, forKey: .leasingStart)
+        try c.encode(leasingEnd, forKey: .leasingEnd)
+        try c.encode(leasingDownPayment, forKey: .leasingDownPayment)
     }
 }
 
@@ -687,6 +762,11 @@ struct StatsSummary: Codable {
     var unallocatedFees: Double? = nil
     /// Zuhause/Arbeit/Unterwegs, siehe `PlaceStat`.
     var byPlace: [PlaceStat]? = nil
+    /// Gesamtkosten inkl. sonstiger Kosten und Wertverlust/Leasing (Server ab
+    /// 0.32.0). `nil`, solange es zu keinem betrachteten Fahrzeug Kosten oder
+    /// eine Kauf-/Leasingangabe gibt - dann blendet das Dashboard den
+    /// Abschnitt aus. Lokal gesetzt in AppRepository.fetchStatsSummary.
+    var vehicleCosts: VehicleCostSummary? = nil
 
     enum CodingKeys: String, CodingKey {
         case totalSessions = "total_sessions"
@@ -705,6 +785,7 @@ struct StatsSummary: Codable {
         case totalFees = "total_fees"
         case unallocatedFees = "unallocated_fees"
         case byPlace = "by_place"
+        case vehicleCosts = "vehicle_costs"
     }
 }
 

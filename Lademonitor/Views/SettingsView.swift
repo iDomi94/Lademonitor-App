@@ -5,6 +5,7 @@ struct SettingsView: View {
     @ObservedObject private var syncService = SyncService.shared
     @State private var showingResetConfirmation = false
     @State private var resetErrorMessage: String?
+    @AppStorage(ReminderNotificationScheduler.enabledKey) private var reminderNotifications = true
 
     private static let relativeFormatter: RelativeDateTimeFormatter = {
         let f = RelativeDateTimeFormatter()
@@ -46,6 +47,30 @@ struct SettingsView: View {
                             Label("Reifen", systemImage: "circle.circle")
                         }
                     }
+                }
+
+                Section("Darstellung") {
+                    NavigationLink {
+                        ChargeBarSettingsView()
+                    } label: {
+                        Label("Ladebalken", systemImage: "battery.75percent")
+                    }
+                }
+
+                Section {
+                    Toggle(isOn: $reminderNotifications) {
+                        Label("Mitteilungen für Erinnerungen", systemImage: "bell.badge")
+                    }
+                    .onChange(of: reminderNotifications) { _, enabled in
+                        Task {
+                            if enabled { await ReminderNotificationScheduler.requestAuthorizationIfNeeded() }
+                            await ReminderNotificationScheduler.rescheduleNow()
+                        }
+                    }
+                } header: {
+                    Text("Mitteilungen")
+                } footer: {
+                    Text("Zu Beginn des Vorlaufs und am Fälligkeitstag um 9 Uhr, auch ohne Server. Wurden Mitteilungen abgelehnt, lassen sie sich in den iOS-Einstellungen wieder erlauben.")
                 }
 
                 Section("Server") {

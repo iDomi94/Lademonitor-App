@@ -6,6 +6,9 @@ struct DashboardView: View {
     @State private var stats: StatsSummary?
     /// Nur im Server-Modus gefuellt - siehe TemperatureSection.
     @State private var temperature: TemperatureStats?
+    /// Nur bald faellige und ueberfaellige Erinnerungen, aller Fahrzeuge und
+    /// bewusst ohne Zeitraumfilter.
+    @State private var dueReminders: [ReminderItem] = []
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showingFilterSheet = false
@@ -47,6 +50,13 @@ struct DashboardView: View {
                     }
                     .padding(.top, 60)
                 } else if let stats {
+                    // Faellige Erinnerungen ganz oben - nur, wenn es welche gibt.
+                    if !dueReminders.isEmpty {
+                        DueRemindersCard(items: dueReminders)
+                            .padding(.horizontal)
+                            .padding(.top)
+                    }
+
                     // Kennzahlen-Grid
                     LazyVGrid(columns: columns, spacing: 12) {
                         StatCard(label: String(localized: "Ladevorgänge"), value: "\(stats.totalSessions)")
@@ -83,6 +93,21 @@ struct DashboardView: View {
                                 .font(.headline)
                                 .padding(.horizontal)
                             PlaceSplitCard(places: places)
+                                .padding(.horizontal)
+                        }
+                        .padding(.bottom, 24)
+                    }
+
+                    // Gesamtkosten inkl. sonstiger Kosten und Wertverlust/
+                    // Leasing - nur, wenn es zu einem Fahrzeug Kosten oder
+                    // eine Kauf-/Leasingangabe gibt. Die Kennzahlen oben
+                    // bleiben bewusst reine Ladekosten.
+                    if let costs = stats.vehicleCosts {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Gesamtkosten")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            TotalCostCard(summary: costs)
                                 .padding(.horizontal)
                         }
                         .padding(.bottom, 24)
@@ -154,6 +179,9 @@ struct DashboardView: View {
                 FilterToolbarItem(isPresented: $showingFilterSheet)
             }
             .task(id: sessionFilter.dateRange) { await load() }
+            // Zurueck aus der Erinnerungsliste: dort Erledigtes verschwindet
+            // sofort aus der Karte, ohne erneuten Sync.
+            .onAppear { if stats != nil { loadDueReminders() } }
             .refreshable { await load() }
             .sheet(isPresented: $showingFilterSheet) {
                 FilterSheetView()
@@ -173,6 +201,7 @@ struct DashboardView: View {
             // Nach dem Sync ist die lokale Kopie frisch - guter Moment, auch
             // das Homescreen-Widget nachzuziehen.
             WidgetSnapshotWriter.refresh()
+            loadDueReminders()
             await loadTemperature()
         } catch {
             // Fehlgeschlagener Refresh soll bestehende Daten nicht verwerfen.
@@ -181,6 +210,21 @@ struct DashboardView: View {
             }
         }
         isLoading = false
+    }
+
+    /// Erinnerungen aus der lokalen Kopie - der Sync ist schon gelaufen. Ein
+    /// Fehler blendet die Karte nur aus.
+    private func loadDueReminders() {
+        let store = LocalDataStore.shared
+        guard let reminders = try? store.fetchReminders(), !reminders.isEmpty,
+              let sessions = try? store.sessionsWithCanonicalVehicles(),
+              let vehicles = try? store.fetchVehicles()
+        else {
+            dueReminders = []
+            return
+        }
+        dueReminders = LocalReminderCalculator.items(reminders: reminders, sessions: sessions, vehicles: vehicles)
+            .filter { $0.state.status == .dueSoon || $0.state.status == .overdue }
     }
 
     /// Temperaturauswertung nachladen - ausschliesslich im Server-Modus.
@@ -331,6 +375,108 @@ private struct PlaceSplitCard: View {
                 }
             }
         }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Faellige Erinnerungen
+
+/// Gegenstueck zum Banner oben im Web-Dashboard: nur bald faellige und
+/// ueberfaellige Erinnerungen, ein Tipp oeffnet die Liste aller Erinnerungen.
+private struct DueRemindersCard: View {
+    let items: [ReminderItem]
+
+    private var showVehicle: Bool {
+        Set(items.map(\.reminder.vehicleId)).count > 1
+    }
+
+    var body: some View {
+        NavigationLink {
+            RemindersView(vehicle: nil)
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Label("Fällige Erinnerungen", systemImage: "bell.badge")
+                        .font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                ForEach(items) { item in
+                    HStack(alignment: .firstTextBaseline) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(showVehicle && item.vehicleName != nil
+                                 ? "\(item.reminder.displayTitle) · \(item.vehicleName ?? "")"
+                                 : item.reminder.displayTitle)
+                                .font(.subheadline)
+                            if let line = ReminderTexts.dueLines(item).first {
+                                Text(line)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer()
+                        ReminderStatusBadge(status: item.state.status)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Gesamtkosten
+
+/// Gegenstueck zum Abschnitt "Gesamtkosten" im Web-Dashboard: Summe aus
+/// Laden, sonstigen Kosten und Wertverlust bzw. Leasing, Kosten je km, der
+/// Anteil des Ladens und ein Balken je Kategorie.
+private struct TotalCostCard: View {
+    let summary: VehicleCostSummary
+
+    private var chargingShare: Double? {
+        summary.totalCost > 0 ? summary.chargingCost / summary.totalCost * 100 : nil
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(summary.totalCost.formatted(.currency(code: "EUR")))
+                        .font(.title2.bold())
+                    Text("Laden, sonstige Kosten und Wertverlust bzw. Leasing")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            HStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Kosten je km")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(summary.costPerKm.map { String(format: "%.2f €", $0) } ?? "–")
+                        .font(.subheadline.weight(.semibold))
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("davon Laden")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text(chargingShare.map { String(format: "%.0f %%", $0) } ?? "–")
+                        .font(.subheadline.weight(.semibold))
+                }
+            }
+            if !summary.byCategory.isEmpty {
+                CostCategoryBars(categories: summary.byCategory)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
