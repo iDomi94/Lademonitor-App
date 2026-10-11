@@ -63,6 +63,12 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   Durchschnitt des letzten Jahres. Dazu im Dashboard die Kachel „Reale
   Reichweite (100 → 0 %)“ je Temperatur – nur im Server-Modus und nur, wenn
   genau ein Fahrzeug mit Akkukapazität ausgewertet wird
+- Tool **Erstattungsbericht** für den Dienstwagen: Heimladungen (Anbieter mit
+  Ladeort „Zuhause“) eines Zeitraums mit kWh, Herkunft der kWh (Wallbox,
+  Fahrzeug oder geschätzt) und Betrag – pauschal je kWh mit „gültig ab“-Sätzen
+  oder zu den tatsächlichen Kosten, optional inkl. Grundgebühr. Teilen als PDF
+  oder CSV. Rechnet auf dem Gerät, auch im Local-Only-Modus; Dienstwagen-Angaben
+  und Sätze werden ab Lademonitor-Server 0.35.0 synchronisiert
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
   „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem

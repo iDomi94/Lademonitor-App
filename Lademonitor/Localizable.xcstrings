@@ -12121,6 +12121,907 @@
           }
         }
       }
+    },
+    "Pauschal je kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pauschal je kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flat rate per kWh"
+          }
+        }
+      }
+    },
+    "Tatsächliche Kosten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tatsächliche Kosten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actual cost"
+          }
+        }
+      }
+    },
+    "Wallbox" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wallbox"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wallbox"
+          }
+        }
+      }
+    },
+    "geschätzt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "geschätzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "estimated"
+          }
+        }
+      }
+    },
+    "%lld Erstattungssätze" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Erstattungssätze"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld reimbursement rates"
+          }
+        }
+      }
+    },
+    "Erstattungssatz ab %@: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungssatz ab %@: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement rate from %@: %@"
+          }
+        }
+      }
+    },
+    "inkl. Grundgebühr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "inkl. Grundgebühr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "incl. base fees"
+          }
+        }
+      }
+    },
+    "* %lld Ladungen mit geschätzten kWh (%@ kWh) – aus Ladestand × Akkukapazität, kein Messwert." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* %lld Ladungen mit geschätzten kWh (%@ kWh) – aus Ladestand × Akkukapazität, kein Messwert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* %lld charges with estimated kWh (%@ kWh) – from charge level × battery capacity, not a measured value."
+          }
+        }
+      }
+    },
+    "%lld Ladungen ohne Betrag: für ihr Datum ist noch kein Erstattungssatz eingetragen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladungen ohne Betrag: für ihr Datum ist noch kein Erstattungssatz eingetragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charges without an amount: no reimbursement rate has been entered for their date yet."
+          }
+        }
+      }
+    },
+    "%lld Ladungen ohne Betrag: kein Preis am Ladevorgang oder Anbieter." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladungen ohne Betrag: kein Preis am Ladevorgang oder Anbieter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charges without an amount: no price on the charging session or provider."
+          }
+        }
+      }
+    },
+    "Erstattungsbericht Heimladungen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungsbericht Heimladungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home charging reimbursement report"
+          }
+        }
+      }
+    },
+    "Kennzeichen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kennzeichen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licence plate"
+          }
+        }
+      }
+    },
+    "Personalnummer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Employee number"
+          }
+        }
+      }
+    },
+    "Erstattungsart" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungsart"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement"
+          }
+        }
+      }
+    },
+    "Uhrzeit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        }
+      }
+    },
+    "Herkunft kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herkunft kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh source"
+          }
+        }
+      }
+    },
+    "Grundgebühr €" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühr €"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base fee €"
+          }
+        }
+      }
+    },
+    "Betrag €" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betrag €"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amount €"
+          }
+        }
+      }
+    },
+    "Ladungen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charges"
+          }
+        }
+      }
+    },
+    "davon geschätzt kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "davon geschätzt kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "of which estimated kWh"
+          }
+        }
+      }
+    },
+    "Summe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        }
+      }
+    },
+    "%lld Ladungen ohne Betrag (kein Satz bzw. kein Preis)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladungen ohne Betrag (kein Satz bzw. kein Preis)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charges without an amount (no rate or no price)"
+          }
+        }
+      }
+    },
+    "Keine Heimladungen im Zeitraum." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Heimladungen im Zeitraum."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No home charges in this period."
+          }
+        }
+      }
+    },
+    "Erstattungsbericht" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungsbericht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement report"
+          }
+        }
+      }
+    },
+    "Heimladungen des Dienstwagens als Nachweis für den Arbeitgeber, als PDF oder CSV" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heimladungen des Dienstwagens als Nachweis für den Arbeitgeber, als PDF oder CSV"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home charges of your company car as proof for your employer, as PDF or CSV"
+          }
+        }
+      }
+    },
+    "Als PDF teilen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als PDF teilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share as PDF"
+          }
+        }
+      }
+    },
+    "Als CSV teilen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als CSV teilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share as CSV"
+          }
+        }
+      }
+    },
+    "Dienstwagen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dienstwagen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Company car"
+          }
+        }
+      }
+    },
+    "Angaben bearbeiten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angaben bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit details"
+          }
+        }
+      }
+    },
+    "Noch kein Fahrzeug angelegt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch kein Fahrzeug angelegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No vehicle created yet."
+          }
+        }
+      }
+    },
+    "Dieses Fahrzeug ist nicht als Dienstwagen markiert. Schalte „Dienstwagen“ ein, um den Bericht über die Heimladungen zu erstellen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Fahrzeug ist nicht als Dienstwagen markiert. Schalte „Dienstwagen“ ein, um den Bericht über die Heimladungen zu erstellen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This vehicle is not marked as a company car. Turn on “Company car” to create the report on its home charges."
+          }
+        }
+      }
+    },
+    "Der Bericht enthält nur Ladevorgänge an Anbietern mit dem Ladeort „Zuhause“." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bericht enthält nur Ladevorgänge an Anbietern mit dem Ladeort „Zuhause“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The report only contains charging sessions with providers whose charging place is “Home”."
+          }
+        }
+      }
+    },
+    "Satz hinzufügen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satz hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add rate"
+          }
+        }
+      }
+    },
+    "Erstattungssätze" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungssätze"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement rates"
+          }
+        }
+      }
+    },
+    "Es gilt jeweils der Satz mit dem jüngsten „gültig ab“ vor dem Ladetag. Ladungen davor bekommen keinen Betrag." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es gilt jeweils der Satz mit dem jüngsten „gültig ab“ vor dem Ladetag. Ladungen davor bekommen keinen Betrag."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The rate with the latest “valid from” on or before the charging day applies. Charges before the first rate get no amount."
+          }
+        }
+      }
+    },
+    "Von – bis" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von – bis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From – to"
+          }
+        }
+      }
+    },
+    "Energie" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy"
+          }
+        }
+      }
+    },
+    "Erstattung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement"
+          }
+        }
+      }
+    },
+    "Monatssummen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatssummen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly totals"
+          }
+        }
+      }
+    },
+    "%lld Ladungen · %@ kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladungen · %@ kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld charges · %@ kWh"
+          }
+        }
+      }
+    },
+    "Grundgebühr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base fee"
+          }
+        }
+      }
+    },
+    "Grundgebühr mit erstatten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühr mit erstatten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimburse base fee too"
+          }
+        }
+      }
+    },
+    "Je kWh ein fester Satz, den du unter „Erstattungssätze“ einträgst – z. B. die Pauschale deines Arbeitgebers." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je kWh ein fester Satz, den du unter „Erstattungssätze“ einträgst – z. B. die Pauschale deines Arbeitgebers."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fixed rate per kWh that you enter under “Reimbursement rates” – e.g. your employer's flat rate."
+          }
+        }
+      }
+    },
+    "Der Preis am Ladevorgang, sonst der letzte Preis des Anbieters. Die Grundgebühr wird wie im Dashboard nach kWh umgelegt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Preis am Ladevorgang, sonst der letzte Preis des Anbieters. Die Grundgebühr wird wie im Dashboard nach kWh umgelegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The price of the charging session, otherwise the provider's last price. The base fee is allocated by kWh, as in the dashboard."
+          }
+        }
+      }
+    },
+    "Angaben für den Bericht" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angaben für den Bericht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details for the report"
+          }
+        }
+      }
+    },
+    "Monatsbericht per E-Mail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatsbericht per E-Mail"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly report by email"
+          }
+        }
+      }
+    },
+    "Der Server schickt Anfang jedes Monats den Bericht des Vormonats als CSV an die E-Mail-Adresse deines Kontos. Dafür muss auf dem Server der E-Mail-Versand eingerichtet sein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Server schickt Anfang jedes Monats den Bericht des Vormonats als CSV an die E-Mail-Adresse deines Kontos. Dafür muss auf dem Server der E-Mail-Versand eingerichtet sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At the start of each month the server sends the previous month's report as CSV to your account's email address. Email sending must be set up on the server for this."
+          }
+        }
+      }
+    },
+    "Gültig ab" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gültig ab"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid from"
+          }
+        }
+      }
+    },
+    "Satz (€/kWh)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satz (€/kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate (€/kWh)"
+          }
+        }
+      }
+    },
+    "0,34" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0,34"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0.34"
+          }
+        }
+      }
+    },
+    "Der Satz gilt ab diesem Tag bis zum nächsten eingetragenen Satz." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Satz gilt ab diesem Tag bis zum nächsten eingetragenen Satz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The rate applies from this day until the next rate entered."
+          }
+        }
+      }
+    },
+    "Neuer Erstattungssatz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuer Erstattungssatz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New reimbursement rate"
+          }
+        }
+      }
+    },
+    "Erstattungssatz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungssatz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement rate"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

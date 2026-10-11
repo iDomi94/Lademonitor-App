@@ -64,6 +64,12 @@ Public beta access via TestFlight:
   your own average of the last year applies. Plus the dashboard tile
   "Real-world range (100 → 0 %)" per temperature – server mode only, and only
   when exactly one vehicle with a battery capacity is analysed
+- **Reimbursement report** tool for a company car: home charges (providers
+  with charging place "Home") of a period with kWh, kWh source (wallbox,
+  vehicle or estimated) and amount – a flat rate per kWh with "valid from"
+  rates or the actual cost, optionally incl. base fees. Share as PDF or CSV.
+  Calculated on the device, also in local-only mode; company car details and
+  rates sync with Lademonitor-Server 0.35.0 or newer
 - Charging sessions, vehicles, providers and charging locations deleted on the
   server now disappear from the app on the next sync. Previously they lingered
   as "ghost rows" until you deleted them here too - the app must not infer a

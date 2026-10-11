@@ -41,6 +41,7 @@ final class LocalDataStore {
         if try context.fetchCount(FetchDescriptor<LocalProviderFee>()) > 0 { return true }
         if try context.fetchCount(FetchDescriptor<LocalVehicleCost>()) > 0 { return true }
         if try context.fetchCount(FetchDescriptor<LocalReminder>()) > 0 { return true }
+        if try context.fetchCount(FetchDescriptor<LocalReimbursementRate>()) > 0 { return true }
         return false
     }
 
@@ -53,6 +54,7 @@ final class LocalDataStore {
         let fees = try context.fetchCount(FetchDescriptor<LocalProviderFee>())
         let costs = try context.fetchCount(FetchDescriptor<LocalVehicleCost>())
         let reminders = try context.fetchCount(FetchDescriptor<LocalReminder>())
+        let rates = try context.fetchCount(FetchDescriptor<LocalReimbursementRate>())
         var parts: [String] = []
         if vehicles > 0 { parts.append(String(localized: "\(vehicles) Fahrzeuge")) }
         if providers > 0 { parts.append(String(localized: "\(providers) Anbieter")) }
@@ -61,10 +63,12 @@ final class LocalDataStore {
         if fees > 0 { parts.append(String(localized: "\(fees) Grundgebühren")) }
         if costs > 0 { parts.append(String(localized: "\(costs) Fahrzeugkosten")) }
         if reminders > 0 { parts.append(String(localized: "\(reminders) Erinnerungen")) }
+        if rates > 0 { parts.append(String(localized: "\(rates) Erstattungssätze")) }
         return parts.joined(separator: ", ")
     }
 
     func resetAllData() throws {
+        try context.delete(model: LocalReimbursementRate.self)
         try context.delete(model: LocalReminder.self)
         try context.delete(model: LocalVehicleCost.self)
         try context.delete(model: LocalProviderFee.self)
@@ -97,6 +101,7 @@ final class LocalDataStore {
             isActive: payload.isActive ?? true
         )
         if payload.sendsOwnership { applyOwnership(payload, to: vehicle) }
+        if payload.sendsReimbursement { applyReimbursement(payload, to: vehicle) }
         context.insert(vehicle)
         try context.save()
         return vehicle.asDTO
@@ -110,6 +115,7 @@ final class LocalDataStore {
         if let capacity = payload.batteryCapacityKwh { vehicle.batteryCapacityKwh = capacity }
         if let isActive = payload.isActive { vehicle.isActive = isActive }
         if payload.sendsOwnership { applyOwnership(payload, to: vehicle) }
+        if payload.sendsReimbursement { applyReimbursement(payload, to: vehicle) }
         vehicle.updatedAt = Date()
         vehicle.isDirty = true
         try context.save()
@@ -124,6 +130,15 @@ final class LocalDataStore {
             depreciationMonthlyOverride: payload.depreciationMonthlyOverride,
             leasingRateMonthly: payload.leasingRateMonthly, leasingStart: payload.leasingStart,
             leasingEnd: payload.leasingEnd, leasingDownPayment: payload.leasingDownPayment
+        )
+    }
+
+    private func applyReimbursement(_ payload: VehiclePayload, to vehicle: LocalVehicle) {
+        vehicle.applyReimbursement(
+            isCompanyCar: payload.isCompanyCar, reimbursementMode: payload.reimbursementMode,
+            reimbursementIncludeFees: payload.reimbursementIncludeFees,
+            employeeName: payload.employeeName, employeeNumber: payload.employeeNumber,
+            licensePlate: payload.licensePlate, reimbursementMonthlyMail: payload.reimbursementMonthlyMail
         )
     }
 
@@ -145,6 +160,7 @@ final class LocalDataStore {
             .filter { refs.contains($0.vehicleId) }
             .forEach { context.delete($0) }
         try deleteReminders(ofVehicleRefs: refs)
+        try deleteReimbursementRates(ofVehicleRefs: refs)
         let sessions = try context.fetch(FetchDescriptor<LocalChargingSession>(
             predicate: #Predicate { $0.vehicleId == id }
         ))
@@ -581,6 +597,78 @@ final class LocalDataStore {
     private func findReminder(id: String) throws -> LocalReminder? {
         let uuid = UUID(uuidString: id) ?? UUID()
         return try context.fetch(FetchDescriptor<LocalReminder>(
+            predicate: #Predicate { $0.serverId == id || $0.localId == uuid }
+        )).first
+    }
+
+    // MARK: - Erstattungssaetze (Dienstwagen)
+
+    /// Alle Saetze (ohne die zum Loeschen vorgemerkten), juengster zuerst,
+    /// Fahrzeug-IDs vereinheitlicht wie bei den Fahrzeugkosten.
+    func fetchReimbursementRates(vehicleId: String? = nil) throws -> [ReimbursementRate] {
+        let canonical = try canonicalVehicleIds()
+        let rows = try context.fetch(FetchDescriptor<LocalReimbursementRate>(
+            predicate: #Predicate { !$0.pendingDelete },
+            sortBy: [SortDescriptor(\.validFrom, order: .reverse)]
+        ))
+        var rates = rows.map { row -> ReimbursementRate in
+            var rate = row.asDTO
+            rate.vehicleId = canonical[rate.vehicleId] ?? rate.vehicleId
+            return rate
+        }
+        if let vehicleId {
+            let wanted = canonical[vehicleId] ?? vehicleId
+            rates = rates.filter { $0.vehicleId == wanted }
+        }
+        return rates
+    }
+
+    /// Wie der Server: `validFrom` nur als Kalendertag.
+    func createReimbursementRate(_ payload: ReimbursementRatePayload) throws -> ReimbursementRate {
+        let rate = LocalReimbursementRate(
+            vehicleId: payload.vehicleId,
+            validFrom: Calendar.current.startOfDay(for: payload.validFrom),
+            ratePerKwh: payload.ratePerKwh
+        )
+        context.insert(rate)
+        try context.save()
+        return rate.asDTO
+    }
+
+    func updateReimbursementRate(id: String, _ payload: ReimbursementRatePayload) throws -> ReimbursementRate {
+        guard let rate = try findReimbursementRate(id: id) else { throw LocalStoreError.notFound }
+        rate.vehicleId = payload.vehicleId
+        rate.validFrom = Calendar.current.startOfDay(for: payload.validFrom)
+        rate.ratePerKwh = payload.ratePerKwh
+        rate.updatedAt = Date()
+        rate.isDirty = true
+        try context.save()
+        return rate.asDTO
+    }
+
+    func deleteReimbursementRate(id: String) throws {
+        guard let rate = try findReimbursementRate(id: id) else { throw LocalStoreError.notFound }
+        if rate.serverId != nil {
+            rate.pendingDelete = true
+            rate.isDirty = true
+        } else {
+            context.delete(rate)
+        }
+        try context.save()
+    }
+
+    /// Hart, ohne Speichern - fuer das Loeschen eines Fahrzeugs (lokal, per
+    /// Push oder per Grabstein). Der Server raeumt die Saetze selbst mit weg
+    /// und legt dafuer Grabsteine an.
+    func deleteReimbursementRates(ofVehicleRefs refs: Set<String>) throws {
+        try context.fetch(FetchDescriptor<LocalReimbursementRate>())
+            .filter { refs.contains($0.vehicleId) }
+            .forEach { context.delete($0) }
+    }
+
+    private func findReimbursementRate(id: String) throws -> LocalReimbursementRate? {
+        let uuid = UUID(uuidString: id) ?? UUID()
+        return try context.fetch(FetchDescriptor<LocalReimbursementRate>(
             predicate: #Predicate { $0.serverId == id || $0.localId == uuid }
         )).first
     }

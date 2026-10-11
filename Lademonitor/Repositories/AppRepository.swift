@@ -263,6 +263,46 @@ final class AppRepository {
         await ReminderNotificationScheduler.rescheduleNow()
     }
 
+    // MARK: - Erstattungsbericht (Dienstwagen)
+
+    /// Alles, was LocalReimbursementCalculator braucht, mit EINER Fahrzeug-
+    /// und Anbieter-ID-Form (= `Vehicle.id`/`Provider.id`). Die Ladevorgaenge
+    /// tragen ihren Grundgebuehr-Anteil (`feeShare`, Umlage ueber ALLE
+    /// Vorgaenge wie im Server). In beiden Modi lokal gerechnet.
+    func reimbursementBasis() async throws -> ReimbursementBasis {
+        await syncBeforeRead()
+        let store = LocalDataStore.shared
+        let providerIds = try store.canonicalProviderIds()
+        let sessions = try store.sessionsWithCanonicalVehicles().map { session -> ChargingSession in
+            var s = session
+            s.providerId = s.providerId.map { providerIds[$0] ?? $0 }
+            return s
+        }
+        return ReimbursementBasis(
+            vehicles: try store.fetchVehicles(),
+            providers: try store.fetchProviders(),
+            sessions: sessions,
+            rates: try store.fetchReimbursementRates()
+        )
+    }
+
+    func createReimbursementRate(_ payload: ReimbursementRatePayload) async throws -> ReimbursementRate {
+        let rate = try LocalDataStore.shared.createReimbursementRate(payload)
+        syncAfterWrite()
+        return rate
+    }
+
+    func updateReimbursementRate(id: String, _ payload: ReimbursementRatePayload) async throws -> ReimbursementRate {
+        let rate = try LocalDataStore.shared.updateReimbursementRate(id: id, payload)
+        syncAfterWrite()
+        return rate
+    }
+
+    func deleteReimbursementRate(id: String) async throws {
+        try LocalDataStore.shared.deleteReimbursementRate(id: id)
+        syncAfterWrite()
+    }
+
     // MARK: - Tarifrechner
 
     /// Alles, was der Tarifrechner fuer seine Vorschlagswerte braucht, mit
@@ -317,6 +357,15 @@ struct VehicleCostBasis {
     let costs: [VehicleCost]
     /// Mit `feeShare`, Fahrzeug-ID vereinheitlicht.
     let sessions: [ChargingSession]
+}
+
+struct ReimbursementBasis {
+    let vehicles: [Vehicle]
+    let providers: [Provider]
+    /// Mit `feeShare`, Fahrzeug- und Anbieter-ID vereinheitlicht.
+    let sessions: [ChargingSession]
+    /// Fahrzeug-ID vereinheitlicht.
+    let rates: [ReimbursementRate]
 }
 
 struct TariffBasis {

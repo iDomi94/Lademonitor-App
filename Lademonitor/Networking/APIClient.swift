@@ -326,6 +326,31 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/vehicle-costs/\(id)", method: "DELETE"))
     }
 
+    // MARK: - Erstattungssaetze Dienstwagen (Server ab 0.35.0)
+    //
+    // Wie bei den Fahrzeugkosten: ein aelterer Server antwortet mit 404, der
+    // SyncService laesst die Saetze dann lokal liegen. Den Bericht selbst
+    // (/api/reimbursement/report) benutzt die App bewusst nicht - sie rechnet
+    // ihn lokal (LocalReimbursementCalculator), auch im Server-Modus.
+
+    func fetchReimbursementRates() async throws -> [ReimbursementRate] {
+        try await send(try makeRequest(path: "/api/reimbursement/rates"))
+    }
+
+    func createReimbursementRate(_ payload: ReimbursementRatePayload) async throws -> ReimbursementRate {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/reimbursement/rates", method: "POST", body: body))
+    }
+
+    func updateReimbursementRate(id: String, _ payload: ReimbursementRatePayload) async throws -> ReimbursementRate {
+        let body = try encoder.encode(payload)
+        return try await send(try makeRequest(path: "/api/reimbursement/rates/\(id)", method: "PATCH", body: body))
+    }
+
+    func deleteReimbursementRate(id: String) async throws {
+        try await sendNoContent(try makeRequest(path: "/api/reimbursement/rates/\(id)", method: "DELETE"))
+    }
+
     // MARK: - Erinnerungen (Server ab 0.33.0)
     //
     // Wie bei den Fahrzeugkosten: ein aelterer Server antwortet mit 404, der
