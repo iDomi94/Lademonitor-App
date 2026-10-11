@@ -11357,6 +11357,23 @@
         }
       }
     },
+    "unbekannt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unbekannt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unknown"
+          }
+        }
+      }
+    },
     "unter Empfehlung" : {
       "extractionState" : "manual",
       "localizations" : {
