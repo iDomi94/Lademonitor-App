@@ -70,6 +70,11 @@ Public beta access via TestFlight:
   rates or the actual cost, optionally incl. base fees. Share as PDF or CSV.
   Calculated on the device, also in local-only mode; company car details and
   rates sync with Lademonitor-Server 0.35.0 or newer
+- **Review** tool: a year or a month in numbers – kWh, cost, distance, average
+  price and consumption compared to the previous period, savings compared to a
+  combustion car (euros and CO₂), records and distribution. Calculated on the
+  device, also in local-only mode. The comparison vehicle lives in the settings
+  and syncs with Lademonitor-Server 0.36.0 or newer
 - Shortcuts for Siri, Spotlight and the Shortcuts app: "Log a charging session
   in Lademonitor" (asks only for kWh and price, saves right away – even while
   the iPhone is locked – then opens the form for review), "What did charging

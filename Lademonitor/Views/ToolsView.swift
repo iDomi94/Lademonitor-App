@@ -52,6 +52,13 @@ struct ToolsView: View {
                             icon: "briefcase"
                         )
                     }
+                    NavigationLink(value: ToolRoute.review) {
+                        ToolLabel(
+                            title: "Rückblick",
+                            subtitle: "Dein Jahr oder Monat in Zahlen: Kosten, Kilometer, Ersparnis gegenüber dem Verbrenner und Rekorde",
+                            icon: "calendar"
+                        )
+                    }
                 }
             }
             .navigationTitle("Tools")
@@ -62,6 +69,7 @@ struct ToolsView: View {
                 case .battery: BatteryHealthView()
                 case .range: RangeCalculatorView()
                 case .reimbursement: ReimbursementReportView()
+                case .review: ReviewView()
                 }
             }
         }

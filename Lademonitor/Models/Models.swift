@@ -575,6 +575,9 @@ struct AuthUser: Codable, Identifiable, Hashable {
     let notifyMonthlyReport: Bool?
     let notifyNewRegistration: Bool?
     let reviewDigest: ReviewDigestFrequency?
+    /// Jahresrueckblick per Mail (Server ab 0.36.0, Standard an). Fehlt bei
+    /// aelteren Servern - dann blendet die App den Schalter aus.
+    let notifyYearlyReview: Bool?
 
     enum CodingKeys: String, CodingKey {
         case id, username, email, language
@@ -586,6 +589,7 @@ struct AuthUser: Codable, Identifiable, Hashable {
         case notifyMonthlyReport = "notify_monthly_report"
         case notifyNewRegistration = "notify_new_registration"
         case reviewDigest = "review_digest"
+        case notifyYearlyReview = "notify_yearly_review"
     }
 
     /// Ob die hinterlegte Adresse bestaetigt ist. Nur eine bestaetigte Adresse
@@ -664,6 +668,9 @@ struct NotificationSettingsPayload: Codable {
     let notifyMonthlyReport: Bool
     let notifyNewRegistration: Bool
     let reviewDigest: ReviewDigestFrequency
+    /// Ab Server 0.36.0; `nil` laesst das Feld weg (aelterer Server bzw. der
+    /// Wert bleibt serverseitig, wie er ist).
+    var notifyYearlyReview: Bool? = nil
 
     enum CodingKeys: String, CodingKey {
         case notifyBackupFailed = "notify_backup_failed"
@@ -671,6 +678,7 @@ struct NotificationSettingsPayload: Codable {
         case notifyMonthlyReport = "notify_monthly_report"
         case notifyNewRegistration = "notify_new_registration"
         case reviewDigest = "review_digest"
+        case notifyYearlyReview = "notify_yearly_review"
     }
 }
 

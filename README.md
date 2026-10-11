@@ -69,6 +69,11 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   oder zu den tatsächlichen Kosten, optional inkl. Grundgebühr. Teilen als PDF
   oder CSV. Rechnet auf dem Gerät, auch im Local-Only-Modus; Dienstwagen-Angaben
   und Sätze werden ab Lademonitor-Server 0.35.0 synchronisiert
+- Tool **Rückblick**: ein Jahr oder ein Monat in Zahlen – kWh, Kosten, km,
+  Ø Preis und Verbrauch mit Vergleich zur Vorperiode, Ersparnis gegenüber dem
+  Verbrenner (Euro und CO₂), Rekorde und Verteilung. Rechnet auf dem Gerät, auch
+  im Local-Only-Modus. Das Vergleichsfahrzeug dafür steht in den Einstellungen
+  und wird ab Lademonitor-Server 0.36.0 synchronisiert
 - Kurzbefehle für Siri, Spotlight und die Kurzbefehle-App: „Ladevorgang in
   Lademonitor erfassen“ (fragt nur kWh und Preis, speichert sofort – auch bei
   gesperrtem iPhone – und öffnet danach das Formular zum Prüfen), „Was hat

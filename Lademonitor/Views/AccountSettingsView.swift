@@ -27,6 +27,7 @@ struct AccountSettingsView: View {
     @State private var notifyBackupFailed = true
     @State private var notifyMyskodaError = true
     @State private var notifyMonthlyReport = false
+    @State private var notifyYearlyReview = true
     @State private var notifyNewRegistration = true
     @State private var reviewDigest: ReviewDigestFrequency = .off
     @State private var isSavingNotifications = false
@@ -185,6 +186,10 @@ struct AccountSettingsView: View {
             Toggle("Backup fehlgeschlagen", isOn: $notifyBackupFailed)
             Toggle("MyŠkoda-Fehler oder Key-Ablauf", isOn: $notifyMyskodaError)
             Toggle("Monatsbericht", isOn: $notifyMonthlyReport)
+            // Erst ab Server 0.36.0 - ein aelterer kennt den Schalter nicht.
+            if user.notifyYearlyReview != nil {
+                Toggle("Jahresrückblick per Mail", isOn: $notifyYearlyReview)
+            }
             if user.isAdmin {
                 Toggle("Neue Registrierung", isOn: $notifyNewRegistration)
             }
@@ -283,6 +288,7 @@ struct AccountSettingsView: View {
         notifyBackupFailed = user.notifyBackupFailed ?? true
         notifyMyskodaError = user.notifyMyskodaError ?? true
         notifyMonthlyReport = user.notifyMonthlyReport ?? false
+        notifyYearlyReview = user.notifyYearlyReview ?? true
         notifyNewRegistration = user.notifyNewRegistration ?? true
         reviewDigest = user.reviewDigest ?? .off
     }
@@ -362,7 +368,8 @@ struct AccountSettingsView: View {
                     notifyMyskodaError: notifyMyskodaError,
                     notifyMonthlyReport: notifyMonthlyReport,
                     notifyNewRegistration: notifyNewRegistration,
-                    reviewDigest: reviewDigest
+                    reviewDigest: reviewDigest,
+                    notifyYearlyReview: session.currentUser?.notifyYearlyReview != nil ? notifyYearlyReview : nil
                 )
             )
             session.applyUpdatedUser(updated)

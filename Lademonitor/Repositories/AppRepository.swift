@@ -307,6 +307,30 @@ final class AppRepository {
         syncAfterWrite()
     }
 
+    // MARK: - Rueckblick
+
+    /// Alles, was LocalReviewCalculator braucht, mit EINER ID-Form fuer
+    /// Fahrzeuge, Anbieter und Ladeorte. In beiden Modi lokal gerechnet.
+    func reviewBasis() async throws -> ReviewBasis {
+        await syncBeforeRead()
+        let store = LocalDataStore.shared
+        let providerIds = try store.canonicalProviderIds()
+        let locationIds = try store.canonicalLocationIds()
+        let sessions = try store.sessionsWithCanonicalVehicles().map { session -> ChargingSession in
+            var s = session
+            s.providerId = s.providerId.map { providerIds[$0] ?? $0 }
+            s.locationId = s.locationId.map { locationIds[$0] ?? $0 }
+            return s
+        }
+        return ReviewBasis(
+            sessions: sessions,
+            vehicles: try store.fetchVehicles(),
+            providers: try store.fetchProviders(),
+            locations: try store.fetchLocations(),
+            unallocatedFees: try store.feeAllocation().unallocated
+        )
+    }
+
     // MARK: - Tarifrechner
 
     /// Alles, was der Tarifrechner fuer seine Vorschlagswerte braucht, mit

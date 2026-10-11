@@ -219,6 +219,9 @@ final class SyncService: ObservableObject {
             // gerade erst angelegte Zeile darf ein Grabstein aus demselben
             // Durchlauf gleich wieder entfernen.
             try await applyServerDeletions()
+            // Wirft bewusst nicht: ein Fehler hier soll den uebrigen Abgleich
+            // nicht als gescheitert dastehen lassen.
+            await syncComparisonVehicle()
             lastSyncDate = Date()
             // Auch bei insgesamt erfolgreichem Durchlauf koennen einzelne Zeilen
             // uebersprungen worden sein (siehe itemErrors) - das soll sichtbar bleiben,
@@ -281,6 +284,9 @@ final class SyncService: ObservableObject {
                 if let ref = localRef[rate.vehicleId] { rate.vehicleId = ref }
             }
         }
+        // Das Vergleichsfahrzeug soll ins neue Konto mitgehen wie die
+        // uebrigen lokalen Daten.
+        ComparisonVehicleStore.shared.markDirtyIfConfigured()
         resetSyncState(for: LocalVehicle.self)
         resetSyncState(for: LocalProvider.self)
         resetSyncState(for: LocalChargingLocation.self)
@@ -588,6 +594,32 @@ final class SyncService: ObservableObject {
             }
         }
         try context.save()
+    }
+
+    // MARK: - Vergleichsfahrzeug
+
+    /// Ein einzelner Datensatz je Nutzer (Server ab 0.36.0), lokal in
+    /// UserDefaults: dirty -> PUT, danach Flag weg; sonst GET und lokal
+    /// uebernehmen. Gegen einen aelteren Server (404) still uebersprungen, das
+    /// Flag bleibt - nach dem Server-Update geht es von selbst hoch. Andere
+    /// Fehler landen nur in der Zeilenliste, der Sync gilt nicht als gescheitert.
+    private func syncComparisonVehicle() async {
+        let store = ComparisonVehicleStore.shared
+        do {
+            if store.isDirty {
+                let sent = store.vehicle
+                _ = try await APIClient.shared.updateComparisonVehicle(ComparisonVehiclePayload(sent))
+                // Nur zuruecksetzen, wenn waehrenddessen nicht erneut gespeichert wurde.
+                if store.vehicle == sent { store.markSynced() }
+            } else {
+                let server = try await APIClient.shared.fetchComparisonVehicle()
+                if !store.isDirty { store.applyFromServer(server) }
+            }
+        } catch APIError.server(let statusCode, _) where statusCode == 404 {
+            return
+        } catch {
+            itemErrors.append(String(localized: "Vergleichsfahrzeug: \(error.localizedDescription)"))
+        }
     }
 
     private func pushLocations() async throws {

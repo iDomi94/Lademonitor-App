@@ -49,6 +49,12 @@ struct SettingsView: View {
                     } label: {
                         Label("Erinnerungen", systemImage: "bell")
                     }
+                    // Fuer den Rueckblick und das Verbrenner-Tool, in beiden Modi.
+                    NavigationLink {
+                        ComparisonVehicleSettingsView()
+                    } label: {
+                        Label("Vergleichsfahrzeug", systemImage: "fuelpump")
+                    }
                     // Reifen gibt es bewusst nur im Server-Modus: die Zuordnung
                     // der Fahrten und der temperaturbereinigte Vergleich liegen
                     // komplett auf dem Server (siehe TireModels.swift).
