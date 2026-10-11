@@ -7,6 +7,33 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.8.0
+
+- Neues Tool „Rückblick“: ein Jahr oder ein Monat in Zahlen, umschaltbar oben
+  in der Ansicht. Ladevorgänge, geladene kWh, Kosten (inklusive
+  Grundgebühren), gefahrene Kilometer, Ø Preis je kWh, Kosten je 100 km und
+  Ø Verbrauch – jeweils mit Vergleich zum Vorjahr bzw. Vormonat in Prozent.
+  Fahrzeugfilter wie im Dashboard.
+- Gespart gegenüber dem Verbrenner: Euro und CO₂ für die gefahrenen
+  Kilometer (Betrieb, Tank-to-Wheel). Ohne gespeichertes Vergleichsfahrzeug
+  rechnet der Rückblick mit Standardwerten und sagt das dazu.
+- Rekorde: günstigster und teuerster Ladevorgang je kWh, größte Ladung,
+  längste Strecke zwischen zwei Ladungen, kältester und wärmster Ladetag,
+  meistgenutzter Ladeort und Anbieter, im Jahr außerdem der Monat mit dem
+  geringsten und dem höchsten Verbrauch. Dazu die Verteilung AC/DC und
+  Zuhause/Arbeit/unterwegs sowie kWh je Monat als Balkendiagramm. Zeilen ohne
+  Daten fallen weg.
+- Der Rückblick wird auf dem Gerät gerechnet und funktioniert auch im
+  Local-Only-Modus – nach denselben Regeln wie der Jahresrückblick im Web.
+- Neu in den Einstellungen: „Vergleichsfahrzeug“ (Kraftstoff, Verbrauch,
+  Literpreis, CO₂ je kWh Strom). Der Vergleich mit Verbrenner startet mit
+  diesen Werten und bietet „Als Vergleichsfahrzeug speichern“ an. Mit Server
+  (ab 0.36.0) wird das Vergleichsfahrzeug synchronisiert; ältere Server
+  lassen es auf dem Gerät.
+- Konto → Benachrichtigungen: neuer Schalter „Jahresrückblick per Mail“
+  (Standard an) neben dem Monatsbericht – erscheint, sobald der Server ihn
+  kennt (ab 0.36.0).
+
 ## 1.7.0
 
 - Kurzbefehle für Siri, Spotlight und die Kurzbefehle-App. „Ladevorgang in

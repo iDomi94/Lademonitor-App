@@ -324,6 +324,18 @@ final class LocalDataStore {
         )).first
     }
 
+    /// Wie canonicalProviderIds(), fuer Ladeorte: ein Ladevorgang kann seinen
+    /// Ladeort noch ueber die lokale UUID kennen (Rueckblick, meistgenutzter Ort).
+    func canonicalLocationIds() throws -> [String: String] {
+        var map: [String: String] = [:]
+        for location in try context.fetch(FetchDescriptor<LocalChargingLocation>()) {
+            let canonical = location.serverId ?? location.localId.uuidString
+            map[location.localId.uuidString] = canonical
+            if let serverId = location.serverId { map[serverId] = canonical }
+        }
+        return map
+    }
+
     // MARK: - Grundgebuehren
 
     /// Alle Anbieter-Referenzen (lokale UUID ODER serverId) auf die kanonische

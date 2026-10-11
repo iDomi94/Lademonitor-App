@@ -13549,6 +13549,873 @@
           }
         }
       }
+    },
+    "Rückblick" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rückblick"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review"
+          }
+        }
+      }
+    },
+    "Dein Jahr oder Monat in Zahlen: Kosten, Kilometer, Ersparnis gegenüber dem Verbrenner und Rekorde" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Jahr oder Monat in Zahlen: Kosten, Kilometer, Ersparnis gegenüber dem Verbrenner und Rekorde"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your year or month in numbers: costs, distance, savings compared to a combustion car, and records"
+          }
+        }
+      }
+    },
+    "Jahresrückblick per Mail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahresrückblick per Mail"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly review by email"
+          }
+        }
+      }
+    },
+    "Vergleichsfahrzeug: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vergleichsfahrzeug: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparison vehicle: %@"
+          }
+        }
+      }
+    },
+    "Verbrenner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrenner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Combustion car"
+          }
+        }
+      }
+    },
+    "Richtwerte für einen vergleichbaren Kompakt-SUV: Benzin 7,0 l und 1,75 €, Diesel 5,8 l und 1,65 €." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richtwerte für einen vergleichbaren Kompakt-SUV: Benzin 7,0 l und 1,75 €, Diesel 5,8 l und 1,65 €."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typical values for a comparable compact SUV: petrol 7.0 l and €1.75, diesel 5.8 l and €1.65."
+          }
+        }
+      }
+    },
+    "Vorgabe ist der deutsche Strommix (360 g). Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgabe ist der deutsche Strommix (360 g). Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The default is the German grid mix (360 g). Lower the value if you use green electricity or your own solar panels."
+          }
+        }
+      }
+    },
+    "Damit rechnet der Rückblick „Gespart gegenüber dem Verbrenner“, und der Vergleich mit Verbrenner startet mit diesen Werten." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Damit rechnet der Rückblick „Gespart gegenüber dem Verbrenner“, und der Vergleich mit Verbrenner startet mit diesen Werten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The review uses this for “Saved compared to a combustion car”, and the combustion comparison starts with these values."
+          }
+        }
+      }
+    },
+    "Noch nicht gespeichert – bis dahin gelten die Standardwerte." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch nicht gespeichert – bis dahin gelten die Standardwerte."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not saved yet – the default values apply until then."
+          }
+        }
+      }
+    },
+    "Wird mit dem Server abgeglichen (ab Server 0.36.0)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird mit dem Server abgeglichen (ab Server 0.36.0)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced with the server (server 0.36.0 or later)."
+          }
+        }
+      }
+    },
+    "Verbrauch muss zwischen 1 und 30 l/100 km liegen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch muss zwischen 1 und 30 l/100 km liegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption must be between 1 and 30 l/100 km."
+          }
+        }
+      }
+    },
+    "Der Literpreis muss zwischen 0,50 und 5,00 € liegen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Literpreis muss zwischen 0,50 und 5,00 € liegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The price per litre must be between €0.50 and €5.00."
+          }
+        }
+      }
+    },
+    "CO₂ je kWh muss zwischen 0 und 1500 g liegen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ je kWh muss zwischen 0 und 1500 g liegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ per kWh must be between 0 and 1500 g."
+          }
+        }
+      }
+    },
+    "Als Vergleichsfahrzeug speichern" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Vergleichsfahrzeug speichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save as comparison vehicle"
+          }
+        }
+      }
+    },
+    "Das ist dein gespeichertes Vergleichsfahrzeug – der Rückblick rechnet damit." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist dein gespeichertes Vergleichsfahrzeug – der Rückblick rechnet damit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is your saved comparison vehicle – the review uses it."
+          }
+        }
+      }
+    },
+    "Kraftstoff, Verbrauch, Literpreis und CO₂ je kWh übernehmen: Der Rückblick rechnet dann damit, und dieses Tool startet beim nächsten Mal mit diesen Werten." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kraftstoff, Verbrauch, Literpreis und CO₂ je kWh übernehmen: Der Rückblick rechnet dann damit, und dieses Tool startet beim nächsten Mal mit diesen Werten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep fuel, consumption, price per litre and CO₂ per kWh: the review will use them, and this tool will start with these values next time."
+          }
+        }
+      }
+    },
+    "Für diesen Zeitraum gibt es keine Ladevorgänge." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für diesen Zeitraum gibt es keine Ladevorgänge."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no charging sessions in this period."
+          }
+        }
+      }
+    },
+    "Jahr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Year"
+          }
+        }
+      }
+    },
+    "Alle Fahrzeuge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Fahrzeuge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All vehicles"
+          }
+        }
+      }
+    },
+    "Ø Preis je kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø Preis je kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avg. price per kWh"
+          }
+        }
+      }
+    },
+    "Kosten je 100 km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten je 100 km"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cost per 100 km"
+          }
+        }
+      }
+    },
+    "Ø Verbrauch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø Verbrauch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avg. consumption"
+          }
+        }
+      }
+    },
+    "%@ ggü. Vorjahr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ggü. Vorjahr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vs. previous year"
+          }
+        }
+      }
+    },
+    "%@ ggü. Vormonat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ggü. Vormonat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vs. previous month"
+          }
+        }
+      }
+    },
+    "Im Vorjahr gibt es keine Ladevorgänge zum Vergleichen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Vorjahr gibt es keine Ladevorgänge zum Vergleichen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no charging sessions in the previous year to compare with."
+          }
+        }
+      }
+    },
+    "Im Vormonat gibt es keine Ladevorgänge zum Vergleichen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Vormonat gibt es keine Ladevorgänge zum Vergleichen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no charging sessions in the previous month to compare with."
+          }
+        }
+      }
+    },
+    "Kosten inklusive Grundgebühren, Kilometer aus dem Kilometerstand deiner Ladevorgänge." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten inklusive Grundgebühren, Kilometer aus dem Kilometerstand deiner Ladevorgänge."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costs include base fees, distance comes from the odometer readings of your charging sessions."
+          }
+        }
+      }
+    },
+    "Gespart" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespart"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved"
+          }
+        }
+      }
+    },
+    "Mehrkosten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrkosten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra cost"
+          }
+        }
+      }
+    },
+    "CO₂ gespart" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ gespart"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ saved"
+          }
+        }
+      }
+    },
+    "CO₂ mehr" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CO₂ mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Additional CO₂"
+          }
+        }
+      }
+    },
+    "Vergleichsfahrzeug festlegen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vergleichsfahrzeug festlegen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set comparison vehicle"
+          }
+        }
+      }
+    },
+    "Gegenüber dem Verbrenner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gegenüber dem Verbrenner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compared to a combustion car"
+          }
+        }
+      }
+    },
+    "Gerechnet mit Standardwerten, weil noch kein Vergleichsfahrzeug gespeichert ist." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerechnet mit Standardwerten, weil noch kein Vergleichsfahrzeug gespeichert ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculated with default values because no comparison vehicle has been saved yet."
+          }
+        }
+      }
+    },
+    "%1$@, %2$@ l/100 km, %3$@ pro Liter, Strom %4$@ g CO₂/kWh. Nur der Betrieb (Tank-to-Wheel), ohne Herstellung." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@ l/100 km, %3$@ pro Liter, Strom %4$@ g CO₂/kWh. Nur der Betrieb (Tank-to-Wheel), ohne Herstellung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@ l/100 km, %3$@ per litre, electricity %4$@ g CO₂/kWh. Operation only (tank-to-wheel), without production."
+          }
+        }
+      }
+    },
+    "%1$@ Ladevorgänge · %2$@ kWh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ Ladevorgänge · %2$@ kWh"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ charging sessions · %2$@ kWh"
+          }
+        }
+      }
+    },
+    "Rekorde" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekorde"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Records"
+          }
+        }
+      }
+    },
+    "Günstigster Ladevorgang" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günstigster Ladevorgang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cheapest charging session"
+          }
+        }
+      }
+    },
+    "Teuerster Ladevorgang" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teuerster Ladevorgang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most expensive charging session"
+          }
+        }
+      }
+    },
+    "Größte Ladung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größte Ladung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biggest charge"
+          }
+        }
+      }
+    },
+    "Längste Strecke zwischen zwei Ladungen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Längste Strecke zwischen zwei Ladungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longest distance between two charges"
+          }
+        }
+      }
+    },
+    "Kältester Ladetag" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kältester Ladetag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coldest charging day"
+          }
+        }
+      }
+    },
+    "Wärmster Ladetag" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wärmster Ladetag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warmest charging day"
+          }
+        }
+      }
+    },
+    "Meistgenutzter Ladeort" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meistgenutzter Ladeort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most used location"
+          }
+        }
+      }
+    },
+    "Meistgenutzter Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meistgenutzter Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most used provider"
+          }
+        }
+      }
+    },
+    "Geringster Verbrauch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geringster Verbrauch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lowest consumption"
+          }
+        }
+      }
+    },
+    "Höchster Verbrauch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höchster Verbrauch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Highest consumption"
+          }
+        }
+      }
+    },
+    "Verteilung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verteilung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distribution"
+          }
+        }
+      }
+    },
+    "AC" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AC"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AC"
+          }
+        }
+      }
+    },
+    "DC" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DC"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DC"
+          }
+        }
+      }
+    },
+    "kWh je Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh je Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kWh per month"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

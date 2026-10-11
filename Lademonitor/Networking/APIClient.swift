@@ -375,6 +375,22 @@ final class APIClient {
         try await sendNoContent(try makeRequest(path: "/api/reminders/\(id)", method: "DELETE"))
     }
 
+    // MARK: - Vergleichsfahrzeug (Server ab 0.36.0)
+    //
+    // Ein aelterer Server antwortet mit 404, der SyncService laesst das
+    // Vergleichsfahrzeug dann lokal (und dirty) liegen. Den Rueckblick selbst
+    // (/api/stats/review) benutzt die App bewusst nicht - sie rechnet ihn
+    // lokal (LocalReviewCalculator), auch im Server-Modus.
+
+    func fetchComparisonVehicle() async throws -> ComparisonVehicle {
+        try await send(try makeRequest(path: "/api/combustion-vehicle"))
+    }
+
+    func updateComparisonVehicle(_ payload: ComparisonVehiclePayload) async throws -> ComparisonVehicle {
+        let body = try JSONEncoder().encode(payload)
+        return try await send(try makeRequest(path: "/api/combustion-vehicle", method: "PUT", body: body))
+    }
+
     // MARK: - Locations
 
     func fetchLocations() async throws -> [ChargingLocation] {

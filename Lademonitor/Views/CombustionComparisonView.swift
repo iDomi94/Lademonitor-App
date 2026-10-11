@@ -44,13 +44,25 @@ struct CombustionComparisonView: View {
     @AppStorage("combustion.batteryCo2") private var batteryCo2 = CombustionComparison.defaultBatteryCo2KgPerKwh
     @State private var loadError: String?
     @AppStorage("combustion.period") private var periodRaw = Period.lastYear.rawValue
-    @AppStorage("combustion.fuel") private var fuelRaw = CombustionComparison.Fuel.petrol.rawValue
-    @AppStorage("combustion.consumption") private var consumption = CombustionComparison.Fuel.petrol.defaultConsumption
-    @AppStorage("combustion.price") private var price = CombustionComparison.Fuel.petrol.defaultPrice
-    @AppStorage("combustion.gridCo2") private var gridCo2 = CombustionComparison.defaultGridCo2KgPerKwh
+    // Vergleichsfahrzeug: startet mit dem gespeicherten (Einstellungen →
+    // Vergleichsfahrzeug), Aenderungen an den Reglern bleiben bis zum
+    // "Als Vergleichsfahrzeug speichern" nur in dieser Ansicht.
+    @ObservedObject private var comparisonStore = ComparisonVehicleStore.shared
+    @State private var fuelRaw: String
+    @State private var consumption: Double
+    @State private var price: Double
+    @State private var gridCo2: Double
 
     @State private var editingField: Field?
     @State private var editText = ""
+
+    init() {
+        let stored = ComparisonVehicleStore.shared.vehicle
+        _fuelRaw = State(initialValue: stored.fuel.rawValue)
+        _consumption = State(initialValue: stored.consumptionLPer100km)
+        _price = State(initialValue: stored.fuelPricePerL)
+        _gridCo2 = State(initialValue: stored.gridCo2KgPerKwh)
+    }
 
     private var period: Period { Period(rawValue: periodRaw) ?? .lastYear }
     private var mode: Mode { Mode(rawValue: modeRaw) ?? .per100km }
@@ -97,6 +109,7 @@ struct CombustionComparisonView: View {
             vehicleSection
             co2Section
             if mode == .lifecycle { lifecycleSection }
+            saveSection
         }
         .safeAreaInset(edge: .top, spacing: 0) {
             VStack(spacing: 0) {
@@ -196,6 +209,40 @@ struct CombustionComparisonView: View {
             Text("CO₂")
         } footer: {
             Text("Vorgabe ist der deutsche Strommix. Mit Ökostrom oder eigener PV-Anlage den Wert entsprechend senken. Beim Kraftstoff zählt nur die Verbrennung (\(TariffCalculatorView.number(fuel.co2KgPerLiter, digits: 2)) kg je Liter), ohne Vorkette – die kommt in der Ansicht „Lebenszyklus“ dazu.")
+        }
+    }
+
+    /// Die Regler als Vergleichsfahrzeug uebernehmen - damit rechnet der
+    /// Rueckblick, und dieses Tool startet beim naechsten Mal damit.
+    private var currentComparison: ComparisonVehicle {
+        ComparisonVehicle(
+            fuelType: fuel.rawValue,
+            consumptionLPer100km: consumption,
+            fuelPricePerL: price,
+            gridCo2KgPerKwh: gridCo2,
+            configured: true
+        )
+    }
+
+    private var matchesStoredComparison: Bool {
+        comparisonStore.isConfigured && comparisonStore.vehicle == currentComparison
+    }
+
+    private var saveSection: some View {
+        Section {
+            Button("Als Vergleichsfahrzeug speichern") {
+                comparisonStore.save(currentComparison)
+                if AppSettings.shared.appMode == .server {
+                    Task { await SyncService.shared.syncNow() }
+                }
+            }
+            .disabled(matchesStoredComparison)
+        } footer: {
+            if matchesStoredComparison {
+                Text("Das ist dein gespeichertes Vergleichsfahrzeug – der Rückblick rechnet damit.")
+            } else {
+                Text("Kraftstoff, Verbrauch, Literpreis und CO₂ je kWh übernehmen: Der Rückblick rechnet dann damit, und dieses Tool startet beim nächsten Mal mit diesen Werten.")
+            }
         }
     }
 
