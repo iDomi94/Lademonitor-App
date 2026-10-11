@@ -68,31 +68,31 @@ enum LocalReviewCalculator {
         let withOdometerByVehicle = Dictionary(grouping: scoped.filter { $0.odometerKm != nil }, by: \.vehicleId)
 
         func day(_ session: ChargingSession) -> Date { calendar.startOfDay(for: session.startTime) }
-        func isInside(_ session: ChargingSession, _ start: Date, _ end: Date) -> Bool {
+        func isInside(_ session: ChargingSession, _ from: Date, _ to: Date) -> Bool {
             let d = day(session)
-            return start <= d && d < end
+            return from <= d && d < to
         }
-        func unallocated(_ start: Date, _ end: Date) -> [LocalFeeAllocator.Period] {
+        func unallocated(_ from: Date, _ to: Date) -> [LocalFeeAllocator.Period] {
             // Perioden ohne Vorgang gehoeren zu keinem Fahrzeug.
             guard vehicleId == nil else { return [] }
             return basis.unallocatedFees.filter {
                 let d = calendar.startOfDay(for: $0.start)
-                return start <= d && d < end
+                return from <= d && d < to
             }
         }
         func cost(_ session: ChargingSession) -> Double { (session.priceTotal ?? 0) + (session.feeShare ?? 0) }
 
-        func totals(_ start: Date, _ end: Date) -> Review.Totals {
-            let inside = scoped.filter { isInside($0, start, end) }
+        func totals(_ from: Date, _ to: Date) -> Review.Totals {
+            let inside = scoped.filter { isInside($0, from, to) }
             let kwh = inside.reduce(0.0) { $0 + ($1.energyKwh ?? 0) }
-            let fees = unallocated(start, end).reduce(0.0) { $0 + $1.amount }
+            let fees = unallocated(from, to).reduce(0.0) { $0 + $1.amount }
             let totalCost = inside.reduce(0.0) { $0 + cost($1) } + fees
 
             var km = 0.0
             for (_, list) in withOdometerByVehicle {
-                let insideOdo = list.filter { isInside($0, start, end) }
+                let insideOdo = list.filter { isInside($0, from, to) }
                 guard let first = insideOdo.first?.odometerKm, let last = insideOdo.last?.odometerKm else { continue }
-                let anchor = list.last(where: { day($0) < start })?.odometerKm ?? first
+                let anchor = list.last(where: { day($0) < from })?.odometerKm ?? first
                 km += Double(max(last - anchor, 0))
             }
 
