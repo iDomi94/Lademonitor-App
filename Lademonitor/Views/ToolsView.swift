@@ -45,6 +45,13 @@ struct ToolsView: View {
                             icon: "road.lanes"
                         )
                     }
+                    NavigationLink(value: ToolRoute.reimbursement) {
+                        ToolLabel(
+                            title: "Erstattungsbericht",
+                            subtitle: "Heimladungen des Dienstwagens als Nachweis für den Arbeitgeber, als PDF oder CSV",
+                            icon: "briefcase"
+                        )
+                    }
                 }
             }
             .navigationTitle("Tools")
@@ -54,6 +61,7 @@ struct ToolsView: View {
                 case .combustion: CombustionComparisonView()
                 case .battery: BatteryHealthView()
                 case .range: RangeCalculatorView()
+                case .reimbursement: ReimbursementReportView()
                 }
             }
         }

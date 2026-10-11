@@ -33,6 +33,18 @@ final class LocalVehicle {
     var leasingStart: Date? = nil
     var leasingEnd: Date? = nil
     var leasingDownPayment: Double? = nil
+    // Dienstwagen/Erstattung (siehe Vehicle in Models.swift). Optional aus
+    // demselben Grund wie Kauf/Leasing - leichte Migration. `isCompanyCar ==
+    // nil` heisst zugleich "nie gesetzt": dann schickt der Push die Felder
+    // gar nicht erst (ein am Server gesetzter Wert bliebe sonst nicht stehen).
+    // Gesetzt werden sie ueber `applyReimbursement`.
+    var isCompanyCar: Bool? = nil
+    var reimbursementMode: String? = nil
+    var reimbursementIncludeFees: Bool? = nil
+    var employeeName: String? = nil
+    var employeeNumber: String? = nil
+    var licensePlate: String? = nil
+    var reimbursementMonthlyMail: Bool? = nil
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -296,8 +308,38 @@ extension LocalVehicle {
             leasingRateMonthly: leasingRateMonthly,
             leasingStart: leasingStart,
             leasingEnd: leasingEnd,
-            leasingDownPayment: leasingDownPayment
+            leasingDownPayment: leasingDownPayment,
+            isCompanyCar: isCompanyCar,
+            reimbursementMode: reimbursementMode,
+            reimbursementIncludeFees: reimbursementIncludeFees,
+            employeeName: employeeName,
+            employeeNumber: employeeNumber,
+            licensePlate: licensePlate,
+            reimbursementMonthlyMail: reimbursementMonthlyMail
         )
+    }
+
+    /// Uebernimmt die Dienstwagen-Felder wie der Server einen PATCH: Schalter
+    /// und Art nur mit Wert (`nil` = unveraendert), die Texte immer (leer
+    /// oder `nil` leert sie).
+    func applyReimbursement(
+        isCompanyCar: Bool?, reimbursementMode: String?, reimbursementIncludeFees: Bool?,
+        employeeName: String?, employeeNumber: String?, licensePlate: String?,
+        reimbursementMonthlyMail: Bool?
+    ) {
+        let text = { (value: String?) -> String? in
+            guard let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else { return nil }
+            return trimmed
+        }
+        if let isCompanyCar { self.isCompanyCar = isCompanyCar }
+        if let reimbursementMode { self.reimbursementMode = ReimbursementMode(raw: reimbursementMode).rawValue }
+        if let reimbursementIncludeFees { self.reimbursementIncludeFees = reimbursementIncludeFees }
+        if let reimbursementMonthlyMail { self.reimbursementMonthlyMail = reimbursementMonthlyMail }
+        // Ab jetzt gilt der Satz Felder als bekannt (siehe isCompanyCar oben).
+        if self.isCompanyCar == nil { self.isCompanyCar = false }
+        self.employeeName = text(employeeName)
+        self.employeeNumber = text(employeeNumber)
+        self.licensePlate = text(licensePlate)
     }
 
     /// Uebernimmt ALLE Kauf-/Leasingfelder, auch `nil` - so wie der PATCH der

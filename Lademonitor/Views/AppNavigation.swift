@@ -26,5 +26,5 @@ final class AppNavigation: ObservableObject {
 
 /// Die Tools als Ziele des NavigationStack im Reiter Tools.
 enum ToolRoute: Hashable {
-    case tariff, combustion, battery, range
+    case tariff, combustion, battery, range, reimbursement
 }

@@ -19,7 +19,8 @@ final class LocalStore {
             LocalChargingSession.self,
             LocalProviderFee.self,
             LocalVehicleCost.self,
-            LocalReminder.self
+            LocalReminder.self,
+            LocalReimbursementRate.self
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

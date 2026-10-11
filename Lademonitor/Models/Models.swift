@@ -114,11 +114,32 @@ struct Vehicle: Codable, Identifiable, Hashable {
     var leasingStart: Date? = nil
     var leasingEnd: Date? = nil
     var leasingDownPayment: Double? = nil
+    // Dienstwagen/Erstattung (Server ab 0.35.0). Optional wie Kauf/Leasing:
+    // ein neuerer Server schickt `is_company_car` immer mit, daran erkennt
+    // der SyncService, ob er die uebrigen Felder uebernehmen darf - ein
+    // aelterer wuerde sonst die lokale Angabe bei jedem Sync leeren.
+    var isCompanyCar: Bool? = nil
+    var reimbursementMode: String? = nil
+    var reimbursementIncludeFees: Bool? = nil
+    var employeeName: String? = nil
+    var employeeNumber: String? = nil
+    var licensePlate: String? = nil
+    /// Monatsmail mit dem Bericht - nur eine Serverfunktion.
+    var reimbursementMonthlyMail: Bool? = nil
 
     var ownershipValue: Ownership { Ownership(raw: ownership) }
+    var isCompanyCarValue: Bool { isCompanyCar ?? false }
+    var reimbursementModeValue: ReimbursementMode { ReimbursementMode(raw: reimbursementMode) }
 
     enum CodingKeys: String, CodingKey {
         case id, name, brand, model, ownership
+        case isCompanyCar = "is_company_car"
+        case reimbursementMode = "reimbursement_mode"
+        case reimbursementIncludeFees = "reimbursement_include_fees"
+        case employeeName = "employee_name"
+        case employeeNumber = "employee_number"
+        case licensePlate = "license_plate"
+        case reimbursementMonthlyMail = "reimbursement_monthly_mail"
         case externalId = "external_id"
         case batteryCapacityKwh = "battery_capacity_kwh"
         case isActive = "is_active"
@@ -414,9 +435,27 @@ struct VehiclePayload: Codable {
     var leasingStart: Date? = nil
     var leasingEnd: Date? = nil
     var leasingDownPayment: Double? = nil
+    /// Dienstwagen/Erstattung (Server ab 0.35.0). Gesetzt, schreibt der
+    /// Payload alle diese Felder: die Texte auch als `null` (leert sie), die
+    /// Schalter und die Art nur mit Wert - `null` hiesse dort "unveraendert".
+    var sendsReimbursement = false
+    var isCompanyCar: Bool? = nil
+    var reimbursementMode: String? = nil
+    var reimbursementIncludeFees: Bool? = nil
+    var employeeName: String? = nil
+    var employeeNumber: String? = nil
+    var licensePlate: String? = nil
+    var reimbursementMonthlyMail: Bool? = nil
 
     enum CodingKeys: String, CodingKey {
         case name, brand, model, ownership
+        case isCompanyCar = "is_company_car"
+        case reimbursementMode = "reimbursement_mode"
+        case reimbursementIncludeFees = "reimbursement_include_fees"
+        case employeeName = "employee_name"
+        case employeeNumber = "employee_number"
+        case licensePlate = "license_plate"
+        case reimbursementMonthlyMail = "reimbursement_monthly_mail"
         case externalId = "external_id"
         case batteryCapacityKwh = "battery_capacity_kwh"
         case isActive = "is_active"
@@ -439,6 +478,15 @@ struct VehiclePayload: Codable {
         try c.encodeIfPresent(model, forKey: .model)
         try c.encodeIfPresent(batteryCapacityKwh, forKey: .batteryCapacityKwh)
         try c.encodeIfPresent(isActive, forKey: .isActive)
+        if sendsReimbursement {
+            try c.encodeIfPresent(isCompanyCar, forKey: .isCompanyCar)
+            try c.encodeIfPresent(reimbursementMode.map { ReimbursementMode(raw: $0).rawValue }, forKey: .reimbursementMode)
+            try c.encodeIfPresent(reimbursementIncludeFees, forKey: .reimbursementIncludeFees)
+            try c.encodeIfPresent(reimbursementMonthlyMail, forKey: .reimbursementMonthlyMail)
+            try c.encode(employeeName, forKey: .employeeName)
+            try c.encode(employeeNumber, forKey: .employeeNumber)
+            try c.encode(licensePlate, forKey: .licensePlate)
+        }
         guard sendsOwnership else { return }
         try c.encode(Ownership(raw: ownership).rawValue, forKey: .ownership)
         try c.encode(purchasePrice, forKey: .purchasePrice)

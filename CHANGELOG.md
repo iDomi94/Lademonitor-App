@@ -7,6 +7,31 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.6.0
+
+- Neues Tool „Erstattungsbericht“ für den Dienstwagen: der Nachweis der
+  Heimladungen für den Arbeitgeber. Es zählen die Ladevorgänge des Fahrzeugs
+  an Anbietern mit Ladeort „Zuhause“, je Vorgang mit Datum, kWh, Herkunft der
+  kWh (Wallbox, Fahrzeug oder geschätzt*), km-Stand, Satz und Betrag, dazu
+  Summen je Monat. Zeitraum: ein Monat (Standard: Vormonat) oder frei von–bis.
+- Erstattung pauschal je kWh – mit eigenen Sätzen „gültig ab“ (Vorschlag
+  0,34 €/kWh ab 1.1.), ein neuer Satz lässt frühere Monate unverändert – oder
+  zu den tatsächlichen Kosten, auf Wunsch inklusive Grundgebühr-Anteil.
+  Ladungen mit geschätzten kWh und Ladungen ohne Betrag werden im Bericht
+  ausgewiesen.
+- Im Tool: Fahrzeug als Dienstwagen markieren, Erstattungsart, Name,
+  Personalnummer und Kennzeichen eintragen. Teilen als PDF oder CSV über das
+  Teilen-Menü (CSV auf Deutsch mit Semikolon und Dezimalkomma, öffnet direkt in
+  Excel).
+- Funktioniert auch im Local-Only-Modus. Mit Server (ab 0.35.0) werden
+  Dienstwagen-Angaben und Erstattungssätze synchronisiert; dort lässt sich
+  zusätzlich der Monatsbericht per E-Mail einschalten. Ältere Server ignorieren
+  die neuen Angaben, sie bleiben dann auf dem Gerät.
+- „Kosten“ und „Erinnerungen“ stehen jetzt direkt im Hauptmenü der
+  Einstellungen statt versteckt in den Fahrzeug-Einstellungen. Bei einem
+  Fahrzeug geht es direkt hinein, bei mehreren wird zuerst das Fahrzeug gewählt.
+- Behoben: Das Dashboard ließ sich seitlich nach links und rechts verschieben.
+
 ## 1.5.0
 
 - Neues Tool „Reichweitenrechner“: Ladestand Start und Ziel, Außentemperatur

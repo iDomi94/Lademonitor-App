@@ -7,7 +7,7 @@ import Combine
 /// LocalModels schlicht nie konsultiert.
 ///
 /// Ablauf pro Sync: erst PUSH (alle lokal geaenderten/geloeschten Zeilen hoch, in
-/// FK-Reihenfolge Vehicles -> Providers -> Gebuehren -> Fahrzeugkosten -> Erinnerungen -> Locations -> Sessions, damit z.B. eine neu
+/// FK-Reihenfolge Vehicles -> Providers -> Gebuehren -> Fahrzeugkosten -> Erinnerungen -> Erstattungssaetze -> Locations -> Sessions, damit z.B. eine neu
 /// angelegte Session ihre Fahrzeug-serverId schon kennt), dann PULL (Server-Stand
 /// herunterladen und mergen). Konfliktstrategie: lokal dirty gewinnt (wird beim naechsten
 /// Push ueberschrieben statt beim Pull ueberschrieben zu werden) - siehe Konzept-Diskussion,
@@ -53,6 +53,9 @@ final class SyncService: ObservableObject {
 
     /// Dasselbe fuer die Erinnerungen (ab 0.33.0, pushReminders).
     private var serverSupportsReminders = false
+
+    /// Dasselbe fuer die Erstattungssaetze (ab 0.35.0, pushReimbursementRates).
+    private var serverSupportsReimbursementRates = false
 
     private init() {
         // Sobald die Verbindung nach einer Offline-Phase wiederkommt, gepufferte
@@ -201,6 +204,7 @@ final class SyncService: ObservableObject {
             try await pushFees()
             try await pushVehicleCosts()
             try await pushReminders()
+            try await pushReimbursementRates()
             try await pushLocations()
             try await pushSessions()
             try await pullVehicles()
@@ -208,6 +212,7 @@ final class SyncService: ObservableObject {
             try await pullFees()
             try await pullVehicleCosts()
             try await pullReminders()
+            try await pullReimbursementRates()
             try await pullLocations()
             try await pullSessions()
             // Zum Schluss, nach den Pulls: die legen fehlende Zeilen an, und eine
@@ -271,6 +276,10 @@ final class SyncService: ObservableObject {
             for reminder in (try? context.fetch(FetchDescriptor<LocalReminder>())) ?? [] {
                 if let ref = localRef[reminder.vehicleId] { reminder.vehicleId = ref }
             }
+            // Und die Erstattungssaetze.
+            for rate in (try? context.fetch(FetchDescriptor<LocalReimbursementRate>())) ?? [] {
+                if let ref = localRef[rate.vehicleId] { rate.vehicleId = ref }
+            }
         }
         resetSyncState(for: LocalVehicle.self)
         resetSyncState(for: LocalProvider.self)
@@ -279,6 +288,7 @@ final class SyncService: ObservableObject {
         resetSyncState(for: LocalProviderFee.self)
         resetSyncState(for: LocalVehicleCost.self)
         resetSyncState(for: LocalReminder.self)
+        resetSyncState(for: LocalReimbursementRate.self)
         try? context.save()
     }
 
@@ -330,6 +340,7 @@ final class SyncService: ObservableObject {
                         .filter { refs.contains($0.vehicleId) }
                         .forEach { context.delete($0) }
                     try LocalDataStore.shared.deleteReminders(ofVehicleRefs: refs)
+                    try LocalDataStore.shared.deleteReimbursementRates(ofVehicleRefs: refs)
                     context.delete(vehicle)
                     continue
                 }
@@ -349,7 +360,19 @@ final class SyncService: ObservableObject {
                     leasingRateMonthly: vehicle.leasingRateMonthly,
                     leasingStart: vehicle.leasingStart,
                     leasingEnd: vehicle.leasingEnd,
-                    leasingDownPayment: vehicle.leasingDownPayment
+                    leasingDownPayment: vehicle.leasingDownPayment,
+                    // Dienstwagen-Felder nur, wenn sie lokal je gesetzt bzw.
+                    // vom Server uebernommen wurden - sonst wuerde eine
+                    // aeltere lokale Zeile die am Server (Web) gesetzten
+                    // Texte mit null leeren.
+                    sendsReimbursement: vehicle.isCompanyCar != nil,
+                    isCompanyCar: vehicle.isCompanyCar,
+                    reimbursementMode: vehicle.reimbursementMode,
+                    reimbursementIncludeFees: vehicle.reimbursementIncludeFees,
+                    employeeName: vehicle.employeeName,
+                    employeeNumber: vehicle.employeeNumber,
+                    licensePlate: vehicle.licensePlate,
+                    reimbursementMonthlyMail: vehicle.reimbursementMonthlyMail
                 )
                 if let serverId = vehicle.serverId {
                     _ = try await APIClient.shared.updateVehicle(id: serverId, payload)
@@ -526,6 +549,47 @@ final class SyncService: ObservableObject {
         try context.save()
     }
 
+    /// Erstattungssaetze nach den Erinnerungen (haengen ebenfalls nur am
+    /// Fahrzeug). Gegen einen Server aelter als 0.35.0 (404) bleibt alles
+    /// lokal und dirty - der Bericht wird ohnehin lokal gerechnet.
+    private func pushReimbursementRates() async throws {
+        do {
+            _ = try await APIClient.shared.fetchReimbursementRates()
+            serverSupportsReimbursementRates = true
+        } catch APIError.server(let statusCode, _) where statusCode == 404 {
+            serverSupportsReimbursementRates = false
+            return
+        }
+        let dirty = try context.fetch(FetchDescriptor<LocalReimbursementRate>(predicate: #Predicate { $0.isDirty }))
+        for rate in dirty {
+            do {
+                if rate.pendingDelete {
+                    if let serverId = rate.serverId {
+                        try? await APIClient.shared.deleteReimbursementRate(id: serverId)
+                    }
+                    context.delete(rate)
+                    continue
+                }
+                let vehicleId = try resolvedVehicleServerId(rate.vehicleId)
+                let payload = ReimbursementRatePayload(
+                    vehicleId: vehicleId, validFrom: rate.validFrom, ratePerKwh: rate.ratePerKwh
+                )
+                if let serverId = rate.serverId {
+                    _ = try await APIClient.shared.updateReimbursementRate(id: serverId, payload)
+                } else {
+                    let created = try await APIClient.shared.createReimbursementRate(payload)
+                    rate.serverId = created.id
+                }
+                rate.vehicleId = vehicleId
+                rate.isDirty = false
+            } catch {
+                let label = rate.validFrom.formatted(date: .numeric, time: .omitted)
+                itemErrors.append(String(localized: "Erstattungssatz ab \(label): \(error.localizedDescription)"))
+            }
+        }
+        try context.save()
+    }
+
     private func pushLocations() async throws {
         let dirty = try context.fetch(FetchDescriptor<LocalChargingLocation>(predicate: #Predicate { $0.isDirty }))
         for location in dirty {
@@ -679,6 +743,8 @@ final class SyncService: ObservableObject {
                     // schickt `ownership` immer mit) - ein aelterer wuerde die
                     // lokale Angabe sonst bei jedem Sync leeren.
                     if sv.ownership != nil { applyOwnership(of: sv, to: existing) }
+                    // Dasselbe fuer die Dienstwagen-Felder (ab 0.35.0).
+                    if sv.isCompanyCar != nil { applyReimbursement(of: sv, to: existing) }
                 }
             } else {
                 let vehicle = LocalVehicle(
@@ -687,6 +753,7 @@ final class SyncService: ObservableObject {
                     isDirty: false
                 )
                 if sv.ownership != nil { applyOwnership(of: sv, to: vehicle) }
+                if sv.isCompanyCar != nil { applyReimbursement(of: sv, to: vehicle) }
                 context.insert(vehicle)
             }
         }
@@ -701,6 +768,15 @@ final class SyncService: ObservableObject {
             depreciationMonthlyOverride: dto.depreciationMonthlyOverride,
             leasingRateMonthly: dto.leasingRateMonthly, leasingStart: dto.leasingStart,
             leasingEnd: dto.leasingEnd, leasingDownPayment: dto.leasingDownPayment
+        )
+    }
+
+    private func applyReimbursement(of dto: Vehicle, to vehicle: LocalVehicle) {
+        vehicle.applyReimbursement(
+            isCompanyCar: dto.isCompanyCar, reimbursementMode: dto.reimbursementMode,
+            reimbursementIncludeFees: dto.reimbursementIncludeFees,
+            employeeName: dto.employeeName, employeeNumber: dto.employeeNumber,
+            licensePlate: dto.licensePlate, reimbursementMonthlyMail: dto.reimbursementMonthlyMail
         )
     }
 
@@ -797,6 +873,26 @@ final class SyncService: ObservableObject {
                 let reminder = LocalReminder(serverId: sr.id, vehicleId: sr.vehicleId, kind: sr.kind, isDirty: false)
                 reminder.apply(sr)
                 context.insert(reminder)
+            }
+        }
+        try context.save()
+    }
+
+    private func pullReimbursementRates() async throws {
+        guard serverSupportsReimbursementRates else { return }
+        let serverRates = try await APIClient.shared.fetchReimbursementRates()
+        for sr in serverRates {
+            if let existing = try findLocalReimbursementRate(serverId: sr.id) {
+                if !existing.isDirty {
+                    existing.vehicleId = sr.vehicleId
+                    existing.validFrom = sr.validFrom
+                    existing.ratePerKwh = sr.ratePerKwh
+                }
+            } else {
+                context.insert(LocalReimbursementRate(
+                    serverId: sr.id, vehicleId: sr.vehicleId, validFrom: sr.validFrom,
+                    ratePerKwh: sr.ratePerKwh, isDirty: false
+                ))
             }
         }
         try context.save()
@@ -954,6 +1050,7 @@ final class SyncService: ObservableObject {
                         .filter { refs.contains($0.vehicleId) }
                         .forEach { context.delete($0) }
                     try LocalDataStore.shared.deleteReminders(ofVehicleRefs: refs)
+                    try LocalDataStore.shared.deleteReimbursementRates(ofVehicleRefs: refs)
                     context.delete(row)
                 }
             case "provider":
@@ -976,6 +1073,8 @@ final class SyncService: ObservableObject {
                 if let row = try findLocalVehicleCost(serverId: record.entityId) { context.delete(row) }
             case "reminder":
                 if let row = try findLocalReminder(serverId: record.entityId) { context.delete(row) }
+            case "reimbursement_rate":
+                if let row = try findLocalReimbursementRate(serverId: record.entityId) { context.delete(row) }
             default:
                 // Unbekannter Typ aus einem neueren Server: ueberspringen statt
                 // zu raten. Eine aeltere App soll an einem neueren Server nicht
@@ -1007,6 +1106,9 @@ final class SyncService: ObservableObject {
     }
     private func findLocalReminder(serverId: String) throws -> LocalReminder? {
         try context.fetch(FetchDescriptor<LocalReminder>(predicate: #Predicate { $0.serverId == serverId })).first
+    }
+    private func findLocalReimbursementRate(serverId: String) throws -> LocalReimbursementRate? {
+        try context.fetch(FetchDescriptor<LocalReimbursementRate>(predicate: #Predicate { $0.serverId == serverId })).first
     }
 }
 
