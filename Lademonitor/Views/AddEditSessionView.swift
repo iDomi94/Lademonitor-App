@@ -20,6 +20,11 @@ struct AddEditSessionView: View {
     @State private var chargingType: ChargingType
     @State private var socEnabled: Bool
     @State private var socStartValue: Double
+    // false, solange ein bestehender Vorgang (z.B. Spritmonitor-Import) nur einen
+    // End-SoC hat: der Regler steht dann zwar auf 20, gespeichert wird aber nichts,
+    // bis er tatsaechlich bewegt wird - sonst landet ein erfundener Start-SoC in
+    // Verbrauch und Ladeverlusten.
+    @State private var socStartKnown: Bool
     @State private var socEndValue: Double
     @State private var energyKwh: String
     /// Messort der kWh, vorbelegt mit dem wirksamen Wert (Abweichung am
@@ -69,6 +74,7 @@ struct AddEditSessionView: View {
         _chargingType = State(initialValue: session?.chargingType ?? NewSessionDefaults.chargingType)
         _socEnabled = State(initialValue: session?.socStart != nil || session?.socEnd != nil)
         _socStartValue = State(initialValue: Double(session?.socStart ?? 20))
+        _socStartKnown = State(initialValue: session == nil || session?.socStart != nil)
         _socEndValue = State(initialValue: Double(session?.socEnd ?? 80))
         _energyKwh = State(initialValue: session?.energyKwh.map { String(format: "%.2f", $0) } ?? "")
         _energyMeter = State(initialValue: session?.effectiveEnergyMeter(providers: providers) ?? NewSessionDefaults.energyMeter)
@@ -136,7 +142,15 @@ struct AddEditSessionView: View {
                 Section("Akkustand") {
                     Toggle("SoC-Werte angeben", isOn: $socEnabled.animation())
                     if socEnabled {
-                        SoCSlider(title: String(localized: "Start"), value: $socStartValue, tint: .orange)
+                        SoCSlider(
+                            title: String(localized: "Start"),
+                            value: Binding(
+                                get: { socStartValue },
+                                set: { socStartValue = $0; socStartKnown = true }
+                            ),
+                            tint: .orange,
+                            isUnknown: !socStartKnown
+                        )
                         SoCSlider(title: String(localized: "Ende"), value: $socEndValue, tint: .green)
                     }
                 }
@@ -410,7 +424,7 @@ struct AddEditSessionView: View {
             locationId: locationId,
             startTime: startTime,
             chargingType: chargingType,
-            socStart: socEnabled ? Int(socStartValue.rounded()) : nil,
+            socStart: socEnabled && socStartKnown ? Int(socStartValue.rounded()) : nil,
             socEnd: socEnabled ? Int(socEndValue.rounded()) : nil,
             energyKwh: Double(energyKwh.replacingOccurrences(of: ",", with: ".")),
             pricePerKwh: Double(pricePerKwh.replacingOccurrences(of: ",", with: ".")),
@@ -452,6 +466,7 @@ private struct SoCSlider: View {
     let title: String
     @Binding var value: Double
     let tint: Color
+    var isUnknown: Bool = false
 
     var body: some View {
         VStack(spacing: 6) {
@@ -459,7 +474,7 @@ private struct SoCSlider: View {
                 Text(title)
                     .font(.subheadline)
                 Spacer()
-                Text("\(Int(value.rounded())) %")
+                Text(isUnknown ? String(localized: "unbekannt") : "\(Int(value.rounded())) %")
                     .font(.subheadline)
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
