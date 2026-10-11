@@ -118,9 +118,12 @@ final class AppRepository {
         return try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: needsReview, dateRange: dateRange)
     }
 
-    func createSession(_ payload: ChargingSessionPayload) async throws -> ChargingSession {
+    /// `syncs: false` fuer die Kurzbefehle: die laufen evtl. bei gesperrtem
+    /// Geraet im Hintergrund - die Zeile bleibt dirty und geht beim naechsten
+    /// Sync aus der App mit hoch.
+    func createSession(_ payload: ChargingSessionPayload, syncs: Bool = true) async throws -> ChargingSession {
         let session = try LocalDataStore.shared.createSession(payload)
-        syncAfterWrite()
+        if syncs { syncAfterWrite() }
         WidgetSnapshotWriter.refresh()
         // Der km-Stand verschiebt die Prognose der Erinnerungen.
         ReminderNotificationScheduler.reschedule()
@@ -228,7 +231,8 @@ final class AppRepository {
         return try reminderItemsNow(vehicleId: vehicleId)
     }
 
-    private func reminderItemsNow(vehicleId: String?) throws -> [ReminderItem] {
+    /// Ohne Sync-Versuch (Kurzbefehle).
+    func reminderItemsNow(vehicleId: String? = nil) throws -> [ReminderItem] {
         let store = LocalDataStore.shared
         return LocalReminderCalculator.items(
             reminders: try store.fetchReminders(vehicleId: vehicleId),

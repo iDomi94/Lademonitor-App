@@ -7,6 +7,28 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.7.0
+
+- Kurzbefehle für Siri, Spotlight und die Kurzbefehle-App. „Ladevorgang in
+  Lademonitor erfassen“ fragt nur nach kWh und Gesamtpreis, speichert sofort
+  und öffnet danach das Formular dieses Ladevorgangs zum Prüfen (Anbieter,
+  Lade-Art, Ladestand ergänzen). Fahrzeug und Startzeit sind vorbelegt wie
+  beim „+“, der Vorgang ist bis zum Speichern im Formular als „zu prüfen“
+  markiert. Gespeichert wird auch bei gesperrtem iPhone und per Sprache
+  allein – nur das Öffnen der App verlangt das Entsperren.
+- „Was hat Laden in Lademonitor diesen Monat gekostet?“ nennt Kosten, kWh und
+  Anzahl der Ladevorgänge des laufenden Monats – dieselben Zahlen wie das
+  Widget, inklusive Grundgebühr-Anteil. Die Kosten stehen in der
+  Kurzbefehle-App auch als Wert zum Weiterverwenden bereit.
+- „Letzter Ladevorgang in Lademonitor“ nennt Datum, Ort, kWh, Kosten und
+  Ladestand; „Was ist in Lademonitor fällig?“ die bald fälligen und
+  überfälligen Erinnerungen.
+- Alle Kurzbefehle arbeiten mit den Daten auf dem Gerät, ohne Netz, und
+  funktionieren in beiden Modi. Im Server-Modus geht ein per Kurzbefehl
+  erfasster Ladevorgang beim nächsten Abgleich aus der App mit hoch.
+- Neue Ladevorgänge werden jetzt dem ersten aktiven Fahrzeug zugeordnet statt
+  einfach dem ersten.
+
 ## 1.6.0
 
 - Neues Tool „Erstattungsbericht“ für den Dienstwagen: der Nachweis der

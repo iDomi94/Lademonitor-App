@@ -790,6 +790,13 @@ final class LocalDataStore {
         try context.save()
     }
 
+    /// Ein Vorgang ueber seine Server- ODER lokale ID - die lokale bleibt
+    /// gueltig, auch wenn ein Sync inzwischen eine Server-ID vergeben hat.
+    func fetchSession(id: String) throws -> ChargingSession? {
+        guard let session = try findSession(id: id), !session.pendingDelete else { return nil }
+        return try decorateOne(session.asDTO)
+    }
+
     private func findSession(id: String) throws -> LocalChargingSession? {
         let uuid = UUID(uuidString: id) ?? UUID()
         return try context.fetch(FetchDescriptor<LocalChargingSession>(

@@ -63,15 +63,15 @@ struct AddEditSessionView: View {
         self.session = session
         self.onSaved = onSaved
 
-        _vehicleId = State(initialValue: session?.vehicleId ?? vehicles.first?.id ?? "")
+        _vehicleId = State(initialValue: session?.vehicleId ?? NewSessionDefaults.vehicleId(in: vehicles) ?? "")
         _providerId = State(initialValue: session?.providerId)
         _startTime = State(initialValue: session?.startTime ?? Date())
-        _chargingType = State(initialValue: session?.chargingType ?? .ac)
+        _chargingType = State(initialValue: session?.chargingType ?? NewSessionDefaults.chargingType)
         _socEnabled = State(initialValue: session?.socStart != nil || session?.socEnd != nil)
         _socStartValue = State(initialValue: Double(session?.socStart ?? 20))
         _socEndValue = State(initialValue: Double(session?.socEnd ?? 80))
         _energyKwh = State(initialValue: session?.energyKwh.map { String(format: "%.2f", $0) } ?? "")
-        _energyMeter = State(initialValue: session?.effectiveEnergyMeter(providers: providers) ?? .charger)
+        _energyMeter = State(initialValue: session?.effectiveEnergyMeter(providers: providers) ?? NewSessionDefaults.energyMeter)
         _meterProviderId = State(initialValue: session?.providerId)
         _pricePerKwh = State(initialValue: session?.pricePerKwh.map { String(format: "%.4f", $0) } ?? "")
         _priceTotal = State(initialValue: session?.priceTotal.map { String(format: "%.2f", $0) } ?? "")
@@ -395,8 +395,7 @@ struct AddEditSessionView: View {
     private func suggestPrice() {
         guard !isEditing, let providerId, let provider = providers.first(where: { $0.id == providerId }) else { return }
         guard pricePerKwh.isEmpty else { return }
-        let price = chargingType == .dc ? provider.lastPriceDcPerKwh : provider.lastPriceAcPerKwh
-        if let price {
+        if let price = NewSessionDefaults.suggestedPricePerKwh(provider: provider, chargingType: chargingType) {
             pricePerKwh = String(format: "%.4f", price)
         }
     }
