@@ -69,6 +69,12 @@ wechseln, lokale Daten können dabei zu einem Server hochgeladen werden.
   oder zu den tatsächlichen Kosten, optional inkl. Grundgebühr. Teilen als PDF
   oder CSV. Rechnet auf dem Gerät, auch im Local-Only-Modus; Dienstwagen-Angaben
   und Sätze werden ab Lademonitor-Server 0.35.0 synchronisiert
+- Kurzbefehle für Siri, Spotlight und die Kurzbefehle-App: „Ladevorgang in
+  Lademonitor erfassen“ (fragt nur kWh und Preis, speichert sofort – auch bei
+  gesperrtem iPhone – und öffnet danach das Formular zum Prüfen), „Was hat
+  Laden in Lademonitor diesen Monat gekostet?“ (dieselben Zahlen wie das
+  Widget), „Letzter Ladevorgang in Lademonitor“ und „Was ist in Lademonitor
+  fällig?“. Arbeiten mit den Daten auf dem Gerät, ohne Netz, in beiden Modi
 - Auf dem Server gelöschte Ladevorgänge, Fahrzeuge, Anbieter und Ladeorte
   verschwinden beim nächsten Abgleich auch aus der App. Vorher blieben sie als
   „Geisterzeilen" stehen, bis man sie auch hier löschte – die App durfte aus dem

@@ -70,6 +70,12 @@ Public beta access via TestFlight:
   rates or the actual cost, optionally incl. base fees. Share as PDF or CSV.
   Calculated on the device, also in local-only mode; company car details and
   rates sync with Lademonitor-Server 0.35.0 or newer
+- Shortcuts for Siri, Spotlight and the Shortcuts app: "Log a charging session
+  in Lademonitor" (asks only for kWh and price, saves right away – even while
+  the iPhone is locked – then opens the form for review), "What did charging
+  cost this month in Lademonitor" (the same figures as the widget), "Last
+  charging session in Lademonitor" and "What is due in Lademonitor". They work
+  on the data on the device, without network, in both modes
 - Charging sessions, vehicles, providers and charging locations deleted on the
   server now disappear from the app on the next sync. Previously they lingered
   as "ghost rows" until you deleted them here too - the app must not infer a

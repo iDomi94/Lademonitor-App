@@ -14,6 +14,9 @@ final class AppNavigation: ObservableObject {
     @Published var selectedTab: Tab = .dashboard
     /// Pfad des NavigationStack im Reiter Tools.
     @Published var toolsPath: [ToolRoute] = []
+    /// Vorgang, dessen Bearbeiten-Formular die Ladevorgangs-Liste oeffnen
+    /// soll (Kurzbefehl "Ladevorgang erfassen"). Die Liste leert es wieder.
+    @Published var pendingEditSessionID: String?
 
     private init() {}
 
@@ -21,6 +24,12 @@ final class AppNavigation: ObservableObject {
     func openRangeCalculator() {
         toolsPath = [.range]
         selectedTab = .tools
+    }
+
+    /// Wechselt in den Reiter Ladevorgaenge und oeffnet dort das Formular.
+    func openSessionEditor(id: String) {
+        pendingEditSessionID = id
+        selectedTab = .sessions
     }
 }
 

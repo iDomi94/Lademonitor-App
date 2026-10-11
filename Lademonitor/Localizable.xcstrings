@@ -13056,6 +13056,482 @@
           }
         }
       }
+    },
+    "Ladevorgang erfassen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladevorgang erfassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log charging session"
+          }
+        }
+      }
+    },
+    "Erfasst einen Ladevorgang mit kWh und Gesamtpreis und öffnet ihn danach zur Prüfung." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erfasst einen Ladevorgang mit kWh und Gesamtpreis und öffnet ihn danach zur Prüfung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logs a charging session with kWh and total price, then opens it for review."
+          }
+        }
+      }
+    },
+    "Energie (kWh)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energie (kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Energy (kWh)"
+          }
+        }
+      }
+    },
+    "Wie viele kWh?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viele kWh?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many kWh?"
+          }
+        }
+      }
+    },
+    "Was hat es gekostet?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was hat es gekostet?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How much did it cost?"
+          }
+        }
+      }
+    },
+    "Gespeichert: %@ kWh, %@. Bitte im Formular prüfen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeichert: %@ kWh, %@. Bitte im Formular prüfen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved: %@ kWh, %@. Please check it in the form."
+          }
+        }
+      }
+    },
+    "Ladevorgang öffnen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladevorgang öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open charging session"
+          }
+        }
+      }
+    },
+    "Was hat Laden diesen Monat gekostet?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was hat Laden diesen Monat gekostet?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What did charging cost this month?"
+          }
+        }
+      }
+    },
+    "Nennt Kosten, kWh und Anzahl der Ladevorgänge im laufenden Monat." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nennt Kosten, kWh und Anzahl der Ladevorgänge im laufenden Monat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tells you the cost, kWh and number of charging sessions in the current month."
+          }
+        }
+      }
+    },
+    "Im %@ noch kein Ladevorgang." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im %@ noch kein Ladevorgang."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No charging session yet in %@."
+          }
+        }
+      }
+    },
+    "Im %@ %@ für %@ kWh, 1 Ladevorgang." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im %@ %@ für %@ kWh, 1 Ladevorgang."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In %1$@: %2$@ for %3$@ kWh, 1 charging session."
+          }
+        }
+      }
+    },
+    "Im %@ %@ für %@ kWh, %lld Ladevorgänge." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im %@ %@ für %@ kWh, %lld Ladevorgänge."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In %1$@: %2$@ for %3$@ kWh, %4$lld charging sessions."
+          }
+        }
+      }
+    },
+    "Letzter Ladevorgang" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzter Ladevorgang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last charging session"
+          }
+        }
+      }
+    },
+    "Nennt Datum, Ort, kWh, Kosten und Ladestand des letzten Ladevorgangs." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nennt Datum, Ort, kWh, Kosten und Ladestand des letzten Ladevorgangs."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tells you the date, place, kWh, cost and charge level of the last charging session."
+          }
+        }
+      }
+    },
+    "Noch kein Ladevorgang erfasst." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch kein Ladevorgang erfasst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No charging session logged yet."
+          }
+        }
+      }
+    },
+    "Letzter Ladevorgang: %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzter Ladevorgang: %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last charging session: %@."
+          }
+        }
+      }
+    },
+    "Letzter Ladevorgang: %@ – %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzter Ladevorgang: %@ – %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last charging session: %1$@ – %2$@."
+          }
+        }
+      }
+    },
+    "Was ist fällig?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was ist fällig?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is due?"
+          }
+        }
+      }
+    },
+    "Nennt bald fällige und überfällige Erinnerungen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nennt bald fällige und überfällige Erinnerungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tells you reminders that are due soon or overdue."
+          }
+        }
+      }
+    },
+    "Nichts fällig." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts fällig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing due."
+          }
+        }
+      }
+    },
+    "Fällig: %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fällig: %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due: %@."
+          }
+        }
+      }
+    },
+    "fällig am %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fällig am %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "due on %@"
+          }
+        }
+      }
+    },
+    "Öffne zuerst die App und richte sie ein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne zuerst die App und richte sie ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the app and set it up first."
+          }
+        }
+      }
+    },
+    "Melde dich zuerst in der App an." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich zuerst in der App an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in in the app first."
+          }
+        }
+      }
+    },
+    "Lege zuerst in der App ein Fahrzeug an." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lege zuerst in der App ein Fahrzeug an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a vehicle in the app first."
+          }
+        }
+      }
+    },
+    "Die kWh müssen größer als 0 sein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die kWh müssen größer als 0 sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The kWh must be greater than 0."
+          }
+        }
+      }
+    },
+    "Der Preis darf nicht negativ sein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Preis darf nicht negativ sein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The price must not be negative."
+          }
+        }
+      }
+    },
+    "Ladekosten im Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladekosten im Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly charging cost"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

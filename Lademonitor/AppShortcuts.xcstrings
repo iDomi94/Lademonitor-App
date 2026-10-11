@@ -1,0 +1,128 @@
+{
+  "sourceLanguage" : "de",
+  "strings" : {
+    "Ladevorgang in ${applicationName} erfassen" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Log a charging session in ${applicationName}",
+              "Log charging in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Ladung in ${applicationName} erfassen" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Add a charging session in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "${applicationName} Ladevorgang erfassen" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Log charging with ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Was hat Laden in ${applicationName} diesen Monat gekostet" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "What did charging cost this month in ${applicationName}",
+              "How much did charging cost this month in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Ladekosten diesen Monat in ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Charging cost this month in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "${applicationName} Ladekosten" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} charging cost"
+            ]
+          }
+        }
+      }
+    },
+    "Letzter Ladevorgang in ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Last charging session in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "${applicationName} letzter Ladevorgang" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Show my last charge in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Was ist in ${applicationName} fällig" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "What is due in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "${applicationName} Erinnerungen" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} reminders"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

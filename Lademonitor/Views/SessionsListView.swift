@@ -16,6 +16,10 @@ struct SessionsListView: View {
     /// eines veralteten Snapshots.
     @State private var selectedSessionID: ChargingSession.ID?
     @ObservedObject private var sessionFilter = SessionFilter.shared
+    @ObservedObject private var navigation = AppNavigation.shared
+    /// Vom Kurzbefehl "Ladevorgang erfassen" angelegter Vorgang, der direkt im
+    /// Bearbeiten-Formular aufgehen soll.
+    @State private var editingSession: ChargingSession?
 
     /// Auf dem iPhone (compact) ist die Liste ein klassischer NavigationStack, auf
     /// dem iPad eine Master-Detail-Ansicht. Beide Wege teilen sich Liste, Toolbar
@@ -138,6 +142,14 @@ struct SessionsListView: View {
                 Task { await load() }
             }
         }
+        .sheet(item: $editingSession) { session in
+            AddEditSessionView(vehicles: vehicles, providers: providers, locations: locations, session: session) {
+                Task { await load() }
+            }
+        }
+        .onChange(of: navigation.pendingEditSessionID, initial: true) { _, _ in
+            openPendingEditor()
+        }
     }
 
     @ViewBuilder
@@ -203,6 +215,22 @@ struct SessionsListView: View {
             errorMessage = error.localizedDescription
         }
         isLoading = false
+    }
+
+    /// Oeffnet den vom Kurzbefehl gemeldeten Vorgang. Bewusst aus der lokalen
+    /// Kopie und ohne Sync davor, damit das Formular sofort aufgeht - die
+    /// lokale ID findet den Vorgang auch, wenn er inzwischen eine Server-ID hat.
+    private func openPendingEditor() {
+        guard let id = navigation.pendingEditSessionID else { return }
+        navigation.pendingEditSessionID = nil
+        guard AppSettings.shared.isReadyForDataAccess,
+              let session = try? LocalDataStore.shared.fetchSession(id: id) else { return }
+        let store = LocalDataStore.shared
+        if let fetched = try? store.fetchVehicles() { vehicles = fetched }
+        if let fetched = try? store.fetchProviders() { providers = fetched }
+        if let fetched = try? store.fetchLocations() { locations = fetched }
+        showingAddSheet = false
+        editingSession = session
     }
 
     private func delete(at offsets: IndexSet) {
