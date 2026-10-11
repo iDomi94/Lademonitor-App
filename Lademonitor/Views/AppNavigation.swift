@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// Gemeinsamer Navigationszustand der Reiter - damit ein Abschnitt in einem
 /// Reiter (z. B. die Reichweite im Dashboard) direkt in ein Tool springen kann.
