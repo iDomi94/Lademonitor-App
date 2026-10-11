@@ -841,11 +841,74 @@ struct TemperatureStats: Codable {
     /// Vorgaenge mit berechenbarem Verbrauch, aber ohne Temperatur.
     let sessionsWithoutTemp: Int
     let bucketWidthC: Int
+    /// Reale Reichweite je Temperatur (Server ab 0.34.0). `nil` bei einem
+    /// aelteren Server und immer dann, wenn nicht genau EIN Fahrzeug mit
+    /// Akkukapazitaet in die Auswertung faellt.
+    let range: TempRange?
 
     enum CodingKeys: String, CodingKey {
-        case points, buckets, seasons, trend
+        case points, buckets, seasons, trend, range
         case sessionsWithoutTemp = "sessions_without_temp"
         case bucketWidthC = "bucket_width_c"
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        points = try c.decode([TempPoint].self, forKey: .points)
+        buckets = try c.decode([TempBucket].self, forKey: .buckets)
+        seasons = try c.decode([SeasonStat].self, forKey: .seasons)
+        trend = try c.decodeIfPresent(TempTrend.self, forKey: .trend)
+        sessionsWithoutTemp = try c.decode(Int.self, forKey: .sessionsWithoutTemp)
+        bucketWidthC = try c.decode(Int.self, forKey: .bucketWidthC)
+        // Bewusst tolerant: eine unerwartete Form der Reichweite soll nur die
+        // Kachel ausblenden, nicht die ganze Temperaturauswertung.
+        range = try? c.decodeIfPresent(TempRange.self, forKey: .range)
+    }
+}
+
+/// Reale Reichweite von 100 auf 0 % je Aussentemperatur (`range_estimate.py`).
+///
+/// Der Verbrauch ist hier der AB AKKU: ist der Ladeverlust bekannt
+/// (`lossPct`), hat der Server ihn aus den an der Ladesaeule gemessenen
+/// Fahrten herausgerechnet. Der Akku-Index wird bewusst nicht eingerechnet.
+struct TempRange: Codable {
+    let vehicleId: String?
+    /// Nutzbare Kapazitaet laut Fahrzeug.
+    let capacityKwh: Double
+    /// `nil`, wenn zu wenige Vorgaenge mit gemessener Energie vorliegen - die
+    /// Reichweite faellt dann eher zu niedrig aus.
+    let lossPct: Double?
+    let measuredFromC: Double?
+    let measuredToC: Double?
+    /// 5-Grad-Schritte ueber den gemessenen Bereich plus immer 0 und 20 Grad.
+    let rows: [TempRangeRow]
+    /// Ein Wert je ganzem Grad von -20 bis 40 fuer den Reichweitenrechner;
+    /// an den Raendern koennen unplausible Werte fehlen.
+    let curve: [TempCurveVertex]
+
+    enum CodingKeys: String, CodingKey {
+        case rows, curve
+        case vehicleId = "vehicle_id"
+        case capacityKwh = "capacity_kwh"
+        case lossPct = "loss_pct"
+        case measuredFromC = "measured_from_c"
+        case measuredToC = "measured_to_c"
+    }
+}
+
+struct TempRangeRow: Codable, Identifiable {
+    var id: Double { tempC }
+    let tempC: Double
+    let consumptionKwhPer100km: Double
+    let rangeKm: Double
+    /// Ausserhalb der gemessenen Temperaturen - eine Hochrechnung.
+    let extrapolated: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case extrapolated
+        case tempC = "temp_c"
+        case consumptionKwhPer100km = "consumption_kwh_per_100km"
+        case rangeKm = "range_km"
     }
 }
 
