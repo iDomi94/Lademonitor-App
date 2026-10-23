@@ -7,6 +7,16 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.9.0
+
+- „Lädt gerade“: Ein laufender Ladevorgang erscheint ganz oben im Dashboard
+  und als grün markierter Eintrag über der Ladevorgangsliste – mit Beginn,
+  Start-SoC und aktuellem SoC samt Ladebalken, bisher geladenen kWh
+  (gemessen oder geschätzt), AC/DC, km-Stand, Außentemperatur und dem
+  Zeitpunkt des letzten Berichts. Nur im Server-Modus und ab
+  Lademonitor-Server 0.45.0; Quellen sind MyŠkoda, VW-Datenportal, Renault
+  und Home Assistant (ab Lademonitor-HA 0.9.0).
+
 ## 1.8.0
 
 - Neues Tool „Rückblick“: ein Jahr oder ein Monat in Zahlen, umschaltbar oben

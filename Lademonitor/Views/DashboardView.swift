@@ -9,6 +9,8 @@ struct DashboardView: View {
     /// Nur bald faellige und ueberfaellige Erinnerungen, aller Fahrzeuge und
     /// bewusst ohne Zeitraumfilter.
     @State private var dueReminders: [ReminderItem] = []
+    /// Laufende Ladevorgaenge ("Lädt gerade") - nur im Server-Modus.
+    @State private var activeCharging: [ActiveCharging] = []
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showingFilterSheet = false
@@ -54,6 +56,13 @@ struct DashboardView: View {
                     }
                     .padding(.top, 60)
                 } else if let stats {
+                    // Laufender Ladevorgang ganz oben, folgt keinem Filter.
+                    ForEach(activeCharging) { item in
+                        ActiveChargingCard(item: item)
+                            .padding(.horizontal)
+                            .padding(.top)
+                    }
+
                     // Faellige Erinnerungen ganz oben - nur, wenn es welche gibt.
                     if !dueReminders.isEmpty {
                         DueRemindersCard(items: dueReminders)
@@ -189,7 +198,12 @@ struct DashboardView: View {
             .task(id: sessionFilter.dateRange) { await load() }
             // Zurueck aus der Erinnerungsliste: dort Erledigtes verschwindet
             // sofort aus der Karte, ohne erneuten Sync.
-            .onAppear { if stats != nil { loadDueReminders() } }
+            .onAppear {
+                if stats != nil {
+                    loadDueReminders()
+                    Task { activeCharging = await ActiveChargingLoader.load() }
+                }
+            }
             .refreshable { await load() }
             .sheet(isPresented: $showingFilterSheet) {
                 FilterSheetView()
@@ -210,6 +224,7 @@ struct DashboardView: View {
             // das Homescreen-Widget nachzuziehen.
             WidgetSnapshotWriter.refresh()
             loadDueReminders()
+            activeCharging = await ActiveChargingLoader.load()
             await loadTemperature()
         } catch {
             // Fehlgeschlagener Refresh soll bestehende Daten nicht verwerfen.
