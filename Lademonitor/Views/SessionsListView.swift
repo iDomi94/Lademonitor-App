@@ -2,6 +2,9 @@ import SwiftUI
 
 struct SessionsListView: View {
     @State private var sessions: [ChargingSession] = []
+    /// Laufende Ladevorgaenge ("Lädt gerade") - nur im Server-Modus, kein
+    /// Datensatz, deshalb ausserhalb von `sessions`.
+    @State private var activeCharging: [ActiveCharging] = []
     @State private var vehicles: [Vehicle] = []
     @State private var providers: [Provider] = []
     @State private var locations: [ChargingLocation] = []
@@ -92,7 +95,7 @@ struct SessionsListView: View {
                 } actions: {
                     Button("Erneut versuchen") { Task { await load() } }
                 }
-            } else if sessions.isEmpty && !isLoading {
+            } else if sessions.isEmpty && activeCharging.isEmpty && !isLoading {
                 ContentUnavailableView("Noch keine Ladevorgänge", systemImage: "bolt.slash")
             } else if usesListSelection {
                 List(selection: $selectedSessionID) {
@@ -154,6 +157,12 @@ struct SessionsListView: View {
 
     @ViewBuilder
     private func sessionRows(tagged: Bool) -> some View {
+        // Laufender Vorgang ueber der Liste, nicht antipp- oder loeschbar.
+        ForEach(activeCharging) { item in
+            ActiveChargingCard(item: item)
+                .listRowSeparator(.hidden)
+                .selectionDisabled()
+        }
         ForEach(sessions) { session in
             if tagged {
                 row(for: session)
@@ -211,6 +220,7 @@ struct SessionsListView: View {
             vehicles = fetchedVehicles
             providers = fetchedProviders
             locations = fetchedLocations
+            activeCharging = await ActiveChargingLoader.load()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -398,7 +408,7 @@ private struct SessionRow: View {
 }
 
 /// Kleines ovales Badge mit "AC" bzw. "DC".
-private struct ChargingTypeBadge: View {
+struct ChargingTypeBadge: View {
     let type: ChargingType
 
     private var color: Color { type == .dc ? .orange : .blue }

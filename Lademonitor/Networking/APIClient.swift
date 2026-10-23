@@ -577,4 +577,10 @@ final class APIClient {
     func fetchBatteryStats() async throws -> BatteryStats {
         try await send(try makeRequest(path: "/api/stats/battery"))
     }
+
+    /// Laufende Ladevorgaenge (Server ab 0.45.0). Nur im Server-Modus - siehe
+    /// `ActiveCharging`.
+    func fetchActiveSessions() async throws -> [ActiveCharging] {
+        try await send(try makeRequest(path: "/api/sessions/active"))
+    }
 }
