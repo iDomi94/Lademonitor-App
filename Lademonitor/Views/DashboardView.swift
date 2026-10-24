@@ -15,7 +15,17 @@ struct DashboardView: View {
     @State private var isLoading = false
     @State private var showingFilterSheet = false
 
-    private let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    /// Zugeklappt (compact) zwei Kennzahlen je Zeile und die Abschnitte
+    /// untereinander, aufgeklappt (iPhone Duo innen, iPad) vier Kennzahlen und
+    /// die Abschnitte in zwei Spalten - sonst stuende jedes Diagramm 7,6 Zoll
+    /// breit gezogen da.
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isWide: Bool { horizontalSizeClass == .regular }
+
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible()), count: isWide ? 4 : 2)
+    }
 
     private static let kmFormatter: NumberFormatter = {
         let f = NumberFormatter()
@@ -86,101 +96,103 @@ struct DashboardView: View {
                     }
                     .padding()
 
-                    // AC/DC-Balken
-                    if let acKwh = stats.acKwh, let dcKwh = stats.dcKwh, acKwh + dcKwh > 0 {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("AC / DC-Aufteilung")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            AcDcBar(acKwh: acKwh, dcKwh: dcKwh)
-                                .padding(.horizontal)
-                        }
-                        .padding(.bottom, 24)
-                    }
-
-                    // Zuhause/Arbeit/Unterwegs - nur, wenn mindestens ein
-                    // Vorgang Zuhause oder Arbeit ist (byPlace sonst leer).
-                    if let places = stats.byPlace, !places.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Zuhause, Arbeit, unterwegs")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            PlaceSplitCard(places: places)
-                                .padding(.horizontal)
-                        }
-                        .padding(.bottom, 24)
-                    }
-
-                    // Gesamtkosten inkl. sonstiger Kosten und Wertverlust/
-                    // Leasing - nur, wenn es zu einem Fahrzeug Kosten oder
-                    // eine Kauf-/Leasingangabe gibt. Die Kennzahlen oben
-                    // bleiben bewusst reine Ladekosten.
-                    if let costs = stats.vehicleCosts {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Gesamtkosten")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            TotalCostCard(summary: costs)
-                                .padding(.horizontal)
-                        }
-                        .padding(.bottom, 24)
-                    }
-
-                    // Anbieter-Kuchendiagramme
-                    if !stats.byProvider.isEmpty {
-                        ProviderPieChartsSection(providers: stats.byProvider)
+                    SectionLayout(twoColumns: isWide) {
+                        // AC/DC-Balken
+                        if let acKwh = stats.acKwh, let dcKwh = stats.dcKwh, acKwh + dcKwh > 0 {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("AC / DC-Aufteilung")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                AcDcBar(acKwh: acKwh, dcKwh: dcKwh)
+                                    .padding(.horizontal)
+                            }
                             .padding(.bottom, 24)
-                    }
-
-                    // Ø Verbrauch/100km pro Monat (vertikal, chronologisch)
-                    let points = consumptionPoints(stats.monthly)
-                    if !points.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Ø Verbrauch/100km")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            MonthlyConsumptionChart(points: points)
-                                .padding(.horizontal)
                         }
-                        .padding(.bottom, 24)
-                    }
 
-                    // Kosten & kWh pro Monat (horizontal)
-                    if !stats.monthly.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Kosten pro Monat")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            MonthlyBarChart(
-                                data: stats.monthly.map { ($0.displayMonth, $0.totalCost) },
-                                color: .blue,
-                                unit: "€"
-                            )
-                            .padding(.horizontal)
-                        }
-                        .padding(.bottom, 24)
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("kWh pro Monat")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            MonthlyBarChart(
-                                data: stats.monthly.map { ($0.displayMonth, $0.totalKwh) },
-                                color: .green,
-                                unit: " kWh"
-                            )
-                            .padding(.horizontal)
-                        }
-                        .padding(.bottom, 24)
-                    }
-
-                    // Verbrauch nach Aussentemperatur. Bewusst NUR im
-                    // Server-Modus: die Auswertung kommt fertig aus
-                    // /api/stats/temperature, damit sie nicht ein drittes Mal
-                    // nachgebaut werden muss (siehe TemperatureStats).
-                    if let temperature {
-                        TemperatureSection(stats: temperature)
+                        // Zuhause/Arbeit/Unterwegs - nur, wenn mindestens ein
+                        // Vorgang Zuhause oder Arbeit ist (byPlace sonst leer).
+                        if let places = stats.byPlace, !places.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Zuhause, Arbeit, unterwegs")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                PlaceSplitCard(places: places)
+                                    .padding(.horizontal)
+                            }
                             .padding(.bottom, 24)
+                        }
+
+                        // Gesamtkosten inkl. sonstiger Kosten und Wertverlust/
+                        // Leasing - nur, wenn es zu einem Fahrzeug Kosten oder
+                        // eine Kauf-/Leasingangabe gibt. Die Kennzahlen oben
+                        // bleiben bewusst reine Ladekosten.
+                        if let costs = stats.vehicleCosts {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Gesamtkosten")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                TotalCostCard(summary: costs)
+                                    .padding(.horizontal)
+                            }
+                            .padding(.bottom, 24)
+                        }
+
+                        // Anbieter-Kuchendiagramme
+                        if !stats.byProvider.isEmpty {
+                            ProviderPieChartsSection(providers: stats.byProvider)
+                                .padding(.bottom, 24)
+                        }
+
+                        // Ø Verbrauch/100km pro Monat (vertikal, chronologisch)
+                        let points = consumptionPoints(stats.monthly)
+                        if !points.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Ø Verbrauch/100km")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                MonthlyConsumptionChart(points: points)
+                                    .padding(.horizontal)
+                            }
+                            .padding(.bottom, 24)
+                        }
+
+                        // Kosten & kWh pro Monat (horizontal)
+                        if !stats.monthly.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Kosten pro Monat")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                MonthlyBarChart(
+                                    data: stats.monthly.map { ($0.displayMonth, $0.totalCost) },
+                                    color: .blue,
+                                    unit: "€"
+                                )
+                                .padding(.horizontal)
+                            }
+                            .padding(.bottom, 24)
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("kWh pro Monat")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                MonthlyBarChart(
+                                    data: stats.monthly.map { ($0.displayMonth, $0.totalKwh) },
+                                    color: .green,
+                                    unit: " kWh"
+                                )
+                                .padding(.horizontal)
+                            }
+                            .padding(.bottom, 24)
+                        }
+
+                        // Verbrauch nach Aussentemperatur. Bewusst NUR im
+                        // Server-Modus: die Auswertung kommt fertig aus
+                        // /api/stats/temperature, damit sie nicht ein drittes Mal
+                        // nachgebaut werden muss (siehe TemperatureStats).
+                        if let temperature {
+                            TemperatureSection(stats: temperature)
+                                .padding(.bottom, 24)
+                        }
                     }
                 } else if isLoading {
                     ProgressView("Lade Statistiken…")
@@ -268,6 +280,29 @@ struct DashboardView: View {
 }
 
 // MARK: - Stat Card
+
+/// Die Abschnitte unter den Kennzahlen: schmal untereinander wie bisher,
+/// breit in zwei oben ausgerichteten Spalten.
+private struct SectionLayout<Content: View>: View {
+    let twoColumns: Bool
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        if twoColumns {
+            LazyVGrid(
+                columns: [GridItem(.flexible(), alignment: .topLeading), GridItem(.flexible(), alignment: .topLeading)],
+                alignment: .leading,
+                spacing: 0
+            ) {
+                content
+            }
+        } else {
+            VStack {
+                content
+            }
+        }
+    }
+}
 
 private struct StatCard: View {
     let label: String

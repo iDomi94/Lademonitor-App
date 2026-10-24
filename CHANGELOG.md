@@ -7,6 +7,15 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.10.0
+
+- iPhone Duo: aufgeklappt nutzt die App den großen Bildschirm. Das Dashboard
+  zeigt vier Kennzahlen je Zeile und die Diagramme in zwei Spalten, Tools und
+  Einstellungen haben eine Seitenleiste mit der gewählten Seite daneben (wie
+  die Ladevorgänge schon bisher). Zugeklappt und auf anderen iPhones bleibt
+  alles wie gewohnt; beim Auf- und Zuklappen bleibt das geöffnete Tool bzw.
+  der Einstellungsbereich erhalten. Gilt genauso auf dem iPad.
+
 ## 1.9.0
 
 - „Lädt gerade“: Ein laufender Ladevorgang erscheint ganz oben im Dashboard
