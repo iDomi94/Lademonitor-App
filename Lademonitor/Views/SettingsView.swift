@@ -13,148 +13,182 @@ struct SettingsView: View {
         return f
     }()
 
+    /// Aufgeklappt (iPhone Duo innen, iPad) wie die iOS-Einstellungen:
+    /// Liste links, Unterseite rechts. Zugeklappt ein NavigationStack wie
+    /// bisher. Die Auswahl liegt hier, damit sie das Auf- und Zuklappen
+    /// uebersteht.
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var selectedRoute: SettingsRoute?
+
     var body: some View {
-        NavigationStack {
-            List {
-                Section("Verwaltung") {
-                    NavigationLink {
-                        LocationsSettingsView()
-                    } label: {
-                        Label("Ladeorte", systemImage: "mappin.and.ellipse")
-                    }
-                    NavigationLink {
-                        VehiclesSettingsView()
-                    } label: {
-                        Label("Fahrzeuge", systemImage: "car.fill")
-                    }
-                    NavigationLink {
-                        ProvidersSettingsView()
-                    } label: {
-                        Label("Anbieter", systemImage: "bolt.fill")
-                    }
-                    NavigationLink {
-                        FeesSettingsView()
-                    } label: {
-                        Label("Grundgebühren", systemImage: "creditcard")
-                    }
-                    // Kosten und Erinnerungen hingen frueher in der
-                    // Fahrzeug-Detailansicht - dort waren sie zu versteckt.
-                    NavigationLink {
-                        VehicleScopedView(title: "Kosten") { VehicleCostsView(vehicle: $0) }
-                    } label: {
-                        Label("Kosten", systemImage: "eurosign.circle")
-                    }
-                    NavigationLink {
-                        VehicleScopedView(title: "Erinnerungen") { RemindersView(vehicle: $0) }
-                    } label: {
-                        Label("Erinnerungen", systemImage: "bell")
-                    }
-                    // Fuer den Rueckblick und das Verbrenner-Tool, in beiden Modi.
-                    NavigationLink {
-                        ComparisonVehicleSettingsView()
-                    } label: {
-                        Label("Vergleichsfahrzeug", systemImage: "fuelpump")
-                    }
-                    // Reifen gibt es bewusst nur im Server-Modus: die Zuordnung
-                    // der Fahrten und der temperaturbereinigte Vergleich liegen
-                    // komplett auf dem Server (siehe TireModels.swift).
-                    if settings.appMode == .server {
-                        NavigationLink {
-                            TiresSettingsView()
-                        } label: {
-                            Label("Reifen", systemImage: "circle.circle")
+        Group {
+            if horizontalSizeClass == .compact {
+                NavigationStack {
+                    settingsList
+                        .navigationDestination(for: SettingsRoute.self) { route in
+                            destination(route)
                         }
-                    }
                 }
-
-                Section("Darstellung") {
-                    NavigationLink {
-                        ChargeBarSettingsView()
-                    } label: {
-                        Label("Ladebalken", systemImage: "battery.75percent")
-                    }
-                }
-
-                Section {
-                    Toggle(isOn: $reminderNotifications) {
-                        Label("Mitteilungen für Erinnerungen", systemImage: "bell.badge")
-                    }
-                    .onChange(of: reminderNotifications) { _, enabled in
-                        Task {
-                            if enabled { await ReminderNotificationScheduler.requestAuthorizationIfNeeded() }
-                            await ReminderNotificationScheduler.rescheduleNow()
+            } else {
+                NavigationSplitView {
+                    settingsList
+                } detail: {
+                    if let selectedRoute {
+                        NavigationStack {
+                            destination(selectedRoute)
                         }
-                    }
-                } header: {
-                    Text("Mitteilungen")
-                } footer: {
-                    Text("Zu Beginn des Vorlaufs und am Fälligkeitstag um 9 Uhr, auch ohne Server. Wurden Mitteilungen abgelehnt, lassen sie sich in den iOS-Einstellungen wieder erlauben.")
-                }
-
-                Section("Server") {
-                    NavigationLink {
-                        ServerSettingsView()
-                    } label: {
-                        Label("Server & Verbindung", systemImage: "network")
+                        .id(selectedRoute)
+                    } else {
+                        ContentUnavailableView("Bereich auswählen", systemImage: "gearshape")
                     }
                 }
+                .navigationSplitViewStyle(.balanced)
+            }
+        }
+        .alert("Alle lokalen Daten löschen?", isPresented: $showingResetConfirmation) {
+            Button("Löschen", role: .destructive) { resetAllData() }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Das kann nicht rückgängig gemacht werden.")
+        }
+    }
 
+    /// Nur aufgeklappt eine Auswahl - im NavigationStack schieben die
+    /// Wert-Links die Unterseite ueber `navigationDestination`.
+    private var listSelection: Binding<SettingsRoute?>? {
+        horizontalSizeClass == .compact ? nil : $selectedRoute
+    }
+
+    private var settingsList: some View {
+        List(selection: listSelection) {
+            Section("Verwaltung") {
+                NavigationLink(value: SettingsRoute.locations) {
+                    Label("Ladeorte", systemImage: "mappin.and.ellipse")
+                }
+                NavigationLink(value: SettingsRoute.vehicles) {
+                    Label("Fahrzeuge", systemImage: "car.fill")
+                }
+                NavigationLink(value: SettingsRoute.providers) {
+                    Label("Anbieter", systemImage: "bolt.fill")
+                }
+                NavigationLink(value: SettingsRoute.fees) {
+                    Label("Grundgebühren", systemImage: "creditcard")
+                }
+                // Kosten und Erinnerungen hingen frueher in der
+                // Fahrzeug-Detailansicht - dort waren sie zu versteckt.
+                NavigationLink(value: SettingsRoute.costs) {
+                    Label("Kosten", systemImage: "eurosign.circle")
+                }
+                NavigationLink(value: SettingsRoute.reminders) {
+                    Label("Erinnerungen", systemImage: "bell")
+                }
+                // Fuer den Rueckblick und das Verbrenner-Tool, in beiden Modi.
+                NavigationLink(value: SettingsRoute.comparisonVehicle) {
+                    Label("Vergleichsfahrzeug", systemImage: "fuelpump")
+                }
+                // Reifen gibt es bewusst nur im Server-Modus: die Zuordnung
+                // der Fahrten und der temperaturbereinigte Vergleich liegen
+                // komplett auf dem Server (siehe TireModels.swift).
                 if settings.appMode == .server {
-                    Section {
-                        if let lastSync = syncService.lastSyncDate {
-                            LabeledContent("Zuletzt synchronisiert", value: Self.relativeFormatter.localizedString(for: lastSync, relativeTo: Date()))
-                        } else {
-                            Text("Noch nicht synchronisiert")
-                                .foregroundStyle(.secondary)
-                        }
-                        if let error = syncService.lastSyncError {
-                            Text(error)
-                                .font(.caption)
-                                .foregroundStyle(.orange)
-                        }
-                        Button {
-                            Task { await SyncService.shared.syncNow() }
-                        } label: {
-                            HStack {
-                                Text("Jetzt synchronisieren")
-                                if syncService.isSyncing {
-                                    Spacer()
-                                    ProgressView()
-                                }
+                    NavigationLink(value: SettingsRoute.tires) {
+                        Label("Reifen", systemImage: "circle.circle")
+                    }
+                }
+            }
+
+            Section("Darstellung") {
+                NavigationLink(value: SettingsRoute.chargeBar) {
+                    Label("Ladebalken", systemImage: "battery.75percent")
+                }
+            }
+
+            Section {
+                Toggle(isOn: $reminderNotifications) {
+                    Label("Mitteilungen für Erinnerungen", systemImage: "bell.badge")
+                }
+                .onChange(of: reminderNotifications) { _, enabled in
+                    Task {
+                        if enabled { await ReminderNotificationScheduler.requestAuthorizationIfNeeded() }
+                        await ReminderNotificationScheduler.rescheduleNow()
+                    }
+                }
+            } header: {
+                Text("Mitteilungen")
+            } footer: {
+                Text("Zu Beginn des Vorlaufs und am Fälligkeitstag um 9 Uhr, auch ohne Server. Wurden Mitteilungen abgelehnt, lassen sie sich in den iOS-Einstellungen wieder erlauben.")
+            }
+
+            Section("Server") {
+                NavigationLink(value: SettingsRoute.server) {
+                    Label("Server & Verbindung", systemImage: "network")
+                }
+            }
+
+            if settings.appMode == .server {
+                Section {
+                    if let lastSync = syncService.lastSyncDate {
+                        LabeledContent("Zuletzt synchronisiert", value: Self.relativeFormatter.localizedString(for: lastSync, relativeTo: Date()))
+                    } else {
+                        Text("Noch nicht synchronisiert")
+                            .foregroundStyle(.secondary)
+                    }
+                    if let error = syncService.lastSyncError {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                    Button {
+                        Task { await SyncService.shared.syncNow() }
+                    } label: {
+                        HStack {
+                            Text("Jetzt synchronisieren")
+                            if syncService.isSyncing {
+                                Spacer()
+                                ProgressView()
                             }
                         }
-                        .disabled(syncService.isSyncing)
-                    } header: {
-                        Text("Synchronisierung")
-                    } footer: {
-                        Text("Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an.")
                     }
-                }
-
-                Section {
-                    Button(role: .destructive) {
-                        showingResetConfirmation = true
-                    } label: {
-                        Label("Alle lokalen Daten zurücksetzen", systemImage: "trash")
-                    }
-                    if let resetErrorMessage {
-                        Text(resetErrorMessage)
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
+                    .disabled(syncService.isSyncing)
+                } header: {
+                    Text("Synchronisierung")
                 } footer: {
-                    Text(settings.appMode == .server
-                        ? "Löscht Fahrzeuge, Anbieter, Ladeorte und Ladevorgänge auf diesem Gerät. Bereits synchronisierte Daten bleiben auf dem Server und werden danach automatisch zurückgeholt – noch nicht hochgeladene Änderungen gehen verloren."
-                        : "Löscht Fahrzeuge, Anbieter, Ladeorte und Ladevorgänge unwiderruflich von diesem Gerät. Es gibt keine weitere Kopie.")
+                    Text("Änderungen werden automatisch hochgeladen, auch nach kurzzeitigem Verbindungsverlust. \"Jetzt synchronisieren\" stößt das manuell an.")
                 }
             }
-            .navigationTitle("Einstellungen")
-            .alert("Alle lokalen Daten löschen?", isPresented: $showingResetConfirmation) {
-                Button("Löschen", role: .destructive) { resetAllData() }
-                Button("Abbrechen", role: .cancel) {}
-            } message: {
-                Text("Das kann nicht rückgängig gemacht werden.")
+
+            Section {
+                Button(role: .destructive) {
+                    showingResetConfirmation = true
+                } label: {
+                    Label("Alle lokalen Daten zurücksetzen", systemImage: "trash")
+                }
+                if let resetErrorMessage {
+                    Text(resetErrorMessage)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            } footer: {
+                Text(settings.appMode == .server
+                    ? "Löscht Fahrzeuge, Anbieter, Ladeorte und Ladevorgänge auf diesem Gerät. Bereits synchronisierte Daten bleiben auf dem Server und werden danach automatisch zurückgeholt – noch nicht hochgeladene Änderungen gehen verloren."
+                    : "Löscht Fahrzeuge, Anbieter, Ladeorte und Ladevorgänge unwiderruflich von diesem Gerät. Es gibt keine weitere Kopie.")
             }
+        }
+        .navigationTitle("Einstellungen")
+    }
+
+    @ViewBuilder
+    private func destination(_ route: SettingsRoute) -> some View {
+        switch route {
+        case .locations: LocationsSettingsView()
+        case .vehicles: VehiclesSettingsView()
+        case .providers: ProvidersSettingsView()
+        case .fees: FeesSettingsView()
+        case .costs: VehicleScopedView(title: "Kosten") { VehicleCostsView(vehicle: $0) }
+        case .reminders: VehicleScopedView(title: "Erinnerungen") { RemindersView(vehicle: $0) }
+        case .comparisonVehicle: ComparisonVehicleSettingsView()
+        case .tires: TiresSettingsView()
+        case .chargeBar: ChargeBarSettingsView()
+        case .server: ServerSettingsView()
         }
     }
 
@@ -169,6 +203,12 @@ struct SettingsView: View {
             resetErrorMessage = error.localizedDescription
         }
     }
+}
+
+/// Unterseiten der Einstellungen - als Werte, damit dieselbe Liste im
+/// NavigationStack (zugeklappt) und als Seitenleiste (aufgeklappt) dient.
+enum SettingsRoute: Hashable {
+    case locations, vehicles, providers, fees, costs, reminders, comparisonVehicle, tires, chargeBar, server
 }
 
 /// Unterseite: Modus, Konto (nur Server-Modus) und Server-Verbindung in einer Ansicht.
