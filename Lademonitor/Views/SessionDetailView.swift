@@ -23,6 +23,11 @@ struct SessionDetailView: View {
     @State private var showingEdit = false
     @State private var isConfirming = false
     @State private var errorMessage: String?
+    /// Aufteilung des Verbrauchs aus `GET /api/stats/drive-breakdown`, nur im
+    /// Server-Modus. `nil` auch bei einem aelteren Server oder solange es zu
+    /// wenige Fahrten mit Tempo gibt.
+    @State private var breakdown: DriveBreakdownPoint?
+    @State private var breakdownNormal: DriveBreakdownModel?
 
     private var vehicleName: String? { vehicles.first(where: { $0.id == session.vehicleId })?.name }
     private var providerName: String? { providers.first(where: { $0.id == session.providerId })?.name }
@@ -98,6 +103,9 @@ struct SessionDetailView: View {
                 if let consumption = session.consumptionKwhPer100km {
                     LabeledContent("Verbrauch", value: String(format: "%.1f kWh/100km", consumption))
                 }
+                if let speed = session.avgSpeedKmh {
+                    LabeledContent("Ø seit Laden", value: String(format: "%.0f km/h", speed))
+                }
                 if let temp = session.outsideTempC {
                     // Herkunft als zweite Zeile: ein Wert vom Wetterdienst ist
                     // eine Rekonstruktion am Ladeort, kein Messwert aus dem
@@ -141,6 +149,19 @@ struct SessionDetailView: View {
                 }
             }
 
+            if let breakdown, let breakdownNormal {
+                Section {
+                    LabeledContent("Dein Normal", value: String(format: "%.1f kWh/100km", breakdown.base))
+                    LabeledContent("Tempo", value: Self.signed(breakdown.speed))
+                    LabeledContent("Temperatur", value: Self.signed(breakdown.temperature))
+                    LabeledContent("Rest", value: Self.signed(breakdown.rest))
+                } header: {
+                    Text("Mehrverbrauch")
+                } footer: {
+                    Text("Gegen dein Normal bei Ø \(Int(breakdownNormal.referenceSpeedKmh.rounded())) km/h ohne Heizen und Kühlen, aus \(breakdownNormal.driveCount) Fahrten. Der Rest umfasst Wind, Nässe, Steigung und Fahrweise.")
+                }
+            }
+
             Section("Quelle") {
                 LabeledContent("Erfasst als", value: session.source.displayName)
                 LabeledContent("Status", value: session.needsReview ? String(localized: "Zu prüfen") : String(localized: "Geprüft"))
@@ -150,6 +171,7 @@ struct SessionDetailView: View {
                 Section { Text(errorMessage).foregroundStyle(.red) }
             }
         }
+        .task(id: session.id) { await loadBreakdown() }
         .navigationTitle("Ladevorgang")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -189,6 +211,18 @@ struct SessionDetailView: View {
                 onClose()
             }
         }
+    }
+
+    private static func signed(_ value: Double) -> String {
+        String(format: "%@%.1f kWh/100km", value >= 0 ? "+" : "−", abs(value))
+    }
+
+    private func loadBreakdown() async {
+        guard AppSettings.shared.appMode == .server, session.avgSpeedKmh != nil else { return }
+        guard let stats = try? await APIClient.shared.fetchDriveBreakdown(vehicleId: session.vehicleId),
+              let point = stats.drives.first(where: { $0.sessionId == session.id }) else { return }
+        breakdown = point
+        breakdownNormal = stats.model
     }
 
     /// Setzt needs_review direkt zurueck, ohne den Bearbeiten-Dialog zu oeffnen.

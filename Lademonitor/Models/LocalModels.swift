@@ -214,6 +214,9 @@ final class LocalChargingSession {
     /// Anbieter. Gespeichert wird wie auf dem Server nur eine echte
     /// Abweichung (siehe `EnergyMeter.storedOverride`).
     var energyMeter: String?
+    /// Ø km/h seit dem letzten Laden (Bordcomputer). Optional - leichte
+    /// Migration, Bestandszeilen bekommen nil.
+    var avgSpeedKmh: Double?
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -245,6 +248,7 @@ final class LocalChargingSession {
         needsReview: Bool = false,
         externalSessionId: String? = nil,
         energyMeter: String? = nil,
+        avgSpeedKmh: Double? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -275,6 +279,7 @@ final class LocalChargingSession {
         self.needsReview = needsReview
         self.externalSessionId = externalSessionId
         self.energyMeter = energyMeter
+        self.avgSpeedKmh = avgSpeedKmh
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -419,7 +424,8 @@ extension LocalChargingSession {
             source: SessionSource(rawValue: source) ?? .manual,
             needsReview: needsReview,
             externalSessionId: externalSessionId,
-            energyMeter: energyMeter
+            energyMeter: energyMeter,
+            avgSpeedKmh: avgSpeedKmh
         )
     }
 }

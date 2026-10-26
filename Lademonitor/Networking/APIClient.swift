@@ -572,6 +572,12 @@ final class APIClient {
         return try await send(try makeRequest(path: path))
     }
 
+    /// Mehrverbrauch je Fahrt nach Tempo und Temperatur (Server ab 0.47.0).
+    /// Nur im Server-Modus - siehe `DriveBreakdownStats`.
+    func fetchDriveBreakdown(vehicleId: String) async throws -> DriveBreakdownStats {
+        try await send(try makeRequest(path: "/api/stats/drive-breakdown?vehicle_id=\(vehicleId)"))
+    }
+
     /// Akku-Index und Ladeverluste je Fahrzeug (Server ab 0.28.0). Nur im
     /// Server-Modus - siehe `BatteryStats`.
     func fetchBatteryStats() async throws -> BatteryStats {

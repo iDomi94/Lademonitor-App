@@ -732,7 +732,8 @@ final class LocalDataStore {
             notes: payload.notes,
             source: "manual",
             needsReview: payload.needsReview ?? false,
-            energyMeter: try storedEnergyMeter(payload.energyMeter, providerId: payload.providerId)
+            energyMeter: try storedEnergyMeter(payload.energyMeter, providerId: payload.providerId),
+            avgSpeedKmh: payload.avgSpeedKmh
         )
         context.insert(session)
         try updateProviderPriceMemory(providerId: payload.providerId, chargingType: payload.chargingType, pricePerKwh: payload.pricePerKwh)
@@ -774,6 +775,7 @@ final class LocalDataStore {
             }
             session.outsideTempC = outsideTempC
         }
+        if let avgSpeedKmh = payload.avgSpeedKmh { session.avgSpeedKmh = avgSpeedKmh }
         if let latitude = payload.latitude { session.latitude = latitude }
         if let longitude = payload.longitude { session.longitude = longitude }
         if let geocodedPlace = payload.geocodedPlace { session.geocodedPlace = geocodedPlace }
