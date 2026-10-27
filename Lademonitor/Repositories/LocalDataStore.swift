@@ -742,6 +742,7 @@ final class LocalDataStore {
 
     func updateSession(id: String, _ payload: ChargingSessionPayload) throws -> ChargingSession {
         guard let session = try findSession(id: id) else { throw LocalStoreError.notFound }
+        let previousTotal = session.priceTotal
         if let providerId = payload.providerId { session.providerId = providerId }
         if let locationId = payload.locationId { session.locationId = locationId }
         if let startTime = payload.startTime { session.startTime = startTime }
@@ -783,6 +784,19 @@ final class LocalDataStore {
             // Formular zugleich den Anbieter wechselt, vergleicht mit dessen
             // Voreinstellung.
             session.energyMeter = try storedEnergyMeter(energyMeter, providerId: session.providerId)
+        }
+        // Preise wie update_session() im Backend: ein GEAENDERTER Gesamtpreis
+        // gewinnt, der Preis je kWh wird daraus gerechnet. Das Formular schickt
+        // ein geleertes Feld als nil (= "nicht aendern"), der alte kWh-Preis
+        // bliebe sonst stehen und wuerde den Gesamtpreis beim Sync auf dem
+        // Server wieder zurueckrechnen.
+        let totalChanged = payload.priceTotal.map { new in previousTotal.map { abs(new - $0) > 1e-6 } ?? true } ?? false
+        if let kwh = session.energyKwh, kwh > 0 {
+            if let total = session.priceTotal, total > 0, totalChanged || (session.pricePerKwh ?? 0) == 0 {
+                session.pricePerKwh = (total / kwh * 10_000).rounded() / 10_000
+            } else if let perKwh = session.pricePerKwh, perKwh > 0 {
+                session.priceTotal = (perKwh * kwh * 100).rounded() / 100
+            }
         }
         session.updatedAt = Date()
         session.isDirty = true
