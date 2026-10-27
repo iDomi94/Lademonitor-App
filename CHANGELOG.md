@@ -7,6 +7,16 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.12.0
+
+- Dashboard: neuer Abschnitt „Ø Preis je Anbieter“ unter den
+  Kuchendiagrammen. Jeder Anbieter einzeln, der günstigste zuerst, mit
+  Durchschnittspreis je kWh inklusive Grundgebühren, Anzahl der Ladevorgänge,
+  kWh und Kosten. Lädt man bei einem Anbieter AC und DC, stehen beide Preise
+  getrennt darunter. Ladevorgänge ohne Preis zählen wie im Ø Preis/kWh oben
+  mit 0 € und werden je Anbieter genannt. Folgt Zeitraum- und
+  Fahrzeugfilter, funktioniert auch im Local-Only-Modus.
+
 ## 1.11.0
 
 - Neues Feld „Ø seit Laden“ beim Ladevorgang: die Durchschnittsgeschwindigkeit

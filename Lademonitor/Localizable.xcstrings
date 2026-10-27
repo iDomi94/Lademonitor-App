@@ -1,6 +1,74 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
+    "Ø Preis je Anbieter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø Preis je Anbieter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avg. price per provider"
+          }
+        }
+      }
+    },
+    "1 Ladevorgang ohne Preis" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 Ladevorgang ohne Preis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 session without price"
+          }
+        }
+      }
+    },
+    "%lld Ladevorgänge ohne Preis" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Ladevorgänge ohne Preis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sessions without price"
+          }
+        }
+      }
+    },
+    "Inklusive Grundgebühren. Ladevorgänge ohne Preis zählen mit 0 €." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inklusive Grundgebühren. Ladevorgänge ohne Preis zählen mit 0 €."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Including base fees. Sessions without a price count as €0."
+          }
+        }
+      }
+    },
     "Lädt gerade" : {
       "extractionState" : "manual",
       "localizations" : {

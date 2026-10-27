@@ -61,11 +61,21 @@ enum LocalStatsCalculator {
         var providerKwh: [String: Double] = [:]
         var providerCost: [String: Double] = [:]
         var providerFees: [String: Double] = [:]
+        var providerCount: [String: Int] = [:]
+        var providerUnpriced: [String: Int] = [:]
+        // Je Anbieter und Lade-Art: (kWh, Kosten) fuer den Ø Preis je Lade-Art.
+        var providerTyped: [String: [ChargingType: (kwh: Double, cost: Double)]] = [:]
         for session in sorted {
             let name = providers.first { $0.id == session.providerId }?.name ?? "Ohne Anbieter"
             providerKwh[name, default: 0] += session.energyKwh ?? 0
             providerCost[name, default: 0] += cost(session)
             providerFees[name, default: 0] += session.feeShare ?? 0
+            providerCount[name, default: 0] += 1
+            if session.priceTotal == nil { providerUnpriced[name, default: 0] += 1 }
+            if let type = session.chargingType {
+                let prev = providerTyped[name]?[type] ?? (0, 0)
+                providerTyped[name, default: [:]][type] = (prev.kwh + (session.energyKwh ?? 0), prev.cost + cost(session))
+            }
         }
         for period in unallocatedFees {
             let name = providers.first { $0.id == period.providerId }?.name ?? "Ohne Anbieter"
@@ -76,11 +86,20 @@ enum LocalStatsCalculator {
         let byProvider = providerKwh.keys
             .sorted { providerKwh[$0]! > providerKwh[$1]! }
             .map { name in
-                ProviderStat(
+                let ac = providerTyped[name]?[.ac]
+                let dc = providerTyped[name]?[.dc]
+                return ProviderStat(
                     providerName: name,
                     totalKwh: round2(providerKwh[name]!),
                     totalCost: round2(providerCost[name]!),
-                    totalFees: round2(providerFees[name] ?? 0)
+                    totalFees: round2(providerFees[name] ?? 0),
+                    sessionCount: providerCount[name] ?? 0,
+                    sessionsWithoutPrice: providerUnpriced[name] ?? 0,
+                    avgPricePerKwh: providerKwh[name]! > 0 ? round4(providerCost[name]! / providerKwh[name]!) : nil,
+                    acKwh: ac.map { round2($0.kwh) },
+                    acAvgPricePerKwh: ac.flatMap { $0.kwh > 0 ? round4($0.cost / $0.kwh) : nil },
+                    dcKwh: dc.map { round2($0.kwh) },
+                    dcAvgPricePerKwh: dc.flatMap { $0.kwh > 0 ? round4($0.cost / $0.kwh) : nil }
                 )
             }
 

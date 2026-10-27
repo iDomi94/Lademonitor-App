@@ -141,6 +141,15 @@ struct DashboardView: View {
                         if !stats.byProvider.isEmpty {
                             ProviderPieChartsSection(providers: stats.byProvider)
                                 .padding(.bottom, 24)
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Ø Preis je Anbieter")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                ProviderPriceCard(providers: stats.byProvider)
+                                    .padding(.horizontal)
+                            }
+                            .padding(.bottom, 24)
                         }
 
                         // Ø Verbrauch/100km pro Monat (vertikal, chronologisch)
@@ -433,6 +442,99 @@ private struct PlaceSplitCard: View {
                 }
             }
         }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// MARK: - Ø Preis je Anbieter
+
+/// Alle Anbieter einzeln (nicht auf fuenf plus "Andere" gekuerzt wie die
+/// Kuchendiagramme), guenstigster zuerst. Der Preis enthaelt die
+/// Grundgebuehren; bei gemischter Lade-Art steht AC/DC getrennt darunter,
+/// weil ein Mittel ueber beide wenig ueber den Tarif sagt.
+private struct ProviderPriceCard: View {
+    let providers: [ProviderStat]
+
+    private static let noProvider = "Ohne Anbieter"
+
+    /// Mit Preis aufsteigend, dann ohne kWh (nur Grundgebuehr), "Ohne Anbieter" zuletzt.
+    private var rows: [ProviderStat] {
+        providers.sorted { a, b in
+            let aLast = a.providerName == Self.noProvider, bLast = b.providerName == Self.noProvider
+            if aLast != bLast { return bLast }
+            switch (a.avgPricePerKwh, b.avgPricePerKwh) {
+            case let (x?, y?): return x != y ? x < y : a.totalKwh > b.totalKwh
+            case (.some, nil): return true
+            case (nil, .some): return false
+            case (nil, nil): return a.providerName < b.providerName
+            }
+        }
+    }
+
+    private func displayName(_ stat: ProviderStat) -> String {
+        stat.providerName == Self.noProvider ? String(localized: "Ohne Anbieter") : stat.providerName
+    }
+
+    /// "AC 0,390 € · DC 0,590 €" - nur, wenn beide Lade-Arten vorkommen.
+    private func typeLine(_ stat: ProviderStat) -> String? {
+        guard let ac = stat.acAvgPricePerKwh, let dc = stat.dcAvgPricePerKwh else { return nil }
+        return String(format: "AC %.3f € · DC %.3f €", ac, dc)
+    }
+
+    private func detailLine(_ stat: ProviderStat) -> String {
+        var parts: [String] = []
+        if let count = stat.sessionCount {
+            parts.append(count == 1
+                         ? String(localized: "1 Ladevorgang")
+                         : String(localized: "\(count) Ladevorgänge"))
+        }
+        parts.append(String(format: "%.1f kWh", stat.totalKwh))
+        parts.append(String(format: "%.2f €", stat.totalCost))
+        return parts.joined(separator: " · ")
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ForEach(rows) { stat in
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(displayName(stat))
+                            .font(.subheadline.weight(.semibold))
+                        Text(detailLine(stat))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        if let fees = stat.totalFees, fees > 0 {
+                            Text(String(format: String(localized: "davon %.2f € Grundgebühren"), fees))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        if let unpriced = stat.sessionsWithoutPrice, unpriced > 0 {
+                            Text(unpriced == 1
+                                 ? String(localized: "1 Ladevorgang ohne Preis")
+                                 : String(localized: "\(unpriced) Ladevorgänge ohne Preis"))
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(stat.avgPricePerKwh.map { String(format: String(localized: "%.3f € je kWh"), $0) } ?? "–")
+                            .font(.subheadline.weight(.semibold))
+                        if let line = typeLine(stat) {
+                            Text(line)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+            Text("Inklusive Grundgebühren. Ladevorgänge ohne Preis zählen mit 0 €.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))

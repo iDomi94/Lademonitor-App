@@ -722,6 +722,20 @@ struct ProviderStat: Codable, Identifiable {
     let totalCost: Double
     /// Davon Grundgebuehren/Abos.
     var totalFees: Double? = nil
+    /// Die folgenden Felder setzt nur LocalStatsCalculator (das Dashboard
+    /// entsteht immer lokal), der Server liefert sie nicht - deshalb nicht in
+    /// den CodingKeys.
+    var sessionCount: Int? = nil
+    /// Vorgaenge ohne Preis, zaehlen mit 0 EUR (wie im Ø Preis/kWh oben).
+    var sessionsWithoutPrice: Int? = nil
+    /// Ø Preis je kWh inkl. Grundgebuehren, auch der Perioden ohne Vorgang.
+    var avgPricePerKwh: Double? = nil
+    /// Je Lade-Art nur Saeulenpreis plus umgelegter Anteil - Perioden ohne
+    /// Vorgang gehoeren zu keiner Lade-Art.
+    var acKwh: Double? = nil
+    var acAvgPricePerKwh: Double? = nil
+    var dcKwh: Double? = nil
+    var dcAvgPricePerKwh: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case providerName = "provider_name"
