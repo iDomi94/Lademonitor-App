@@ -7,6 +7,13 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.10.1
+
+- Gesamtpreis beim Bearbeiten eines Ladevorgangs: ein neu eingetragener
+  Gesamtpreis bleibt jetzt stehen, der Preis je kWh wird daraus berechnet.
+  Bisher hat der alte kWh-Preis den Gesamtpreis beim Speichern wieder
+  überschrieben. Im Server-Modus braucht es dafür zusätzlich Server 0.46.1.
+
 ## 1.10.0
 
 - iPhone Duo: aufgeklappt nutzt die App den großen Bildschirm. Das Dashboard
