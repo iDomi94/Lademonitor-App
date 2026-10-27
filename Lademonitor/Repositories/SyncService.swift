@@ -692,7 +692,8 @@ final class SyncService: ObservableObject {
                     // Abweichung kaeme nie am Server an. Der normalisiert
                     // selbst (gleich Anbieter-Voreinstellung -> null); die
                     // Anbieter sind in diesem Durchlauf schon hochgeladen.
-                    energyMeter: try effectiveEnergyMeter(of: session).rawValue
+                    energyMeter: try effectiveEnergyMeter(of: session).rawValue,
+                    avgSpeedKmh: session.avgSpeedKmh
                 )
                 if let serverId = session.serverId {
                     _ = try await APIClient.shared.updateSession(id: serverId, payload)
@@ -974,7 +975,7 @@ final class SyncService: ObservableObject {
                     pricePerKwh: ss.pricePerKwh, latitude: ss.latitude, longitude: ss.longitude,
                     geocodedPlace: ss.geocodedPlace, notes: ss.notes, source: ss.source.rawValue,
                     needsReview: ss.needsReview, externalSessionId: ss.externalSessionId,
-                    energyMeter: ss.energyMeter, isDirty: false
+                    energyMeter: ss.energyMeter, avgSpeedKmh: ss.avgSpeedKmh, isDirty: false
                 ))
             }
         }
@@ -996,6 +997,7 @@ final class SyncService: ObservableObject {
         session.odometerKm = dto.odometerKm
         session.outsideTempC = dto.outsideTempC
         session.outsideTempSource = dto.outsideTempSource
+        session.avgSpeedKmh = dto.avgSpeedKmh
         session.priceTotal = dto.priceTotal
         session.pricePerKwh = dto.pricePerKwh
         session.latitude = dto.latitude

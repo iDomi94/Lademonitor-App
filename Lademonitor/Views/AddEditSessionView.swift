@@ -38,6 +38,7 @@ struct AddEditSessionView: View {
     @State private var priceTotal: String
     @State private var odometerKm: String
     @State private var outsideTempC: String
+    @State private var avgSpeedKmh: String
     @State private var geocodedPlace: String
     @State private var latitude: String
     @State private var longitude: String
@@ -83,6 +84,7 @@ struct AddEditSessionView: View {
         _priceTotal = State(initialValue: session?.priceTotal.map { String(format: "%.2f", $0) } ?? "")
         _odometerKm = State(initialValue: session?.odometerKm.map(String.init) ?? "")
         _outsideTempC = State(initialValue: session?.outsideTempC.map { String($0) } ?? "")
+        _avgSpeedKmh = State(initialValue: session?.avgSpeedKmh.map { String(Int($0.rounded())) } ?? "")
         _geocodedPlace = State(initialValue: session?.geocodedPlace ?? "")
         _latitude = State(initialValue: session?.latitude.map { String(format: "%.6f", $0) } ?? "")
         _longitude = State(initialValue: session?.longitude.map { String(format: "%.6f", $0) } ?? "")
@@ -217,6 +219,17 @@ struct AddEditSessionView: View {
                             .keyboardType(.numbersAndPunctuation)
                             .multilineTextAlignment(.trailing)
                         Text("°C").foregroundStyle(.secondary)
+                    }
+                    // Ø-Geschwindigkeit "seit Laden" aus dem Bordcomputer -
+                    // damit teilt der Server den Verbrauch in Tempo und
+                    // Temperatur auf (Detailansicht, nur im Server-Modus).
+                    HStack {
+                        Text("Ø seit Laden")
+                        Spacer()
+                        TextField("optional", text: $avgSpeedKmh)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                        Text("km/h").foregroundStyle(.secondary)
                     }
                 }
 
@@ -442,7 +455,11 @@ struct AddEditSessionView: View {
             needsReview: isEditing ? false : nil,
             // Die gewaehlte Variante; LocalDataStore speichert daraus nil, wenn
             // sie der Voreinstellung des Anbieters entspricht (wie der Server).
-            energyMeter: energyMeter.rawValue
+            energyMeter: energyMeter.rawValue,
+            // 5..250 km/h wie auf dem Server - ein Tippfehler soll nicht das
+            // ganze Speichern per 422 scheitern lassen.
+            avgSpeedKmh: Double(avgSpeedKmh.replacingOccurrences(of: ",", with: "."))
+                .flatMap { (5...250).contains($0) ? $0 : nil }
         )
 
         do {

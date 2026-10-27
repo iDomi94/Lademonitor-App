@@ -290,6 +290,11 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     /// `energy_meter_effective` - sonst wuerde eine spaetere Aenderung am
     /// Anbieter diesen Vorgang nicht mehr erreichen. Wirksam: `EnergyMeter.effective`.
     var energyMeter: String? = nil
+    /// Durchschnittsgeschwindigkeit seit dem letzten Laden in km/h, aus dem
+    /// Bordcomputer abgelesen (Server ab 0.47.0). Beschreibt dieselbe Strecke
+    /// wie der Verbrauch dieses Vorgangs und teilt dessen Mehrverbrauch in
+    /// Tempo und Temperatur auf (`DriveBreakdownStats`).
+    var avgSpeedKmh: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, notes, source, latitude, longitude
@@ -315,6 +320,7 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case externalSessionId = "external_session_id"
         case feeShare = "fee_share"
         case energyMeter = "energy_meter"
+        case avgSpeedKmh = "avg_speed_kmh"
     }
 
     /// Wirksamer Messort der kWh - Abweichung am Vorgang, sonst die
@@ -386,6 +392,9 @@ struct ChargingSessionPayload: Codable {
     /// Zuruecksetzen auf die Anbieter-Voreinstellung kaeme so nie an. Server
     /// und LocalDataStore normalisieren beide (gleich Voreinstellung -> null).
     var energyMeter: String? = nil
+    /// Ø km/h seit dem letzten Laden. `nil` = unveraendert, wie die uebrigen
+    /// Felder.
+    var avgSpeedKmh: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case notes
@@ -406,6 +415,7 @@ struct ChargingSessionPayload: Codable {
         case geocodedPlace = "geocoded_place"
         case needsReview = "needs_review"
         case energyMeter = "energy_meter"
+        case avgSpeedKmh = "avg_speed_kmh"
     }
 }
 
@@ -873,6 +883,68 @@ struct DeletionsResponse: Codable {
     enum CodingKeys: String, CodingKey {
         case serverTime = "server_time"
         case deletions
+    }
+}
+
+// MARK: - Mehrverbrauch nach Tempo und Temperatur
+
+/// Antwort von `GET /api/stats/drive-breakdown` (Server ab 0.47.0).
+///
+/// Wie die Temperaturauswertung nur im Server-Modus: das Modell
+/// (`drive_breakdown.py`) wird je Fahrzeug aus allen Fahrten mit Tempo
+/// angepasst - lokal nachgebaut liefen App und Web auseinander.
+struct DriveBreakdownStats: Codable {
+    let vehicleId: String?
+    let needsVehicle: Bool
+    let model: DriveBreakdownModel?
+    let drives: [DriveBreakdownPoint]
+    let drivesWithoutSpeed: Int
+    let minDrives: Int
+
+    enum CodingKeys: String, CodingKey {
+        case model, drives
+        case vehicleId = "vehicle_id"
+        case needsVehicle = "needs_vehicle"
+        case drivesWithoutSpeed = "drives_without_speed"
+        case minDrives = "min_drives"
+    }
+}
+
+struct DriveBreakdownModel: Codable {
+    /// Verbrauch bei Bezugstempo ohne Heizen/Kuehlen - "dein Normal".
+    let normalConsumption: Double
+    let referenceSpeedKmh: Double
+    let heatBelowC: Double
+    let coolAboveC: Double
+    let driveCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case normalConsumption = "normal_consumption"
+        case referenceSpeedKmh = "reference_speed_kmh"
+        case heatBelowC = "heat_below_c"
+        case coolAboveC = "cool_above_c"
+        case driveCount = "drive_count"
+    }
+}
+
+/// Eine Fahrt: base + speed + temperature + rest = consumption.
+struct DriveBreakdownPoint: Codable, Identifiable {
+    var id: String { sessionId }
+    let sessionId: String
+    let speedKmh: Double
+    let tempC: Double
+    let consumptionKwhPer100km: Double
+    let base: Double
+    let speed: Double
+    let temperature: Double
+    let rest: Double
+
+    enum CodingKeys: String, CodingKey {
+        case base, speed, temperature, rest
+        case sessionId = "session_id"
+        case speedKmh = "speed_kmh"
+        case tempC = "temp_c"
+        case consumptionKwhPer100km = "consumption_kwh_per_100km"
     }
 }
 

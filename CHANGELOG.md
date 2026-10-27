@@ -7,6 +7,16 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.11.0
+
+- Neues Feld „Ø seit Laden“ beim Ladevorgang: die Durchschnittsgeschwindigkeit
+  seit dem letzten Laden aus dem Bordcomputer. Wird mit dem Server
+  synchronisiert und funktioniert auch im Local-Only-Modus.
+- Im Server-Modus (ab Lademonitor-Server 0.47.0) zeigt die Detailansicht eines
+  Ladevorgangs den Mehrverbrauch aufgeteilt: dein Normal, Tempo, Temperatur
+  und Rest (Wind, Nässe, Steigung, Fahrweise). Ab 5 Fahrten mit Tempo und
+  Außentemperatur.
+
 ## 1.10.1
 
 - Gesamtpreis beim Bearbeiten eines Ladevorgangs: ein neu eingetragener
