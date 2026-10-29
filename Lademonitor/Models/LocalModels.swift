@@ -217,6 +217,10 @@ final class LocalChargingSession {
     /// Ø km/h seit dem letzten Laden (Bordcomputer). Optional - leichte
     /// Migration, Bestandszeilen bekommen nil.
     var avgSpeedKmh: Double?
+    /// Davon aus dem Netz bezogene kWh (Server ab 0.41.0), der Rest kam von
+    /// PV-Anlage/Hausakku. Optional - leichte Migration, Bestandszeilen
+    /// bekommen nil ("unbekannt").
+    var gridEnergyKwh: Double?
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -249,6 +253,7 @@ final class LocalChargingSession {
         externalSessionId: String? = nil,
         energyMeter: String? = nil,
         avgSpeedKmh: Double? = nil,
+        gridEnergyKwh: Double? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -280,6 +285,7 @@ final class LocalChargingSession {
         self.externalSessionId = externalSessionId
         self.energyMeter = energyMeter
         self.avgSpeedKmh = avgSpeedKmh
+        self.gridEnergyKwh = gridEnergyKwh
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -425,7 +431,8 @@ extension LocalChargingSession {
             needsReview: needsReview,
             externalSessionId: externalSessionId,
             energyMeter: energyMeter,
-            avgSpeedKmh: avgSpeedKmh
+            avgSpeedKmh: avgSpeedKmh,
+            gridEnergyKwh: gridEnergyKwh
         )
     }
 }

@@ -14688,6 +14688,108 @@
           }
         }
       }
+    },
+    "Davon aus dem Netz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davon aus dem Netz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Of which from the grid"
+          }
+        }
+      }
+    },
+    "„Davon aus dem Netz“ muss zwischen 0 und der geladenen Energie liegen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„Davon aus dem Netz“ muss zwischen 0 und der geladenen Energie liegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Of which from the grid” must be between 0 and the energy charged."
+          }
+        }
+      }
+    },
+    "Beim Laden zuhause mit PV-Anlage oder Hausakku: der Rest kam kostenlos von Sonne/Hausakku. Home Assistant trägt den Wert automatisch ein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim Laden zuhause mit PV-Anlage oder Hausakku: der Rest kam kostenlos von Sonne/Hausakku. Home Assistant trägt den Wert automatisch ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When charging at home with solar panels or a home battery: the rest came for free from sun/home battery. Home Assistant fills this in automatically."
+          }
+        }
+      }
+    },
+    "☀ Sonne/Hausakku" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☀ Sonne/Hausakku"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☀ Sun/home battery"
+          }
+        }
+      }
+    },
+    "Netz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Netz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grid"
+          }
+        }
+      }
+    },
+    "☀ %lld %% Sonne/Hausakku (%.1f kWh)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☀ %lld %% Sonne/Hausakku (%.1f kWh)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☀ %lld %% sun/home battery (%.1f kWh)"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
