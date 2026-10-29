@@ -11,6 +11,7 @@ das dauert Minuten. Deshalb wird bis zu WAIT_MINUTES lang nachgesehen.
 import os
 import sys
 import time
+import unicodedata
 
 import jwt
 import requests
@@ -40,10 +41,33 @@ def call(method: str, path: str, **kwargs) -> dict:
     return resp.json() if resp.content else {}
 
 
+def clean(text: str) -> str:
+    """Entfernt Zeichen, die App Store Connect in whatsNew ablehnt.
+
+    Apple antwortet auf Symbole und Emoji (z.B. "☀" aus dem Changelog 1.13.0)
+    mit 409 INVALID_TEXT. Gestrichen werden deshalb Unicode-Symbole der
+    Kategorie "So" samt Emoji-Variantenwaehler und Zero-Width-Joiner, dazu ein
+    direkt folgendes Leerzeichen. Umlaute, Anfuehrungszeichen, Pfeile, "€"
+    und "CO₂" bleiben stehen - die gingen in frueheren Builds durch.
+    """
+    out = []
+    skip_space = False
+    for ch in text:
+        if unicodedata.category(ch) in ("So", "Cs", "Co", "Cn") or ch in "\ufe0f\u200d":
+            skip_space = True
+            continue
+        if skip_space and ch == " ":
+            skip_space = False
+            continue
+        skip_space = False
+        out.append(ch)
+    return "".join(out)
+
+
 def main() -> None:
     bundle_id, version, build_number, text_file = sys.argv[1:5]
     with open(text_file, encoding="utf-8") as f:
-        whats_new = f.read().strip()[:4000]
+        whats_new = clean(f.read()).strip()[:4000]
     if not whats_new:
         print("Kein Changelog-Text, nichts zu tun.")
         return
