@@ -83,7 +83,15 @@ struct DashboardView: View {
                     // Kennzahlen-Grid
                     LazyVGrid(columns: columns, spacing: 12) {
                         StatCard(label: String(localized: "Ladevorgänge"), value: "\(stats.totalSessions)")
-                        StatCard(label: String(localized: "Gesamt kWh"), value: String(format: "%.1f kWh", stats.totalKwh))
+                        StatCard(
+                            label: String(localized: "Gesamt kWh"),
+                            value: String(format: "%.1f kWh", stats.totalKwh),
+                            // Sonnenanteil der Vorgaenge mit bekanntem Netzbezug
+                            // (Laden zuhause mit PV/Hausakku).
+                            detail: stats.solarShare.flatMap {
+                                $0.totalKwh > 0 ? String(format: String(localized: "☀ %lld %% Sonne/Hausakku (%.1f kWh)"), $0.solarPercent, $0.solarKwh) : nil
+                            }
+                        )
                         StatCard(
                             label: String(localized: "Gesamtkosten"),
                             value: String(format: "%.2f €", stats.totalCost),

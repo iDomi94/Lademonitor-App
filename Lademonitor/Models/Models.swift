@@ -295,6 +295,12 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     /// wie der Verbrauch dieses Vorgangs und teilt dessen Mehrverbrauch in
     /// Tempo und Temperatur auf (`DriveBreakdownStats`).
     var avgSpeedKmh: Double? = nil
+    /// Davon aus dem Netz bezogene kWh (Server ab 0.41.0), der Rest von
+    /// `energyKwh` kam von der eigenen PV-Anlage bzw. dem Hausakku. `nil` =
+    /// unbekannt (kein Anteil ausweisen). Home Assistant (Integration ab
+    /// 0.7.0) fuellt es selbst; `priceTotal` sind dann die gemessenen Kosten
+    /// des Netzanteils.
+    var gridEnergyKwh: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, notes, source, latitude, longitude
@@ -321,6 +327,16 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         case feeShare = "fee_share"
         case energyMeter = "energy_meter"
         case avgSpeedKmh = "avg_speed_kmh"
+        case gridEnergyKwh = "grid_energy_kwh"
+    }
+
+    /// Sonnen-/Hausakku-Anteil, sobald Energie und Netzbezug bekannt sind,
+    /// sonst `nil`. Ein Netzbezug ueber der Energiemenge (Messungenauigkeit)
+    /// zaehlt als 0 % Sonne - wie `clamp_grid_energy()` im Backend.
+    var solarShare: SolarShare? {
+        guard let energy = energyKwh, let grid = gridEnergyKwh, energy > 0, grid >= 0 else { return nil }
+        let gridClamped = min(grid, energy)
+        return SolarShare(solarKwh: energy - gridClamped, gridKwh: gridClamped)
     }
 
     /// Wirksamer Messort der kWh - Abweichung am Vorgang, sonst die
@@ -363,6 +379,23 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     }
 }
 
+/// Aufteilung der geladenen Energie in Sonne/Hausakku und Netz
+/// (siehe `ChargingSession.solarShare`).
+struct SolarShare: Equatable {
+    var solarKwh: Double
+    var gridKwh: Double
+
+    var totalKwh: Double { solarKwh + gridKwh }
+
+    /// Sonnenanteil 0...1 (0 bei 0 kWh).
+    var solarFraction: Double { totalKwh > 0 ? solarKwh / totalKwh : 0 }
+
+    /// Sonnenanteil in ganzen Prozent; der Netzanteil ist der Rest, damit
+    /// beide 100 ergeben.
+    var solarPercent: Int { min(100, max(0, Int((solarFraction * 100).rounded()))) }
+    var gridPercent: Int { 100 - solarPercent }
+}
+
 /// Payload zum Anlegen/Bearbeiten - alle Felder optional, damit dieselbe Struct
 /// fuer POST (Create) und PATCH (Update) genutzt werden kann.
 struct ChargingSessionPayload: Codable {
@@ -395,6 +428,8 @@ struct ChargingSessionPayload: Codable {
     /// Ø km/h seit dem letzten Laden. `nil` = unveraendert, wie die uebrigen
     /// Felder.
     var avgSpeedKmh: Double? = nil
+    /// Davon aus dem Netz (kWh, Server ab 0.41.0). `nil` = unveraendert.
+    var gridEnergyKwh: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case notes
@@ -416,6 +451,7 @@ struct ChargingSessionPayload: Codable {
         case needsReview = "needs_review"
         case energyMeter = "energy_meter"
         case avgSpeedKmh = "avg_speed_kmh"
+        case gridEnergyKwh = "grid_energy_kwh"
     }
 }
 
@@ -847,6 +883,11 @@ struct StatsSummary: Codable {
     /// eine Kauf-/Leasingangabe gibt - dann blendet das Dashboard den
     /// Abschnitt aus. Lokal gesetzt in AppRepository.fetchStatsSummary.
     var vehicleCosts: VehicleCostSummary? = nil
+    /// Sonne/Hausakku gegen Netz, summiert ueber die Vorgaenge mit bekanntem
+    /// Netzbezug (`ChargingSession.solarShare`); `nil`, solange keiner einen
+    /// hat. Nur lokal gerechnet (LocalStatsCalculator), deshalb nicht in den
+    /// CodingKeys.
+    var solarShare: SolarShare? = nil
 
     enum CodingKeys: String, CodingKey {
         case totalSessions = "total_sessions"

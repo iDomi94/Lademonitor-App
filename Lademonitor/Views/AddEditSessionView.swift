@@ -27,6 +27,8 @@ struct AddEditSessionView: View {
     @State private var socStartKnown: Bool
     @State private var socEndValue: Double
     @State private var energyKwh: String
+    /// Davon aus dem Netz (kWh) - fuer den Sonnenanteil beim Laden zuhause.
+    @State private var gridEnergyKwh: String
     /// Messort der kWh, vorbelegt mit dem wirksamen Wert (Abweichung am
     /// Vorgang, sonst Voreinstellung des Anbieters).
     @State private var energyMeter: EnergyMeter
@@ -78,6 +80,7 @@ struct AddEditSessionView: View {
         _socStartKnown = State(initialValue: session == nil || session?.socStart != nil)
         _socEndValue = State(initialValue: Double(session?.socEnd ?? 80))
         _energyKwh = State(initialValue: session?.energyKwh.map { String(format: "%.2f", $0) } ?? "")
+        _gridEnergyKwh = State(initialValue: session?.gridEnergyKwh.map { String(format: "%.2f", $0) } ?? "")
         _energyMeter = State(initialValue: session?.effectiveEnergyMeter(providers: providers) ?? NewSessionDefaults.energyMeter)
         _meterProviderId = State(initialValue: session?.providerId)
         _pricePerKwh = State(initialValue: session?.pricePerKwh.map { String(format: "%.4f", $0) } ?? "")
@@ -164,6 +167,24 @@ struct AddEditSessionView: View {
                         TextField("automatisch, falls leer", text: $energyKwh)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
+                    }
+                    // Netzbezug fuer den Sonnenanteil beim Laden zuhause. Home
+                    // Assistant traegt ihn selbst ein (Integration ab 0.7.0),
+                    // hier steht er zum Nachtragen/Korrigieren.
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("Davon aus dem Netz")
+                            Spacer()
+                            TextField("optional", text: $gridEnergyKwh)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                            Text("kWh").foregroundStyle(.secondary)
+                        }
+                        Text(gridEnergyInvalid
+                             ? "„Davon aus dem Netz“ muss zwischen 0 und der geladenen Energie liegen."
+                             : "Beim Laden zuhause mit PV-Anlage oder Hausakku: der Rest kam kostenlos von Sonne/Hausakku. Home Assistant trägt den Wert automatisch ein.")
+                            .font(.caption)
+                            .foregroundStyle(gridEnergyInvalid ? Color.red : Color.secondary)
                     }
                     // Wo die kWh abgelesen wurden - im Fahrzeug gemessene
                     // enthalten keine Ladeverluste (Akku-Auswertung des Servers).
@@ -329,7 +350,7 @@ struct AddEditSessionView: View {
                     Button(isSaving ? "Speichert…" : "Speichern") {
                         Task { await save() }
                     }
-                    .disabled(isSaving || vehicleId.isEmpty)
+                    .disabled(isSaving || vehicleId.isEmpty || gridEnergyInvalid)
                 }
             }
             .sheet(isPresented: $showingAddProviderSheet) {
@@ -427,6 +448,15 @@ struct AddEditSessionView: View {
         }
     }
 
+    /// Netzbezug nur gegen die Energiemenge pruefen, wenn beides eingetragen
+    /// ist: ohne Energiemenge (wird dann automatisch ermittelt) laesst sich
+    /// nichts vergleichen.
+    private var gridEnergyInvalid: Bool {
+        guard let grid = Double(gridEnergyKwh.replacingOccurrences(of: ",", with: ".")) else { return false }
+        let energy = Double(energyKwh.replacingOccurrences(of: ",", with: "."))
+        return grid < 0 || (energy.map { grid > $0 + 1e-6 } ?? false)
+    }
+
     private func save() async {
         isSaving = true
         errorMessage = nil
@@ -459,7 +489,8 @@ struct AddEditSessionView: View {
             // 5..250 km/h wie auf dem Server - ein Tippfehler soll nicht das
             // ganze Speichern per 422 scheitern lassen.
             avgSpeedKmh: Double(avgSpeedKmh.replacingOccurrences(of: ",", with: "."))
-                .flatMap { (5...250).contains($0) ? $0 : nil }
+                .flatMap { (5...250).contains($0) ? $0 : nil },
+            gridEnergyKwh: Double(gridEnergyKwh.replacingOccurrences(of: ",", with: "."))
         )
 
         do {

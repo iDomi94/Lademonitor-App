@@ -325,6 +325,9 @@ private struct SessionRow: View {
                     if let type = session.chargingType {
                         ChargingTypeBadge(type: type)
                     }
+                    if let share = session.solarShare {
+                        SolarShareBadge(percent: share.solarPercent)
+                    }
                     if session.needsReview {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundStyle(.orange)
@@ -420,6 +423,21 @@ struct ChargingTypeBadge: View {
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(color.opacity(0.15))
+            .clipShape(Capsule())
+    }
+}
+
+/// Sonnenanteil im Stil des AC/DC-Badges daneben, z.B. "☀ 78 %".
+struct SolarShareBadge: View {
+    let percent: Int
+
+    var body: some View {
+        Text(verbatim: "☀ \(percent) %")
+            .font(.caption2.bold())
+            .foregroundStyle(.green)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(Color.green.opacity(0.15))
             .clipShape(Capsule())
     }
 }

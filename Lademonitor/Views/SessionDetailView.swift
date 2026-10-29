@@ -97,6 +97,13 @@ struct SessionDetailView: View {
                                ? String(localized: " (an Fahrzeug abgelesen)") : "")
                     )
                 }
+                if let share = session.solarShare {
+                    // Sonnenanteil beim Laden zuhause (Server ab 0.41.0): der
+                    // Netzanteil ist das, was tatsaechlich bezahlt wurde, der
+                    // Rest kam von PV-Anlage/Hausakku.
+                    LabeledContent("☀ Sonne/Hausakku", value: String(format: "%lld %% (%.1f kWh)", share.solarPercent, share.solarKwh))
+                    LabeledContent("Netz", value: String(format: "%lld %% (%.1f kWh)", share.gridPercent, share.gridKwh))
+                }
                 if let odo = session.odometerKm {
                     LabeledContent("Kilometerstand", value: "\(odo) km")
                 }

@@ -34,6 +34,15 @@ enum LocalStatsCalculator {
         let acShare = typedKwh > 0 ? round1(acKwh / typedKwh * 100) : nil
         let dcShare = typedKwh > 0 ? round1(dcKwh / typedKwh * 100) : nil
 
+        // Sonnenanteil nur ueber die Vorgaenge mit bekanntem Netzbezug (Server
+        // ab 0.41.0 bzw. Home Assistant) - Vorgaenge ohne Angabe wuerden den
+        // Anteil sonst kuenstlich druecken.
+        let shares = sorted.compactMap(\.solarShare)
+        let solarShare: SolarShare? = shares.isEmpty ? nil : SolarShare(
+            solarKwh: round2(shares.reduce(0) { $0 + $1.solarKwh }),
+            gridKwh: round2(shares.reduce(0) { $0 + $1.gridKwh })
+        )
+
         let withOdo = sorted.filter { $0.odometerKm != nil }
         var consumption: Double?
         var pricePer100km: Double?
@@ -174,7 +183,8 @@ enum LocalStatsCalculator {
             monthly: monthly,
             totalFees: round2(totalFees),
             unallocatedFees: round2(unallocatedSum),
-            byPlace: byPlace
+            byPlace: byPlace,
+            solarShare: solarShare
         )
     }
 
