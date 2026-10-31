@@ -8,6 +8,14 @@ struct ContentView: View {
 
     var body: some View {
         content
+            // Bestandsnutzer: die Einfuehrung einmalig nach dem Update, ueber
+            // der App (wie aus den Einstellungen). Beim ersten Start laeuft sie
+            // stattdessen vor der Moduswahl, siehe `content`.
+            .fullScreenCover(isPresented: showOnboardingAfterUpdate) {
+                OnboardingView(context: .replay) {
+                    settings.hasCompletedOnboarding = true
+                }
+            }
             // Der Dialog haengt bewusst HIER und nicht an der AuthView: nach dem
             // Anmelden ist die schon aus der Hierarchie verschwunden (siehe
             // SyncService.pendingLocalDataDecision), ihr Alert wuerde also nie
@@ -26,6 +34,13 @@ struct ContentView: View {
             } message: {
                 Text(localDataDecisionMessage)
             }
+    }
+
+    private var showOnboardingAfterUpdate: Binding<Bool> {
+        Binding(
+            get: { settings.appMode != .undecided && !settings.hasCompletedOnboarding },
+            set: { if !$0 { settings.hasCompletedOnboarding = true } }
+        )
     }
 
     /// Erklaert beide Wege konkret - inklusive der Zusicherung, dass auf dem

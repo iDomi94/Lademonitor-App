@@ -81,11 +81,10 @@ final class AppSettings: ObservableObject {
         if let stored = UserDefaults.standard.object(forKey: Self.onboardingKey) as? Bool {
             self.hasCompletedOnboarding = stored
         } else {
-            // Bestandsnutzer (Modus schon gewaehlt) bekommen die Einfuehrung
-            // nach dem Update nicht ungefragt vorgesetzt - sie steht in den
-            // Einstellungen unter "Hilfe" bereit.
-            self.hasCompletedOnboarding = storedMode != nil && storedMode != .undecided
-            UserDefaults.standard.set(self.hasCompletedOnboarding, forKey: Self.onboardingKey)
+            // Neu und Bestandsnutzer gleich: noch nie gesehen. Bestandsnutzer
+            // (Modus schon gewaehlt) bekommen sie damit einmalig nach dem
+            // Update ueber der App (ContentView), Neue vor der Moduswahl.
+            self.hasCompletedOnboarding = false
         }
     }
 

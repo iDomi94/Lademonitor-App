@@ -17,8 +17,8 @@ nach TestFlight.
   zurück.
 - Unter Einstellungen → Hilfe → „Einführung erneut ansehen“ lässt sie sich
   jederzeit wieder öffnen; die letzte Seite markiert dann den Modus, den du
-  gerade nutzt. Wer die App schon eingerichtet hat, bekommt sie nach dem
-  Update nicht ungefragt angezeigt.
+  gerade nutzt. Wer die App schon eingerichtet hat, sieht sie einmalig
+  nach dem Update.
 
 ## 1.13.0
 
