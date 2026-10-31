@@ -61,6 +61,13 @@ struct ModeSelectionView: View {
                 }
                 .padding(.horizontal)
 
+                // Zurueck zur Einfuehrung, falls sie uebersprungen wurde - dort
+                // steht der Unterschied der drei Wege ausfuehrlicher.
+                Button("Einführung ansehen") {
+                    settings.hasCompletedOnboarding = false
+                }
+                .font(.subheadline)
+
                 Spacer()
                 Spacer()
             }

@@ -65,10 +65,27 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    /// Ob die Einfuehrung (OnboardingView) schon einmal durchlaufen oder
+    /// uebersprungen wurde. Steuert nur den ersten Start - aus den
+    /// Einstellungen laesst sie sich unabhaengig davon jederzeit oeffnen.
+    @Published var hasCompletedOnboarding: Bool {
+        didSet { UserDefaults.standard.set(hasCompletedOnboarding, forKey: Self.onboardingKey) }
+    }
+
+    private static let onboardingKey = "onboardingCompleted"
+
     private init() {
         self.serverURLString = UserDefaults.standard.string(forKey: "serverURL") ?? ""
         let storedMode = UserDefaults.standard.string(forKey: "appMode").flatMap(AppMode.init(rawValue:))
         self.appMode = storedMode ?? .undecided
+        if let stored = UserDefaults.standard.object(forKey: Self.onboardingKey) as? Bool {
+            self.hasCompletedOnboarding = stored
+        } else {
+            // Neu und Bestandsnutzer gleich: noch nie gesehen. Bestandsnutzer
+            // (Modus schon gewaehlt) bekommen sie damit einmalig nach dem
+            // Update ueber der App (ContentView), Neue vor der Moduswahl.
+            self.hasCompletedOnboarding = false
+        }
     }
 
     var serverURL: URL? {

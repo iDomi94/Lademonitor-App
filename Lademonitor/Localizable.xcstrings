@@ -14790,6 +14790,822 @@
           }
         }
       }
+    },
+    "Überspringen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        }
+      }
+    },
+    "Schließen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "Weiter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
+    "Modus auswählen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modus auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose mode"
+          }
+        }
+      }
+    },
+    "Willkommen bei Lademonitor" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen bei Lademonitor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to Lademonitor"
+          }
+        }
+      }
+    },
+    "Dein Fahrtenbuch fürs Laden: jeder Ladevorgang mit Energie, Preis, Ladestand und Kilometerstand – und daraus Kosten, Verbrauch und Statistik für dein E-Auto." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Fahrtenbuch fürs Laden: jeder Ladevorgang mit Energie, Preis, Ladestand und Kilometerstand – und daraus Kosten, Verbrauch und Statistik für dein E-Auto."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your logbook for charging: every session with energy, price, state of charge and odometer – turned into costs, consumption and statistics for your EV."
+          }
+        }
+      }
+    },
+    "Sieh auf einen Blick, was dich das Laden wirklich kostet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh auf einen Blick, was dich das Laden wirklich kostet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See at a glance what charging really costs you."
+          }
+        }
+      }
+    },
+    "Verbrauch je 100 km, auch wenn du fast nie vollständig lädst." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbrauch je 100 km, auch wenn du fast nie vollständig lädst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumption per 100 km, even if you almost never charge to full."
+          }
+        }
+      }
+    },
+    "Ohne Werbung und ohne Tracking – du entscheidest, wo deine Daten liegen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Werbung und ohne Tracking – du entscheidest, wo deine Daten liegen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No ads and no tracking – you decide where your data lives."
+          }
+        }
+      }
+    },
+    "Ladevorgänge erfassen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladevorgänge erfassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log charging sessions"
+          }
+        }
+      }
+    },
+    "Ein neuer Ladevorgang ist in wenigen Sekunden eingetragen – oder kommt ganz von allein." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein neuer Ladevorgang ist in wenigen Sekunden eingetragen – oder kommt ganz von allein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new charging session is entered in seconds – or arrives all by itself."
+          }
+        }
+      }
+    },
+    "Von Hand im Reiter „Ladevorgänge“: der zuletzt bezahlte Preis des Anbieters wird vorgeschlagen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von Hand im Reiter „Ladevorgänge“: der zuletzt bezahlte Preis des Anbieters wird vorgeschlagen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By hand in the “Charging Sessions” tab: the provider's last paid price is suggested."
+          }
+        }
+      }
+    },
+    "Gespeicherte Ladeorte werden per GPS erkannt und bringen ihren Anbieter gleich mit." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeicherte Ladeorte werden per GPS erkannt und bringen ihren Anbieter gleich mit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved charging locations are recognised via GPS and bring their provider along."
+          }
+        }
+      }
+    },
+    "Per Siri oder Kurzbefehl: „Ladevorgang erfassen“ fragt nur kWh und Preis ab." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per Siri oder Kurzbefehl: „Ladevorgang erfassen“ fragt nur kWh und Preis ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Siri or Shortcuts: “Log charging session” only asks for kWh and price."
+          }
+        }
+      }
+    },
+    "Mit Server automatisch aus Home Assistant, MyŠkoda, VW-Datenportal, BMW CarData oder Renault – du prüfst den Eintrag nur noch." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Server automatisch aus Home Assistant, MyŠkoda, VW-Datenportal, BMW CarData oder Renault – du prüfst den Eintrag nur noch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With a server, automatically from Home Assistant, MyŠkoda, the VW data portal, BMW CarData or Renault – you only review the entry."
+          }
+        }
+      }
+    },
+    "Kosten und Verbrauch im Blick" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten und Verbrauch im Blick"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costs and consumption at a glance"
+          }
+        }
+      }
+    },
+    "Das Dashboard rechnet aus deinen Ladevorgängen alles Wichtige zusammen, für jeden Zeitraum und jedes Fahrzeug." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Dashboard rechnet aus deinen Ladevorgängen alles Wichtige zusammen, für jeden Zeitraum und jedes Fahrzeug."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The dashboard adds up everything that matters from your sessions, for any period and any vehicle."
+          }
+        }
+      }
+    },
+    "Kosten, Ø Preis je kWh, AC/DC-Anteil und Aufteilung nach Anbieter." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten, Ø Preis je kWh, AC/DC-Anteil und Aufteilung nach Anbieter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costs, avg. price per kWh, AC/DC share and breakdown by provider."
+          }
+        }
+      }
+    },
+    "Grundgebühren und Abos werden auf die Ladevorgänge umgelegt – so siehst du den echten Preis." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühren und Abos werden auf die Ladevorgänge umgelegt – so siehst du den echten Preis."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base fees and subscriptions are spread across your sessions – so you see the real price."
+          }
+        }
+      }
+    },
+    "Laden zuhause mit PV: der Sonnenanteil wird mitgezählt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laden zuhause mit PV: der Sonnenanteil wird mitgezählt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging at home with solar: the solar share is counted too."
+          }
+        }
+      }
+    },
+    "Die Karte zeigt alle Ladeorte und wo du geladen hast, das Widget die Kosten des Monats." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Karte zeigt alle Ladeorte und wo du geladen hast, das Widget die Kosten des Monats."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The map shows all charging locations and where you charged, the widget this month's costs."
+          }
+        }
+      }
+    },
+    "Rund ums Auto" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rund ums Auto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All about the car"
+          }
+        }
+      }
+    },
+    "Laden ist nur ein Teil der Kosten. In den Einstellungen pflegst du alles Weitere zu deinen Fahrzeugen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laden ist nur ein Teil der Kosten. In den Einstellungen pflegst du alles Weitere zu deinen Fahrzeugen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging is only part of the cost. In Settings you keep track of everything else about your vehicles."
+          }
+        }
+      }
+    },
+    "Kosten wie Versicherung, Wartung, Wertverlust oder Leasing – ergibt die Gesamtkosten je km." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kosten wie Versicherung, Wartung, Wertverlust oder Leasing – ergibt die Gesamtkosten je km."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costs such as insurance, maintenance, depreciation or leasing – giving the total cost per km."
+          }
+        }
+      }
+    },
+    "Erinnerungen an HU, Reifenwechsel oder Versicherung, nach Datum oder Kilometerstand, mit Mitteilung." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erinnerungen an HU, Reifenwechsel oder Versicherung, nach Datum oder Kilometerstand, mit Mitteilung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminders for inspection, tyre changes or insurance, by date or mileage, with notifications."
+          }
+        }
+      }
+    },
+    "Ein Vergleichsfahrzeug zeigt, was dieselben Kilometer mit Benzin oder Diesel gekostet hätten." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Vergleichsfahrzeug zeigt, was dieselben Kilometer mit Benzin oder Diesel gekostet hätten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A comparison vehicle shows what the same kilometres would have cost with petrol or diesel."
+          }
+        }
+      }
+    },
+    "Im Reiter „Tools“ liegen kleine Rechner und Berichte rund ums Laden." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Reiter „Tools“ liegen kleine Rechner und Berichte rund ums Laden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The “Tools” tab holds small calculators and reports about charging."
+          }
+        }
+      }
+    },
+    "Lohnt sich der Tarif? Effektiver Preis mit Grundgebühr gegen das Laden ohne Tarif." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lohnt sich der Tarif? Effektiver Preis mit Grundgebühr gegen das Laden ohne Tarif."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Is the tariff worth it? Effective price including base fee versus charging without it."
+          }
+        }
+      }
+    },
+    "Reichweitenrechner: wie weit du bei einer bestimmten Außentemperatur kommst." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reichweitenrechner: wie weit du bei einer bestimmten Außentemperatur kommst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Range calculator: how far you get at a given outside temperature."
+          }
+        }
+      }
+    },
+    "Rückblick auf dein Jahr oder deinen Monat in Zahlen, mit Rekorden." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rückblick auf dein Jahr oder deinen Monat in Zahlen, mit Rekorden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review of your year or month in numbers, with records."
+          }
+        }
+      }
+    },
+    "Erstattungsbericht für den Dienstwagen: Heimladungen als PDF oder CSV." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstattungsbericht für den Dienstwagen: Heimladungen als PDF oder CSV."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimbursement report for the company car: home charging as PDF or CSV."
+          }
+        }
+      }
+    },
+    "Drei Wege, die App zu nutzen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Wege, die App zu nutzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Three ways to use the app"
+          }
+        }
+      }
+    },
+    "Die App funktioniert ganz ohne Server. Mit einem Server kommen automatische Erfassung, Web-Oberfläche und Abgleich zwischen Geräten dazu." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App funktioniert ganz ohne Server. Mit einem Server kommen automatische Erfassung, Web-Oberfläche und Abgleich zwischen Geräten dazu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app works entirely without a server. A server adds automatic capture, a web interface and syncing between devices."
+          }
+        }
+      }
+    },
+    "Alle Daten liegen nur auf diesem iPhone – kein Konto, kein Server, sofort startklar." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Daten liegen nur auf diesem iPhone – kein Konto, kein Server, sofort startklar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All data stays on this iPhone only – no account, no server, ready right away."
+          }
+        }
+      }
+    },
+    "Ladevorgänge trägst du von Hand ein, alle Auswertungen und Tools rechnet die App selbst." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladevorgänge trägst du von Hand ein, alle Auswertungen und Tools rechnet die App selbst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You enter sessions by hand; the app computes all statistics and tools itself."
+          }
+        }
+      }
+    },
+    "Es gibt keine zweite Kopie außer dem Backup deines Geräts und keinen Abgleich mit anderen Geräten." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es gibt keine zweite Kopie außer dem Backup deines Geräts und keinen Abgleich mit anderen Geräten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is no second copy apart from your device backup, and no syncing with other devices."
+          }
+        }
+      }
+    },
+    "Eigener Server" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigener Server"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Own server"
+          }
+        }
+      }
+    },
+    "Du betreibst den Open-Source-Lademonitor-Server selbst, z. B. per Docker, auf Unraid oder als Home-Assistant-Add-on." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du betreibst den Open-Source-Lademonitor-Server selbst, z. B. per Docker, auf Unraid oder als Home-Assistant-Add-on."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You run the open-source Lademonitor server yourself, e.g. with Docker, on Unraid or as a Home Assistant add-on."
+          }
+        }
+      }
+    },
+    "Ladevorgänge kommen automatisch (Home Assistant, MyŠkoda, VW, BMW, Renault), dazu Web-Oberfläche und mehrere Geräte mit demselben Stand." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladevorgänge kommen automatisch (Home Assistant, MyŠkoda, VW, BMW, Renault), dazu Web-Oberfläche und mehrere Geräte mit demselben Stand."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessions arrive automatically (Home Assistant, MyŠkoda, VW, BMW, Renault), plus a web interface and several devices with the same data."
+          }
+        }
+      }
+    },
+    "Zusätzliche Auswertungen: Verbrauch nach Außentemperatur, Reifen, Akku und Ladeverluste, laufender Ladevorgang." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zusätzliche Auswertungen: Verbrauch nach Außentemperatur, Reifen, Akku und Ladeverluste, laufender Ladevorgang."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra analyses: consumption by outside temperature, tyres, battery and charging losses, the session currently charging."
+          }
+        }
+      }
+    },
+    "Die Daten bleiben bei dir – Updates und Backups liegen aber auch bei dir." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Daten bleiben bei dir – Updates und Backups liegen aber auch bei dir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data stays with you – but so do updates and backups."
+          }
+        }
+      }
+    },
+    "Derselbe Server mit allen Funktionen, fertig betrieben unter lademonitor.cloud." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Derselbe Server mit allen Funktionen, fertig betrieben unter lademonitor.cloud."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The same server with all features, ready-run at lademonitor.cloud."
+          }
+        }
+      }
+    },
+    "Konto anlegen und loslegen – Betrieb, Updates und Backups übernimmt der Betreiber." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto anlegen und loslegen – Betrieb, Updates und Backups übernimmt der Betreiber."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create an account and get going – the operator takes care of running it, updates and backups."
+          }
+        }
+      }
+    },
+    "Deine Daten liegen dafür auf dem Server des Betreibers statt bei dir." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Daten liegen dafür auf dem Server des Betreibers statt bei dir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In return, your data lives on the operator's server instead of with you."
+          }
+        }
+      }
+    },
+    "Wechseln geht jederzeit unter Einstellungen → Server & Verbindung. Beim Wechsel von „Nur lokal“ zu einem Server kannst du alle Daten mitnehmen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wechseln geht jederzeit unter Einstellungen → Server & Verbindung. Beim Wechsel von „Nur lokal“ zu einem Server kannst du alle Daten mitnehmen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can switch at any time under Settings → Server & Connection. When moving from “Local only” to a server, you can take all your data along."
+          }
+        }
+      }
+    },
+    "Einführung ansehen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einführung ansehen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View introduction"
+          }
+        }
+      }
+    },
+    "Hilfe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilfe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        }
+      }
+    },
+    "Einführung erneut ansehen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einführung erneut ansehen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View introduction again"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
