@@ -44,9 +44,16 @@ struct ContentView: View {
     private var content: some View {
         switch settings.appMode {
         case .undecided:
-            // Erster Start: Wahl zwischen Local-Only und Server-Modus, ersetzt den
-            // frueher hier erzwungenen Login-Screen.
-            ModeSelectionView()
+            // Erster Start: erst die Einfuehrung, dann die Wahl zwischen
+            // Local-Only und Server-Modus (ersetzt den frueher hier
+            // erzwungenen Login-Screen).
+            if settings.hasCompletedOnboarding {
+                ModeSelectionView()
+            } else {
+                OnboardingView(context: .firstLaunch) {
+                    settings.hasCompletedOnboarding = true
+                }
+            }
         case .localOnly:
             // Kein Auth-Gate: alle Daten liegen lokal, es gibt keine Session.
             mainTabView

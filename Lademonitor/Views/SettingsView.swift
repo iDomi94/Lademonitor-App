@@ -5,6 +5,7 @@ struct SettingsView: View {
     @ObservedObject private var syncService = SyncService.shared
     @State private var showingResetConfirmation = false
     @State private var resetErrorMessage: String?
+    @State private var showingOnboarding = false
     @AppStorage(ReminderNotificationScheduler.enabledKey) private var reminderNotifications = true
 
     private static let relativeFormatter: RelativeDateTimeFormatter = {
@@ -44,6 +45,9 @@ struct SettingsView: View {
                 }
                 .navigationSplitViewStyle(.balanced)
             }
+        }
+        .fullScreenCover(isPresented: $showingOnboarding) {
+            OnboardingView(context: .replay) { showingOnboarding = false }
         }
         .alert("Alle lokalen Daten löschen?", isPresented: $showingResetConfirmation) {
             Button("Löschen", role: .destructive) { resetAllData() }
@@ -121,6 +125,14 @@ struct SettingsView: View {
             Section("Server") {
                 NavigationLink(value: SettingsRoute.server) {
                     Label("Server & Verbindung", systemImage: "network")
+                }
+            }
+
+            Section("Hilfe") {
+                Button {
+                    showingOnboarding = true
+                } label: {
+                    Label("Einführung erneut ansehen", systemImage: "sparkles")
                 }
             }
 
