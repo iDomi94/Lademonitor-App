@@ -373,7 +373,7 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         } else {
             return nil
         }
-        return consumption * perKwh / 100
+        return consumption * perKwh
     }
 
     /// Uebersetzter Klartext zur Herkunft der Temperatur, `nil` wenn keine
