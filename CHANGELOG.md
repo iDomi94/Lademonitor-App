@@ -7,6 +7,14 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.15.0
+
+- Ladevorgänge: in der untersten Zeile steht neben dem Verbrauch jetzt auch,
+  was die Strecke seit dem vorherigen Ladevorgang je 100 km gekostet hat
+  („17,8 kWh/100km · 6,23 €/100km“). Gerechnet wird live aus dem Verbrauch
+  und dem effektiven Preis je kWh des Vorgangs, inklusive Grundgebühr-Anteil;
+  ohne Preis oder Verbrauch bleibt der Wert weg.
+
 ## 1.14.0
 
 - Neue Einführung beim ersten Start: ein paar Seiten zu den wichtigsten

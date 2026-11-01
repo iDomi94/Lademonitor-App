@@ -355,6 +355,27 @@ struct ChargingSession: Codable, Identifiable, Hashable {
         return (priceTotal ?? 0) + (feeShare ?? 0)
     }
 
+    /// Kosten je 100 km der Strecke seit dem vorherigen Ladevorgang:
+    /// Verbrauch x effektiver Preis je kWh dieses Vorgangs (Saeulenpreis plus
+    /// Grundgebuehranteil, verteilt auf die geladenen kWh). Live gerechnet,
+    /// nichts gespeichert. `nil`, wenn Verbrauch, Preis oder Energie fehlen.
+    /// Bei Sonnenanteil ist `priceTotal` nur der Netzbezug - der Wert sinkt
+    /// dann zu Recht, weil die Sonnen-kWh nichts gekostet haben.
+    var costPer100km: Double? {
+        guard let consumption = consumptionKwhPer100km,
+              consumptionMethodValue != .unavailable,
+              let energy = energyKwh, energy > 0 else { return nil }
+        let perKwh: Double
+        if let total = priceTotal {
+            perKwh = (total + (feeShare ?? 0)) / energy
+        } else if let price = pricePerKwh {
+            perKwh = price + (feeShare ?? 0) / energy
+        } else {
+            return nil
+        }
+        return consumption * perKwh / 100
+    }
+
     /// Uebersetzter Klartext zur Herkunft der Temperatur, `nil` wenn keine
     /// hinterlegt ist. Die Rohwerte bleiben unangetastet - sie sind Daten,
     /// keine Anzeige (siehe models.TemperatureSource im Backend).
