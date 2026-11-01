@@ -7,6 +7,11 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.15.1
+
+- Ladevorgänge: die Kosten je 100 km waren um den Faktor 100 zu klein
+  (0,06 statt 6,23 €/100km). Behoben.
+
 ## 1.15.0
 
 - Ladevorgänge: in der untersten Zeile steht neben dem Verbrauch jetzt auch,
