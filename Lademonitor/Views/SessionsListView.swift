@@ -374,6 +374,10 @@ private struct SessionRow: View {
                             Text(method.marker)
                         }
                         Text(String(format: "%.1f kWh/100km", consumption))
+                        if let cost = session.costPer100km {
+                            Text("·")
+                            Text(String(format: "%.2f €/100km", cost))
+                        }
                     }
                     .font(.caption2)
                     .foregroundStyle(.secondary)
