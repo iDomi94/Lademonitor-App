@@ -509,6 +509,8 @@ final class LocalDataStore {
         cost.odometerKm = payload.odometerKm
         cost.label = payload.label
         cost.notes = payload.notes
+        // Wie der Server: 1 Monat ist dasselbe wie gar nicht verteilen.
+        cost.spreadMonths = payload.spreadMonths.flatMap { $0 > 1 ? min($0, LocalVehicleCostCalculator.maxSpreadMonths) : nil }
     }
 
     func deleteVehicleCost(id: String) throws {

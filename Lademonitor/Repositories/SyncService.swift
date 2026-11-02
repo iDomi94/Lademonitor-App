@@ -499,7 +499,7 @@ final class SyncService: ObservableObject {
                     vehicleId: vehicleId, amount: cost.amount, category: cost.category,
                     interval: CostInterval(rawValue: cost.interval) ?? .once,
                     startDate: cost.startDate, endDate: cost.endDate, odometerKm: cost.odometerKm,
-                    label: cost.label, notes: cost.notes
+                    label: cost.label, notes: cost.notes, spreadMonths: cost.spreadMonths
                 )
                 if let serverId = cost.serverId {
                     _ = try await APIClient.shared.updateVehicleCost(id: serverId, payload)
@@ -885,12 +885,14 @@ final class SyncService: ObservableObject {
                     existing.odometerKm = sc.odometerKm
                     existing.label = sc.label
                     existing.notes = sc.notes
+                    existing.spreadMonths = sc.spreadMonths
                 }
             } else {
                 context.insert(LocalVehicleCost(
                     serverId: sc.id, vehicleId: sc.vehicleId, amount: sc.amount, category: sc.category,
                     interval: sc.interval.rawValue, startDate: sc.startDate, endDate: sc.endDate,
-                    odometerKm: sc.odometerKm, label: sc.label, notes: sc.notes, isDirty: false
+                    odometerKm: sc.odometerKm, label: sc.label, notes: sc.notes,
+                    spreadMonths: sc.spreadMonths, isDirty: false
                 ))
             }
         }

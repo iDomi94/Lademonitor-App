@@ -7,6 +7,19 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.16.0
+
+- Fahrzeugkosten lassen sich jetzt auf einen längeren Zeitraum verteilen:
+  „Auf längeren Zeitraum verteilen“ im Kostenformular, Dauer in Monaten
+  oder Jahren. Reifen für 800 € auf 4 Jahre zählen dann mit 16,67 € je
+  Monat in Gesamtkosten, Kosten je km und Jahresübersicht – Monat für Monat
+  ab dem Kaufdatum, statt alles im Kaufmonat. Bei jährlichen Zahlungen wird
+  jede Zahlung für sich verteilt (Versicherung auf 12 Monate).
+- In der Liste steht bei verteilten Kosten der Monatsanteil und wie viel
+  davon bisher in die Kosten eingeflossen ist.
+- Wird im Server-Modus synchronisiert (braucht Server 0.49.0; ein älterer
+  Server kennt das Feld nicht und setzt es beim nächsten Abgleich zurück).
+
 ## 1.15.1
 
 - Ladevorgänge: die Kosten je 100 km waren um den Faktor 100 zu klein
