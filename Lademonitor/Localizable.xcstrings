@@ -15606,6 +15606,125 @@
           }
         }
       }
+    },
+    "Verteilt auf %lld Monate · %@/Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verteilt auf %lld Monate · %@/Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spread over %lld months · %@/month"
+          }
+        }
+      }
+    },
+    "Davon in den Kosten %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Davon in den Kosten %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counted so far %@"
+          }
+        }
+      }
+    },
+    "%@ je Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ je Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ per month"
+          }
+        }
+      }
+    },
+    "Auf längeren Zeitraum verteilen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf längeren Zeitraum verteilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spread over a longer period"
+          }
+        }
+      }
+    },
+    "Monate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Months"
+          }
+        }
+      }
+    },
+    "Einheit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einheit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unit"
+          }
+        }
+      }
+    },
+    "Jede Zahlung zählt dann gleichmäßig über die gewählte Zeit in die Kosten, Monat für Monat ab dem Zahltag – z. B. Reifen auf 4 Jahre oder die Jahresversicherung auf 12 Monate." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Zahlung zählt dann gleichmäßig über die gewählte Zeit in die Kosten, Monat für Monat ab dem Zahltag – z. B. Reifen auf 4 Jahre oder die Jahresversicherung auf 12 Monate."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each payment is then counted evenly over the chosen time, month by month from the payment date – e.g. tires over 4 years or the yearly insurance over 12 months."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

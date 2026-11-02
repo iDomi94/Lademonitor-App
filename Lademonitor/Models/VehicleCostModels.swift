@@ -104,6 +104,9 @@ struct VehicleCost: Codable, Identifiable, Hashable {
     var odometerKm: Int?
     var label: String?
     var notes: String?
+    /// Server ab 0.49.0: jede Zahlung gleichmaessig auf so viele Monate ab dem
+    /// Zahltag verteilen (LocalVehicleCostCalculator.spreadShares). nil = nein.
+    var spreadMonths: Int? = nil
 
     var categoryValue: CostCategory { CostCategory(raw: category) }
 
@@ -113,6 +116,7 @@ struct VehicleCost: Codable, Identifiable, Hashable {
         case startDate = "start_date"
         case endDate = "end_date"
         case odometerKm = "odometer_km"
+        case spreadMonths = "spread_months"
     }
 }
 
@@ -129,6 +133,9 @@ struct VehicleCostPayload: Encodable {
     var odometerKm: Int?
     var label: String?
     var notes: String?
+    /// Kein Standardwert: jeder Aufrufer muss die Verteilung mitgeben, sonst
+    /// wuerde ein PATCH sie still auf null zuruecksetzen.
+    var spreadMonths: Int?
 
     enum CodingKeys: String, CodingKey {
         case amount, category, interval, label, notes
@@ -136,6 +143,7 @@ struct VehicleCostPayload: Encodable {
         case startDate = "start_date"
         case endDate = "end_date"
         case odometerKm = "odometer_km"
+        case spreadMonths = "spread_months"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -149,6 +157,7 @@ struct VehicleCostPayload: Encodable {
         try c.encode(odometerKm, forKey: .odometerKm)
         try c.encode(label, forKey: .label)
         try c.encode(notes, forKey: .notes)
+        try c.encode(spreadMonths, forKey: .spreadMonths)
     }
 }
 
@@ -170,6 +179,8 @@ final class LocalVehicleCost {
     var odometerKm: Int?
     var label: String?
     var notes: String?
+    /// Neu in 1.16.0 (optional = leichte SwiftData-Migration).
+    var spreadMonths: Int?
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -187,6 +198,7 @@ final class LocalVehicleCost {
         odometerKm: Int? = nil,
         label: String? = nil,
         notes: String? = nil,
+        spreadMonths: Int? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -203,6 +215,7 @@ final class LocalVehicleCost {
         self.odometerKm = odometerKm
         self.label = label
         self.notes = notes
+        self.spreadMonths = spreadMonths
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -220,7 +233,8 @@ final class LocalVehicleCost {
             endDate: endDate,
             odometerKm: odometerKm,
             label: label,
-            notes: notes
+            notes: notes,
+            spreadMonths: spreadMonths
         )
     }
 }

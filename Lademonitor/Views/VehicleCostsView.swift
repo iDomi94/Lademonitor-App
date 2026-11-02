@@ -157,6 +157,14 @@ private struct VehicleCostRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            if let months = cost.spreadMonths, let monthly = LocalVehicleCostCalculator.spreadMonthly(cost) {
+                Text("Verteilt auf \(months) Monate · \(monthly.formatted(.currency(code: "EUR")))/Monat")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Davon in den Kosten \(LocalVehicleCostCalculator.spreadToDate(cost).formatted(.currency(code: "EUR")))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             if let notes = cost.notes, !notes.isEmpty {
                 Text(notes)
                     .font(.caption)
@@ -215,6 +223,9 @@ struct AddEditVehicleCostView: View {
     @State private var odometerKm: String
     @State private var label: String
     @State private var notes: String
+    @State private var isSpread: Bool
+    @State private var spreadCount: String
+    @State private var spreadInYears: Bool
     @State private var isSaving = false
     @State private var errorMessage: String?
 
@@ -235,6 +246,18 @@ struct AddEditVehicleCostView: View {
         _odometerKm = State(initialValue: (cost?.odometerKm ?? preset?.odometerKm).map { String($0) } ?? "")
         _label = State(initialValue: cost?.label ?? preset?.label ?? "")
         _notes = State(initialValue: cost?.notes ?? "")
+        let months = cost?.spreadMonths
+        let years = months.map { $0 % 12 == 0 } ?? true
+        _isSpread = State(initialValue: months != nil)
+        _spreadInYears = State(initialValue: years)
+        _spreadCount = State(initialValue: months.map { String(years ? $0 / 12 : $0) } ?? "4")
+    }
+
+    /// Monate, auf die verteilt wird; nil = nicht verteilen.
+    private var spreadMonths: Int? {
+        guard isSpread, let n = Int(spreadCount.trimmingCharacters(in: .whitespaces)), n > 0 else { return nil }
+        let months = spreadInYears ? n * 12 : n
+        return months > 1 ? min(months, LocalVehicleCostCalculator.maxSpreadMonths) : nil
     }
 
     private var parsedAmount: Double? {
@@ -246,6 +269,7 @@ struct AddEditVehicleCostView: View {
     private var canSave: Bool {
         guard let parsedAmount, parsedAmount >= 0 else { return false }
         if isRecurring && hasEndDate && endDate < startDate { return false }
+        if isSpread && spreadMonths == nil { return false }
         return true
     }
 
@@ -286,6 +310,29 @@ struct AddEditVehicleCostView: View {
                     if isRecurring {
                         Text("Ein Jahresbetrag zählt in dem Monat, in dem er fällig ist. Eine Beitragsänderung ist ein neuer Eintrag, beim alten wird die letzte Zahlung gesetzt.")
                     }
+                }
+
+                Section {
+                    Toggle("Auf längeren Zeitraum verteilen", isOn: $isSpread)
+                    if isSpread {
+                        HStack {
+                            TextField("4" as String, text: $spreadCount)
+                                .keyboardType(.numberPad)
+                            Picker("Einheit", selection: $spreadInYears) {
+                                Text("Monate").tag(false)
+                                Text("Jahre").tag(true)
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+                        }
+                        if let months = spreadMonths, let parsedAmount {
+                            Text("\((parsedAmount / Double(months)).formatted(.currency(code: "EUR"))) je Monat")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } footer: {
+                    Text("Jede Zahlung zählt dann gleichmäßig über die gewählte Zeit in die Kosten, Monat für Monat ab dem Zahltag – z. B. Reifen auf 4 Jahre oder die Jahresversicherung auf 12 Monate.")
                 }
 
                 Section {
@@ -336,7 +383,8 @@ struct AddEditVehicleCostView: View {
             endDate: (isRecurring && hasEndDate) ? Calendar.current.startOfDay(for: endDate) : nil,
             odometerKm: Int(odometerKm.trimmingCharacters(in: .whitespaces)),
             label: trimmedLabel.isEmpty ? nil : trimmedLabel,
-            notes: trimmedNotes.isEmpty ? nil : trimmedNotes
+            notes: trimmedNotes.isEmpty ? nil : trimmedNotes,
+            spreadMonths: spreadMonths
         )
         do {
             if let cost {

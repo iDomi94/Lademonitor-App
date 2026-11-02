@@ -13,6 +13,9 @@ import Foundation
 ///   laufen vom URSPRUENGLICHEN Ankertag aus (31.01. -> 28.02. -> 31.03.) bis
 ///   zum Enddatum (inklusive) oder bis heute. Ein Jahresbetrag zaehlt in dem
 ///   Monat, in dem er faellig ist - nicht auf zwoelf Monate verteilt.
+///   Ab 1.16.0 (Server 0.49.0) laesst sich jede Zahlung optional gleichmaessig
+///   auf `spreadMonths` Monate ab dem Zahltag verteilen; nur begonnene Monate
+///   zaehlen, der Rundungsrest steckt im letzten Anteil (`spreadShares`).
 /// - Leasing: Rate plus Sonderzahlung / Laufzeit in Monaten; ohne Enddatum
 ///   zaehlt die Sonderzahlung im ersten Monat.
 /// - Wertverlust: Restwertkurve (1. Jahr linear auf 75 %, danach x0,87 je
@@ -77,12 +80,41 @@ enum LocalVehicleCostCalculator {
         return result
     }
 
+    static let maxSpreadMonths = 600
+
+    /// Eine Zahlung, verteilt auf `months` Monatsanteile ab dem Zahltag, wie
+    /// `vehicle_costs.spread_shares`: ohne Verteilung (nil/0/1) die eine
+    /// Zahlung, sonst gleiche, auf den Cent gerundete Anteile; der
+    /// Rundungsrest landet im LETZTEN Anteil.
+    static func spreadShares(amount: Double, day: Date, months: Int?) -> [(day: Date, amount: Double)] {
+        guard let months, months > 1 else { return [(day, amount)] }
+        let share = round2(amount / Double(months))
+        let last = round2(amount - share * Double(months - 1))
+        return (0..<months).map { k -> (day: Date, amount: Double) in
+            (addMonths(day, k), k == months - 1 ? last : share)
+        }
+    }
+
     static func costEntries(_ costs: [VehicleCost], until: Date) -> [Entry] {
-        costs.flatMap { cost in
-            occurrences(cost, until: until).map {
-                Entry(vehicleId: cost.vehicleId, day: $0, amount: cost.amount, category: cost.categoryValue.rawValue)
+        let untilDay = day(until)
+        return costs.flatMap { cost in
+            occurrences(cost, until: until).flatMap { payDay in
+                spreadShares(amount: cost.amount, day: payDay, months: cost.spreadMonths)
+                    .filter { $0.day <= untilDay }
+                    .map { Entry(vehicleId: cost.vehicleId, day: $0.day, amount: $0.amount, category: cost.categoryValue.rawValue) }
             }
         }
+    }
+
+    /// Davon bis heute in die Kosten eingeflossen, wie `spread_to_date`.
+    static func spreadToDate(_ cost: VehicleCost, until: Date = Date()) -> Double {
+        round2(costEntries([cost], until: until).reduce(0) { $0 + $1.amount })
+    }
+
+    /// Monatsanteil einer verteilten Zahlung, wie `spread_monthly`.
+    static func spreadMonthly(_ cost: VehicleCost) -> Double? {
+        guard let months = cost.spreadMonths, months > 1 else { return nil }
+        return round2(cost.amount / Double(months))
     }
 
     /// Summe aller Zahlungen bis heute ("bisher bezahlt"), wie `paid_to_date`.
