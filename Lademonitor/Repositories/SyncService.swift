@@ -198,6 +198,9 @@ final class SyncService: ObservableObject {
         defer { isSyncing = false }
         resetSyncStateIfAccountChanged()
         itemErrors = []
+        // Server-Version fuer die Sperre neuer Funktionen (ServerCapabilities) -
+        // wirft nicht, ohne Antwort bleibt der letzte Stand.
+        await ServerCapabilities.shared.refresh()
         do {
             try await pushVehicles()
             try await pushProviders()

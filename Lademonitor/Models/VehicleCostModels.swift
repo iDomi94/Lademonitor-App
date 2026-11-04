@@ -53,6 +53,9 @@ enum CostCategory: String, CaseIterable, Identifiable {
     case parking
     case toll
     case cleaning
+    /// THG-Quote (Server ab 0.50.0): eine Gutschrift, zaehlt NEGATIV ueber das
+    /// Kalenderjahr ihres Datums verteilt (LocalVehicleCostCalculator.thgShares).
+    case thg
     case other
 
     var id: String { rawValue }
@@ -60,6 +63,9 @@ enum CostCategory: String, CaseIterable, Identifiable {
     init(raw: String?) {
         self = raw.flatMap(CostCategory.init(rawValue:)) ?? .other
     }
+
+    /// Gutschrift statt Kosten, wie `vehicle_costs.CREDIT_CATEGORIES`.
+    var isCredit: Bool { self == .thg }
 
     var displayName: String { CostCategory.displayName(raw: rawValue) }
 
@@ -79,6 +85,7 @@ enum CostCategory: String, CaseIterable, Identifiable {
         case "parking": return String(localized: "Parken")
         case "toll": return String(localized: "Maut/Vignette")
         case "cleaning": return String(localized: "Wäsche/Pflege")
+        case "thg": return String(localized: "THG-Quote")
         default: return String(localized: "Sonstiges")
         }
     }

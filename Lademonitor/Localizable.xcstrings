@@ -15725,6 +15725,74 @@
           }
         }
       }
+    },
+    "Gutschrift · %@/Monat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gutschrift · %@/Monat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit · %@/month"
+          }
+        }
+      }
+    },
+    "Benötigt Server %@ oder neuer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benötigt Server %@ oder neuer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requires server %@ or newer"
+          }
+        }
+      }
+    },
+    "Datum im Jahr der Quote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum im Jahr der Quote"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date in the quota's year"
+          }
+        }
+      }
+    },
+    "Die THG-Quote ist eine Gutschrift: Sie zählt negativ für das Kalenderjahr des Datums, gleichmäßig auf die Monate verteilt (300 € = 25 € pro Monat). Wurde das Auto erst im Laufe des Jahres gekauft oder geleast, verteilt sie sich nur auf die Monate ab dann. „Jährlich“ wiederholt sie für jedes Folgejahr." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die THG-Quote ist eine Gutschrift: Sie zählt negativ für das Kalenderjahr des Datums, gleichmäßig auf die Monate verteilt (300 € = 25 € pro Monat). Wurde das Auto erst im Laufe des Jahres gekauft oder geleast, verteilt sie sich nur auf die Monate ab dann. „Jährlich“ wiederholt sie für jedes Folgejahr."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The GHG quota is a credit: it counts negatively for the calendar year of the date, spread evenly over its months (300 € = 25 € per month). If the car was bought or leased during the year, it is spread only over the months from then on. \"Yearly\" repeats it for every following year."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

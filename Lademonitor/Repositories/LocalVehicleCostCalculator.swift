@@ -16,6 +16,11 @@ import Foundation
 ///   Ab 1.16.0 (Server 0.49.0) laesst sich jede Zahlung optional gleichmaessig
 ///   auf `spreadMonths` Monate ab dem Zahltag verteilen; nur begonnene Monate
 ///   zaehlen, der Rundungsrest steckt im letzten Anteil (`spreadShares`).
+/// - THG-Quote (ab 1.17.0, Server 0.50.0, Kategorie "thg"): eine Gutschrift,
+///   NEGATIV ueber die Monate des Kalenderjahres ihres Datums verteilt (je
+///   Monat ab dem 1.1.); wurde das Fahrzeug in diesem Jahr gekauft bzw.
+///   geleast, nur ab dann bis Dezember - der volle Betrag auf weniger Monate.
+///   `spreadMonths` gilt dafuer nicht (`thgShares`).
 /// - Leasing: Rate plus Sonderzahlung / Laufzeit in Monaten; ohne Enddatum
 ///   zaehlt die Sonderzahlung im ersten Monat.
 /// - Wertverlust: Restwertkurve (1. Jahr linear auf 75 %, danach x0,87 je
@@ -95,24 +100,67 @@ enum LocalVehicleCostCalculator {
         }
     }
 
-    static func costEntries(_ costs: [VehicleCost], until: Date) -> [Entry] {
-        let untilDay = day(until)
-        return costs.flatMap { cost in
-            occurrences(cost, until: until).flatMap { payDay in
-                spreadShares(amount: cost.amount, day: payDay, months: cost.spreadMonths)
-                    .filter { $0.day <= untilDay }
-                    .map { Entry(vehicleId: cost.vehicleId, day: $0.day, amount: $0.amount, category: cost.categoryValue.rawValue) }
-            }
+    /// Ab wann das Fahrzeug dem Nutzer gehoert, wie `vehicle_costs.ownership_start`:
+    /// Kauf- bzw. Leasingbeginn, sonst nil (dann zaehlt das ganze Jahr).
+    static func ownershipStart(_ vehicle: Vehicle?) -> Date? {
+        guard let vehicle else { return nil }
+        switch vehicle.ownershipValue {
+        case .purchase: return vehicle.purchaseDate.map(day)
+        case .leasing: return vehicle.leasingStart.map(day)
+        case Ownership.none: return nil
         }
     }
 
-    /// Davon bis heute in die Kosten eingeflossen, wie `spread_to_date`.
-    static func spreadToDate(_ cost: VehicleCost, until: Date = Date()) -> Double {
-        round2(costEntries([cost], until: until).reduce(0) { $0 + $1.amount })
+    /// Eine THG-Quote als Monatsanteile ueber das Kalenderjahr von `payDay`,
+    /// wie `vehicle_costs.thg_shares`: ab 1.1. (bzw. ab Kauf-/Leasingbeginn,
+    /// wenn der in DIESES Jahr faellt) bis Dezember, Rundung wie spreadShares.
+    static func thgShares(amount: Double, day payDay: Date, ownedFrom: Date?) -> [(day: Date, amount: Double)] {
+        let year = calendar.component(.year, from: payDay)
+        let jan1 = calendar.date(from: DateComponents(year: year, month: 1, day: 1))!
+        let dec31 = calendar.date(from: DateComponents(year: year, month: 12, day: 31))!
+        var first = jan1
+        if let ownedFrom, ownedFrom > jan1, ownedFrom <= dec31 { first = ownedFrom }
+        let months = 12 - calendar.component(.month, from: first) + 1
+        return spreadShares(amount: amount, day: first, months: months)
     }
 
-    /// Monatsanteil einer verteilten Zahlung, wie `spread_monthly`.
-    static func spreadMonthly(_ cost: VehicleCost) -> Double? {
+    /// `vehicles` braucht es nur fuer die THG-Quote (Kauf-/Leasingbeginn);
+    /// fehlt das Fahrzeug, zaehlt das ganze Jahr.
+    static func costEntries(_ costs: [VehicleCost], until: Date, vehicles: [Vehicle] = []) -> [Entry] {
+        let untilDay = day(until)
+        let endOfYear = calendar.date(from: DateComponents(year: calendar.component(.year, from: untilDay), month: 12, day: 31))!
+        return costs.flatMap { cost -> [Entry] in
+            let category = cost.categoryValue
+            let shares: [(day: Date, amount: Double)]
+            if category.isCredit {
+                // Bis Jahresende: eine Quote mit Datum im Mai zaehlt schon ab Januar.
+                let ownedFrom = ownershipStart(vehicles.first { $0.id == cost.vehicleId })
+                shares = occurrences(cost, until: endOfYear).flatMap {
+                    thgShares(amount: cost.amount, day: $0, ownedFrom: ownedFrom).map { (day: $0.day, amount: -$0.amount) }
+                }
+            } else {
+                shares = occurrences(cost, until: until).flatMap {
+                    spreadShares(amount: cost.amount, day: $0, months: cost.spreadMonths)
+                }
+            }
+            return shares
+                .filter { $0.day <= untilDay }
+                .map { Entry(vehicleId: cost.vehicleId, day: $0.day, amount: $0.amount, category: category.rawValue) }
+        }
+    }
+
+    /// Davon bis heute in die Kosten eingeflossen, wie `spread_to_date`
+    /// (bei der THG-Quote negativ).
+    static func spreadToDate(_ cost: VehicleCost, vehicle: Vehicle? = nil, until: Date = Date()) -> Double {
+        round2(costEntries([cost], until: until, vehicles: vehicle.map { [$0] } ?? []).reduce(0) { $0 + $1.amount })
+    }
+
+    /// Monatsanteil einer verteilten Zahlung, wie `spread_monthly` (bei der
+    /// THG-Quote der positive Anteil im Jahr ihres Datums).
+    static func spreadMonthly(_ cost: VehicleCost, vehicle: Vehicle? = nil) -> Double? {
+        if cost.categoryValue.isCredit {
+            return thgShares(amount: cost.amount, day: day(cost.startDate), ownedFrom: ownershipStart(vehicle)).first?.amount
+        }
         guard let months = cost.spreadMonths, months > 1 else { return nil }
         return round2(cost.amount / Double(months))
     }
@@ -361,7 +409,7 @@ enum LocalVehicleCostCalculator {
         let todayDay = day(today)
         let startDay = dateRange.map { day($0.lowerBound) }
         let until = dateRange.map { min(day($0.upperBound), todayDay) } ?? todayDay
-        var entries = costEntries(relevant, until: until)
+        var entries = costEntries(relevant, until: until, vehicles: vehicles)
         for vehicle in vehicles where vehicle.ownershipValue != Ownership.none {
             let history = sessions.filter { $0.vehicleId == vehicle.id && $0.odometerKm != nil }
             entries += ownershipEntries(vehicle: vehicle, sessions: history, until: until)
@@ -390,7 +438,7 @@ enum LocalVehicleCostCalculator {
     /// gehoeren zu keinem Fahrzeug), sonstige Kosten, Wertverlust bzw. Leasing.
     static func yearly(vehicle: Vehicle, costs: [VehicleCost], sessions: [ChargingSession], today: Date = Date()) -> [YearCostStat] {
         let own = sessions.filter { $0.vehicleId == vehicle.id }
-        var entries = costEntries(costs.filter { $0.vehicleId == vehicle.id }, until: today)
+        var entries = costEntries(costs.filter { $0.vehicleId == vehicle.id }, until: today, vehicles: [vehicle])
         entries += ownershipEntries(vehicle: vehicle, sessions: own, until: today)
         var byYear: [Int: [String: Double]] = [:]
         for session in own {
