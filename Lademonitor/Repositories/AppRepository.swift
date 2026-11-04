@@ -155,7 +155,10 @@ final class AppRepository {
 
     func fetchStatsSummary(vehicleId: String? = nil, dateRange: ClosedRange<Date>? = nil) async throws -> StatsSummary {
         await syncBeforeRead()
-        let sessions = try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: nil, dateRange: dateRange)
+        // Ohne Zeitraum geholt und erst hier gefiltert: der Rest der Historie
+        // liefert den km-Anker vor dem Zeitraum (LocalStatsCalculator).
+        let history = try LocalDataStore.shared.fetchSessions(vehicleId: vehicleId, needsReview: nil)
+        let sessions = dateRange.map { range in history.filter { range.contains($0.startTime) } } ?? history
         let vehicles = try LocalDataStore.shared.fetchVehicles()
         let providers = try LocalDataStore.shared.fetchProviders()
         // Perioden ohne Ladevorgang gehoeren zu keinem Fahrzeug (ein Abo gilt
@@ -170,7 +173,8 @@ final class AppRepository {
             }
         }
         var summary = LocalStatsCalculator.compute(
-            sessions: sessions, vehicles: vehicles, providers: providers, unallocatedFees: unallocated
+            sessions: sessions, vehicles: vehicles, providers: providers, unallocatedFees: unallocated,
+            history: history
         )
         // Gesamtkosten wie stats.py::build_vehicle_costs: Ladekosten und km
         // aus der Zusammenfassung, Kosten und km-Staende fuer die
