@@ -7,6 +7,8 @@ struct VehicleCostsView: View {
     let vehicle: Vehicle
 
     @State private var costs: [VehicleCost] = []
+    /// Gespeicherter Stand des Fahrzeugs (Kaufdatum fuer die THG-Quote).
+    @State private var current: Vehicle?
     @State private var years: [YearCostStat] = []
     @State private var errorMessage: String?
     @State private var showingAdd = false
@@ -38,7 +40,7 @@ struct VehicleCostsView: View {
                         Button {
                             editing = cost
                         } label: {
-                            VehicleCostRow(cost: cost)
+                            VehicleCostRow(cost: cost, vehicle: current ?? vehicle)
                                 .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
@@ -98,6 +100,7 @@ struct VehicleCostsView: View {
             // Der gespeicherte Stand des Fahrzeugs, nicht der aus dem
             // Formular - Kauf/Leasing zaehlt erst nach dem Speichern.
             let current = basis.vehicles.first { $0.id == vehicle.id } ?? vehicle
+            self.current = current
             costs = basis.costs.filter { $0.vehicleId == current.id }
             years = LocalVehicleCostCalculator.yearly(vehicle: current, costs: basis.costs, sessions: basis.sessions)
             errorMessage = nil
@@ -136,6 +139,7 @@ private struct YearCostRow: View {
 
 private struct VehicleCostRow: View {
     let cost: VehicleCost
+    let vehicle: Vehicle
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -146,8 +150,9 @@ private struct VehicleCostRow: View {
                 Text(cost.label.map { "\(cost.categoryValue.displayName) · \($0)" } ?? cost.categoryValue.displayName)
                     .font(.body)
                 Spacer()
-                Text(cost.amount.formatted(.currency(code: "EUR")))
+                Text((cost.categoryValue.isCredit ? -cost.amount : cost.amount).formatted(.currency(code: "EUR")))
                     .font(.body.monospacedDigit())
+                    .foregroundStyle(cost.categoryValue.isCredit ? Color.green : Color.primary)
             }
             Text(scheduleText)
                 .font(.caption)
@@ -157,7 +162,14 @@ private struct VehicleCostRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if let months = cost.spreadMonths, let monthly = LocalVehicleCostCalculator.spreadMonthly(cost) {
+            if cost.categoryValue.isCredit, let monthly = LocalVehicleCostCalculator.spreadMonthly(cost, vehicle: vehicle) {
+                Text("Gutschrift · \(monthly.formatted(.currency(code: "EUR")))/Monat")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Davon in den Kosten \(LocalVehicleCostCalculator.spreadToDate(cost, vehicle: vehicle).formatted(.currency(code: "EUR")))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else if let months = cost.spreadMonths, let monthly = LocalVehicleCostCalculator.spreadMonthly(cost) {
                 Text("Verteilt auf \(months) Monate · \(monthly.formatted(.currency(code: "EUR")))/Monat")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -213,6 +225,7 @@ struct AddEditVehicleCostView: View {
     let onSaved: () -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var capabilities = ServerCapabilities.shared
 
     @State private var category: CostCategory
     @State private var amount: String
@@ -266,10 +279,19 @@ struct AddEditVehicleCostView: View {
 
     private var isRecurring: Bool { interval != .once }
 
+    private var isThg: Bool { category == .thg }
+
+    /// Gesperrt auf einem Server vor 0.50.0 - ein bestehender Eintrag laesst
+    /// sich aber weiter bearbeiten (er kam ja von irgendwo).
+    private var thgLockedHint: String? {
+        cost?.categoryValue == .thg ? nil : capabilities.unavailableHint(.thgCredit)
+    }
+
     private var canSave: Bool {
         guard let parsedAmount, parsedAmount >= 0 else { return false }
+        if isThg && thgLockedHint != nil { return false }
         if isRecurring && hasEndDate && endDate < startDate { return false }
-        if isSpread && spreadMonths == nil { return false }
+        if !isThg && isSpread && spreadMonths == nil { return false }
         return true
     }
 
@@ -280,9 +302,18 @@ struct AddEditVehicleCostView: View {
                     Picker("Kategorie", selection: $category) {
                         ForEach(CostCategory.allCases) { category in
                             Text(category.displayName).tag(category)
+                                .disabled(category == .thg && thgLockedHint != nil)
                         }
                     }
                     TextField("Bezeichnung (z. B. Vollkasko)", text: $label)
+                } footer: {
+                    if isThg {
+                        if let thgLockedHint {
+                            Label(thgLockedHint, systemImage: "lock")
+                        } else {
+                            Text("Die THG-Quote ist eine Gutschrift: Sie zählt negativ für das Kalenderjahr des Datums, gleichmäßig auf die Monate verteilt (300 € = 25 € pro Monat). Wurde das Auto erst im Laufe des Jahres gekauft oder geleast, verteilt sie sich nur auf die Monate ab dann. „Jährlich“ wiederholt sie für jedes Folgejahr.")
+                        }
+                    }
                 }
 
                 Section {
@@ -298,7 +329,8 @@ struct AddEditVehicleCostView: View {
                             Text(interval.displayName).tag(interval)
                         }
                     }
-                    DatePicker(isRecurring ? LocalizedStringKey("Erste Zahlung") : LocalizedStringKey("Datum"),
+                    DatePicker(isThg ? LocalizedStringKey("Datum im Jahr der Quote")
+                               : (isRecurring ? LocalizedStringKey("Erste Zahlung") : LocalizedStringKey("Datum")),
                                selection: $startDate, displayedComponents: .date)
                     if isRecurring {
                         Toggle("Letzte Zahlung", isOn: $hasEndDate)
@@ -307,11 +339,12 @@ struct AddEditVehicleCostView: View {
                         }
                     }
                 } footer: {
-                    if isRecurring {
+                    if isRecurring && !isThg {
                         Text("Ein Jahresbetrag zählt in dem Monat, in dem er fällig ist. Eine Beitragsänderung ist ein neuer Eintrag, beim alten wird die letzte Zahlung gesetzt.")
                     }
                 }
 
+                if !isThg {
                 Section {
                     Toggle("Auf längeren Zeitraum verteilen", isOn: $isSpread)
                     if isSpread {
@@ -333,6 +366,7 @@ struct AddEditVehicleCostView: View {
                     }
                 } footer: {
                     Text("Jede Zahlung zählt dann gleichmäßig über die gewählte Zeit in die Kosten, Monat für Monat ab dem Zahltag – z. B. Reifen auf 4 Jahre oder die Jahresversicherung auf 12 Monate.")
+                }
                 }
 
                 Section {
@@ -384,7 +418,7 @@ struct AddEditVehicleCostView: View {
             odometerKm: Int(odometerKm.trimmingCharacters(in: .whitespaces)),
             label: trimmedLabel.isEmpty ? nil : trimmedLabel,
             notes: trimmedNotes.isEmpty ? nil : trimmedNotes,
-            spreadMonths: spreadMonths
+            spreadMonths: isThg ? nil : spreadMonths
         )
         do {
             if let cost {

@@ -7,6 +7,19 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.17.0
+
+- THG-Quote eintragen: neue Kostenkategorie „THG-Quote“ (Fahrzeug → Kosten).
+  Sie zählt als Gutschrift negativ für das Kalenderjahr ihres Datums,
+  gleichmäßig auf die Monate verteilt – 300 € sind 25 € pro Monat in
+  Gesamtkosten, Kosten je km und Jahresübersicht. Wurde das Auto erst im
+  Laufe des Jahres gekauft oder geleast, verteilt sie sich auf die Monate ab
+  dann. „Jährlich“ trägt sie für jedes Folgejahr ein.
+- Neue Funktionen, die einen neueren Server brauchen, bleiben auf einem
+  älteren Server sichtbar, sind aber gesperrt („Benötigt Server 0.50.0 oder
+  neuer“). Die App liest die Server-Version bei jedem Abgleich. Im
+  Nur-lokal-Modus ist nichts gesperrt.
+
 ## 1.16.1
 
 - Dashboard: Ø Verbrauch passt jetzt auch bei kurzen Zeiträumen wie „Monat

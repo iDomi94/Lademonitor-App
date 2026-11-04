@@ -17,6 +17,7 @@ enum CostCategoryStyle {
         case "parking": return Color(hex: 0xd48ac8)
         case "toll": return Color(hex: 0xc9a227)
         case "cleaning": return Color(hex: 0x6cc4e0)
+        case "thg": return Color(hex: 0x16a34a)
         default: return Color(hex: 0x6b7280)
         }
     }
@@ -37,7 +38,8 @@ private extension Color {
 struct CostCategoryBars: View {
     let categories: [CostCategoryStat]
 
-    private var maxAmount: Double { max(categories.map(\.amount).max() ?? 0, 0.0001) }
+    // Gutschriften (THG-Quote) kommen negativ - Balkenlaenge nach Betrag.
+    private var maxAmount: Double { max(categories.map { abs($0.amount) }.max() ?? 0, 0.0001) }
 
     var body: some View {
         VStack(spacing: 8) {
@@ -52,7 +54,7 @@ struct CostCategoryBars: View {
                     GeometryReader { geo in
                         RoundedRectangle(cornerRadius: 4)
                             .fill(CostCategoryStyle.color(stat.category))
-                            .frame(width: max(geo.size.width * max(stat.amount, 0) / maxAmount, 4))
+                            .frame(width: max(geo.size.width * abs(stat.amount) / maxAmount, 4))
                     }
                     .frame(height: 16)
                     Text(stat.amount.formatted(.currency(code: "EUR").precision(.fractionLength(0))))

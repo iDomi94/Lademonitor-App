@@ -238,6 +238,15 @@ final class APIClient {
         return result.status == "ok"
     }
 
+    /// Version des Servers aus `/health` (seit jeher Teil der Antwort), fuer
+    /// ServerCapabilities.
+    func fetchServerVersion() async throws -> String? {
+        let request = try makeRequest(path: "/health")
+        struct Health: Decodable { let version: String? }
+        let result: Health = try await send(request)
+        return result.version
+    }
+
     // MARK: - Vehicles
 
     func fetchVehicles() async throws -> [Vehicle] {
