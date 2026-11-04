@@ -285,6 +285,10 @@ struct ChargingSession: Codable, Identifiable, Hashable {
     /// in `priceTotal` vor - das bleibt der Saeulenpreis. Nur lesend und
     /// lokal immer frisch berechnet (LocalFeeAllocator), wie der Verbrauch.
     var feeShare: Double? = nil
+    /// km zum Vorgaenger, auf denen `consumptionKwhPer100km` beruht - nur als
+    /// Gewicht fuer die Mittelwerte im Dashboard (LocalStatsCalculator), nicht
+    /// zur Anzeige. Lokal gesetzt (LocalDataStore), nicht Teil der API.
+    var consumptionKm: Double? = nil
     /// Abweichender Messort der kWh ("charger" | "vehicle"), `nil` = folgt dem
     /// Anbieter (Server ab 0.29.0). Bewusst der ROHE Wert, nicht
     /// `energy_meter_effective` - sonst wuerde eine spaetere Aenderung am

@@ -8,14 +8,18 @@ enum LocalStatsCalculator {
     /// `unallocatedFees` sind die schon nach Fahrzeug und Zeitraum gefilterten
     /// Perioden ohne Ladevorgang (siehe AppRepository.fetchStatsSummary) - wie
     /// in stats.py zaehlen Grundgebuehren in allen Kostenkennzahlen mit.
+    /// `sessions` muessen ausserdem `consumptionKwhPer100km`/`consumptionKm`
+    /// ueber die ganze Historie tragen (LocalDataStore.fetchSessions);
+    /// `history` sind alle Vorgaenge der betrachteten Fahrzeuge OHNE
+    /// Zeitraumfilter, fuer den km-Anker vor dem Zeitraum.
     static func compute(
         sessions: [ChargingSession],
         vehicles: [Vehicle],
         providers: [Provider],
-        unallocatedFees: [LocalFeeAllocator.Period] = []
+        unallocatedFees: [LocalFeeAllocator.Period] = [],
+        history: [ChargingSession]? = nil
     ) -> StatsSummary {
         let sorted = sessions.sorted { $0.startTime < $1.startTime }
-        let calendar = Calendar.current
 
         func cost(_ s: ChargingSession) -> Double { (s.priceTotal ?? 0) + (s.feeShare ?? 0) }
 
@@ -43,26 +47,47 @@ enum LocalStatsCalculator {
             gridKwh: round2(shares.reduce(0) { $0 + $1.gridKwh })
         )
 
-        let withOdo = sorted.filter { $0.odometerKm != nil }
-        var consumption: Double?
-        var pricePer100km: Double?
-        var totalKmDriven: Int?
-        if withOdo.count >= 2, let first = withOdo.first?.odometerKm, let last = withOdo.last?.odometerKm {
-            let kmDriven = last - first
-            totalKmDriven = kmDriven
-            if kmDriven > 0 {
-                let kwhInRange = withOdo.dropFirst().reduce(0) { $0 + ($1.energyKwh ?? 0) }
-                consumption = round1(kwhInRange / Double(kmDriven) * 100)
-                // Wie die kWh ab dem zweiten Vorgang, dazu nur die nicht umgelegten
-                // Gebuehren, deren Periode in genau diesem Zeitraum beginnt.
-                let firstDay = calendar.startOfDay(for: withOdo.first!.startTime)
-                let lastDay = calendar.startOfDay(for: withOdo.last!.startTime)
-                let sessionCost: Double = withOdo.dropFirst().reduce(0) { $0 + cost($1) }
-                let feesInRange: Double = unallocatedFees
-                    .filter { firstDay < $0.start && $0.start <= lastDay }
-                    .reduce(0) { $0 + $1.amount }
-                pricePer100km = round2((sessionCost + feesInRange) / Double(kmDriven) * 100)
+        // Verbrauch, Preis je 100 km und km - wie stats.py seit 0.49.1. Vorher:
+        // kWh ab dem zweiten Vorgang im Zeitraum / km zwischen erstem und
+        // letztem km-Stand. Bei kurzen Zeitraeumen hing das am Akkustand an den
+        // Raendern ("Monat bis jetzt", 04.11.2026: zwei Ladungen mit 19,4 und
+        // 20,6 kWh/100 km ergaben 29,5). Jetzt das km-gewichtete Mittel der
+        // Einzelwerte, die LocalDataStore ueber die GANZE Historie rechnet -
+        // also genau die Werte aus der Liste.
+        var consumptionNum = 0.0
+        var consumptionKmSum = 0.0
+        for session in sorted {
+            if let value = session.consumptionKwhPer100km, let km = session.consumptionKm, km > 0 {
+                consumptionNum += value * km
+                consumptionKmSum += km
             }
+        }
+        let rawConsumption: Double? = consumptionKmSum > 0 ? consumptionNum / consumptionKmSum : nil
+        let consumption = rawConsumption.map { round1($0) }
+        // Verbrauch x Ø Preis je kWh (inkl. Grundgebuehren) - Kosten / km haette
+        // denselben Randfehler.
+        let pricePer100km: Double? = rawConsumption.flatMap { c in
+            totalKwh > 0 ? round2(c * totalCost / totalKwh) : nil
+        }
+
+        // km je Fahrzeug: letzter Stand im Zeitraum minus Anker (letzter Stand
+        // VOR dem Zeitraum aus `history`, sonst der erste im Zeitraum), wie
+        // stats.py/review.py. Summiert, damit bei mehreren Fahrzeugen nicht
+        // Kilometerstaende verschiedener Autos voneinander abgezogen werden.
+        var totalKmDriven: Int?
+        let firstStart = sorted.first?.startTime
+        let inRangeIds = Set(sorted.map(\.id))
+        let readingsSource = (history ?? sorted).sorted { $0.startTime < $1.startTime }
+        for vehicleId in Set(sorted.map(\.vehicleId)) {
+            let readings = readingsSource.filter { $0.vehicleId == vehicleId && $0.odometerKm != nil }
+            let inside = readings.filter { inRangeIds.contains($0.id) }
+            guard let last = inside.last?.odometerKm, let firstInside = inside.first?.odometerKm else { continue }
+            let before = firstStart.map { start in
+                readings.filter { $0.startTime < start && !inRangeIds.contains($0.id) }
+            } ?? []
+            if before.isEmpty && inside.count < 2 { continue }
+            let anchor = before.last?.odometerKm ?? firstInside
+            totalKmDriven = (totalKmDriven ?? 0) + max(last - anchor, 0)
         }
 
         // Anbieter-Aufteilung: Sessions ohne provider_id -> "Ohne Anbieter", damit die
@@ -116,15 +141,9 @@ enum LocalStatsCalculator {
             sessions: sorted, providers: providers, unallocatedFees: unallocatedFees, cost: cost
         )
 
-        // Monatlicher Verbrauch: km-gewichtet gemittelt ueber die Consumption-Ergebnisse
-        // pro Fahrzeug (dieselbe Fallback-Kette wie pro Ladevorgang).
-        var consumptionByVehicle: [String: LocalConsumptionCalculator.Result] = [:]
-        for vehicle in vehicles {
-            let vehicleSessions = sorted.filter { $0.vehicleId == vehicle.id }
-            consumptionByVehicle.merge(
-                LocalConsumptionCalculator.compute(sessions: vehicleSessions, batteryCapacityKwh: vehicle.batteryCapacityKwh)
-            ) { _, new in new }
-        }
+        // Monatlicher Verbrauch: km-gewichtet ueber dieselben Einzelwerte wie oben
+        // (aus der ganzen Historie - sonst fehlte dem ersten Vorgang im Zeitraum
+        // sein Vorgaenger).
 
         let monthFormatter = DateFormatter()
         monthFormatter.dateFormat = "yyyy-MM"
@@ -149,7 +168,7 @@ enum LocalStatsCalculator {
             monthlyFees[key, default: 0] += session.feeShare ?? 0
             monthlyKwh[key, default: 0] += session.energyKwh ?? 0
             monthlyCount[key, default: 0] += 1
-            if let result = consumptionByVehicle[session.id], let value = result.value, let km = result.km, km > 0 {
+            if let value = session.consumptionKwhPer100km, let km = session.consumptionKm, km > 0 {
                 monthlyConsumptionNum[key, default: 0] += value * km
                 monthlyConsumptionKm[key, default: 0] += km
             }

@@ -888,6 +888,7 @@ final class LocalDataStore {
             if let result = byId[session.id] {
                 s.consumptionKwhPer100km = result.value
                 s.consumptionMethod = result.method
+                s.consumptionKm = result.km
             }
             return s
         }
