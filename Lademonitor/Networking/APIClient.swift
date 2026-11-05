@@ -1,4 +1,7 @@
 import Foundation
+import os
+
+private let apiLog = Logger(subsystem: "Lademonitor", category: "API")
 
 enum APIError: LocalizedError {
     case notConfigured
@@ -15,10 +18,38 @@ enum APIError: LocalizedError {
             return String(localized: "Ungültige Antwort vom Server.")
         case .server(let code, let message):
             return String(localized: "Serverfehler (\(code)): \(message)")
-        case .decoding(let err):
-            return String(localized: "Antwort konnte nicht gelesen werden: \(err.localizedDescription)")
+        // Ohne den technischen Text des Fehlers (Feld-/Typnamen, URLSession-Codes) - der
+        // sagt dem Nutzer nichts und liest sich wie Interna. Er landet stattdessen im Log.
+        case .decoding:
+            return String(localized: "Die Antwort des Servers passt nicht zu dieser App-Version. Bitte App und Server auf den neuesten Stand bringen.")
         case .network(let err):
-            return String(localized: "Verbindung fehlgeschlagen: \(err.localizedDescription)")
+            if (err as? URLError)?.code == .timedOut {
+                return String(localized: "Der Server antwortet nicht. Bitte später erneut versuchen.")
+            }
+            return String(localized: "Server nicht erreichbar. Bitte Internetverbindung und Server-Adresse prüfen.")
+        }
+    }
+
+    /// Text fuer die Oberflaeche, nie eine rohe Fehlermeldung. Bei einem Serverfehler ist
+    /// das dessen eigenes `detail` (fuer Menschen geschrieben, z.B. "Passwort falsch") -
+    /// ausser bei internen Fehlern oder einer Antwort, die gar keine Meldung ist
+    /// (HTML-Fehlerseite eines Reverse Proxys).
+    static func userMessage(for error: Error) -> String {
+        switch error {
+        case let APIError.decoding(underlying), let APIError.network(underlying):
+            apiLog.error("API-Fehler: \(String(describing: underlying), privacy: .public)")
+            return (error as? APIError)?.errorDescription ?? ""
+        case let APIError.server(code, message):
+            let trimmed = message.trimmingCharacters(in: .whitespacesAndNewlines)
+            if code >= 500 || trimmed.isEmpty || trimmed.hasPrefix("<") {
+                return String(localized: "Auf dem Server ist ein Fehler aufgetreten. Bitte später erneut versuchen.")
+            }
+            return message
+        case let apiError as APIError:
+            return apiError.errorDescription ?? String(localized: "Etwas ist schiefgelaufen. Bitte erneut versuchen.")
+        default:
+            apiLog.error("Unerwarteter Fehler: \(String(describing: error), privacy: .public)")
+            return String(localized: "Etwas ist schiefgelaufen. Bitte erneut versuchen.")
         }
     }
 }

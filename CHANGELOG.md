@@ -18,7 +18,14 @@ nach TestFlight.
   Ladevorgang (oder ein anderer neuer Eintrag) beim Server an, die Antwort
   aber nicht zurück, lud die App ihn beim nächsten Abgleich noch einmal hoch.
   Ab Server 0.51.0 erkennt der Server die Wiederholung; mit einem älteren
-  Server ändert sich nichts.
+  Server ändert sich nichts. Gleiches Verhalten wie Android 1.11.
+
+## 1.17.1
+
+- Verständlichere Fehlermeldungen bei der Anmeldung: statt technischer Texte
+  steht dort jetzt, was los ist (Server nicht erreichbar, Server antwortet
+  nicht, Antwort passt nicht zur App-Version, Fehler auf dem Server). Die
+  Details landen nur noch im Geräte-Log. Gleiches Verhalten wie Android 1.11.
 
 ## 1.17.0
 

@@ -3248,19 +3248,19 @@
         }
       }
     },
-    "Antwort konnte nicht gelesen werden: %@" : {
+    "Die Antwort des Servers passt nicht zu dieser App-Version. Bitte App und Server auf den neuesten Stand bringen." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antwort konnte nicht gelesen werden: %@"
+            "value" : "Die Antwort des Servers passt nicht zu dieser App-Version. Bitte App und Server auf den neuesten Stand bringen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couldn't read response: %@"
+            "value" : "The server's response does not match this app version. Please update the app and the server."
           }
         }
       }
@@ -7005,19 +7005,70 @@
         }
       }
     },
-    "Verbindung fehlgeschlagen: %@" : {
+    "Server nicht erreichbar. Bitte Internetverbindung und Server-Adresse prüfen." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verbindung fehlgeschlagen: %@"
+            "value" : "Server nicht erreichbar. Bitte Internetverbindung und Server-Adresse prüfen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connection failed: %@"
+            "value" : "Server not reachable. Please check your internet connection and the server address."
+          }
+        }
+      }
+    },
+    "Der Server antwortet nicht. Bitte später erneut versuchen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Server antwortet nicht. Bitte später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The server is not responding. Please try again later."
+          }
+        }
+      }
+    },
+    "Auf dem Server ist ein Fehler aufgetreten. Bitte später erneut versuchen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem Server ist ein Fehler aufgetreten. Bitte später erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong on the server. Please try again later."
+          }
+        }
+      }
+    },
+    "Etwas ist schiefgelaufen. Bitte erneut versuchen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong. Please try again."
           }
         }
       }
