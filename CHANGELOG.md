@@ -7,6 +7,13 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.17.1
+
+- Verständlichere Fehlermeldungen bei der Anmeldung: statt technischer Texte
+  steht dort jetzt, was los ist (Server nicht erreichbar, Server antwortet
+  nicht, Antwort passt nicht zur App-Version, Fehler auf dem Server). Die
+  Details landen nur noch im Geräte-Log. Gleiches Verhalten wie Android 1.10.
+
 ## 1.17.0
 
 - THG-Quote eintragen: neue Kostenkategorie „THG-Quote“ (Fahrzeug → Kosten).
