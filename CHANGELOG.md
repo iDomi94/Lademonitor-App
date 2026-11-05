@@ -7,6 +7,19 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.18.0
+
+- Reifen offline: Reifenwechsel und Profilmessungen lassen sich jetzt auch
+  ohne Netz eintragen, ändern und löschen. Die Eingabe wartet in der
+  Reifen-Ansicht unter „Wartet auf Upload“ und geht beim nächsten Abgleich
+  mit dem Server hoch. Ohne Netz zeigt die Ansicht den zuletzt geladenen
+  Stand.
+- Keine doppelten Einträge mehr nach einem Funkloch: Kam ein neuer
+  Ladevorgang (oder ein anderer neuer Eintrag) beim Server an, die Antwort
+  aber nicht zurück, lud die App ihn beim nächsten Abgleich noch einmal hoch.
+  Ab Server 0.51.0 erkennt der Server die Wiederholung; mit einem älteren
+  Server ändert sich nichts.
+
 ## 1.17.0
 
 - THG-Quote eintragen: neue Kostenkategorie „THG-Quote“ (Fahrzeug → Kosten).

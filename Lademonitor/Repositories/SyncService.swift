@@ -234,6 +234,9 @@ final class SyncService: ObservableObject {
             let summary = itemErrors.isEmpty ? "" : itemErrors.joined(separator: " · ") + " · "
             lastSyncError = summary + error.localizedDescription
         }
+        // Offline erfasste Reifen-Eingaben (nicht Teil des lokalen Spiegels,
+        // siehe TireOutbox) - nach den Fahrzeugen, deren IDs sie brauchen.
+        await TireOutbox.shared.flush()
         // Auch nach einem teilweise gescheiterten Durchlauf: Pulls und
         // Grabsteine koennen Erinnerungen oder km-Staende veraendert haben.
         ReminderNotificationScheduler.reschedule()
@@ -386,7 +389,7 @@ final class SyncService: ObservableObject {
                 if let serverId = vehicle.serverId {
                     _ = try await APIClient.shared.updateVehicle(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createVehicle(payload)
+                    let created = try await APIClient.shared.createVehicle(payload, idempotencyKey: vehicle.localId.uuidString)
                     vehicle.serverId = created.id
                 }
                 vehicle.isDirty = false
@@ -417,7 +420,7 @@ final class SyncService: ObservableObject {
                 if let serverId = provider.serverId {
                     _ = try await APIClient.shared.updateProvider(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createProvider(payload)
+                    let created = try await APIClient.shared.createProvider(payload, idempotencyKey: provider.localId.uuidString)
                     provider.serverId = created.id
                 }
                 provider.isDirty = false
@@ -463,7 +466,7 @@ final class SyncService: ObservableObject {
                 if let serverId = fee.serverId {
                     _ = try await APIClient.shared.updateProviderFee(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createProviderFee(payload)
+                    let created = try await APIClient.shared.createProviderFee(payload, idempotencyKey: fee.localId.uuidString)
                     fee.serverId = created.id
                 }
                 fee.providerId = providerId
@@ -507,7 +510,7 @@ final class SyncService: ObservableObject {
                 if let serverId = cost.serverId {
                     _ = try await APIClient.shared.updateVehicleCost(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createVehicleCost(payload)
+                    let created = try await APIClient.shared.createVehicleCost(payload, idempotencyKey: cost.localId.uuidString)
                     cost.serverId = created.id
                 }
                 cost.vehicleId = vehicleId
@@ -546,7 +549,7 @@ final class SyncService: ObservableObject {
                 if let serverId = reminder.serverId {
                     _ = try await APIClient.shared.updateReminder(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createReminder(payload)
+                    let created = try await APIClient.shared.createReminder(payload, idempotencyKey: reminder.localId.uuidString)
                     reminder.serverId = created.id
                 }
                 reminder.vehicleId = vehicleId
@@ -586,7 +589,7 @@ final class SyncService: ObservableObject {
                 if let serverId = rate.serverId {
                     _ = try await APIClient.shared.updateReimbursementRate(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createReimbursementRate(payload)
+                    let created = try await APIClient.shared.createReimbursementRate(payload, idempotencyKey: rate.localId.uuidString)
                     rate.serverId = created.id
                 }
                 rate.vehicleId = vehicleId
@@ -644,7 +647,7 @@ final class SyncService: ObservableObject {
                 if let serverId = location.serverId {
                     _ = try await APIClient.shared.updateLocation(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createLocation(payload)
+                    let created = try await APIClient.shared.createLocation(payload, idempotencyKey: location.localId.uuidString)
                     location.serverId = created.id
                 }
                 location.defaultProviderId = resolvedProviderId
@@ -702,7 +705,7 @@ final class SyncService: ObservableObject {
                 if let serverId = session.serverId {
                     _ = try await APIClient.shared.updateSession(id: serverId, payload)
                 } else {
-                    let created = try await APIClient.shared.createSession(payload)
+                    let created = try await APIClient.shared.createSession(payload, idempotencyKey: session.localId.uuidString)
                     session.serverId = created.id
                 }
                 session.vehicleId = resolvedVehicleId
