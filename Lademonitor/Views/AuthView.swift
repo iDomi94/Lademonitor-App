@@ -173,11 +173,10 @@ struct AuthView: View {
             // Sonst ist die Uebernahme lokaler Daten kein Sonderfall, sondern
             // einfach der erste normale Sync-Durchlauf.
             SyncService.shared.startAfterLogin()
-        } catch let APIError.server(_, message) {
-            // Server liefert die Fehlerursache im Klartext (z.B. "Nutzername oder Passwort falsch").
-            errorMessage = message
         } catch {
-            errorMessage = error.localizedDescription
+            // Server liefert die Fehlerursache im Klartext (z.B. "Nutzername oder Passwort falsch"),
+            // alles andere bekommt einen verstaendlichen Text statt der rohen Fehlermeldung.
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 }
@@ -266,7 +265,7 @@ struct ForgotPasswordView: View {
         } catch {
             // Nur echte Verbindungs-/Serverfehler landen hier; ein unbekanntes
             // Konto sieht fuer den Client wie ein Erfolg aus.
-            errorMessage = error.localizedDescription
+            errorMessage = APIError.userMessage(for: error)
         }
     }
 }
