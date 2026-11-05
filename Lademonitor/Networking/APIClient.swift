@@ -108,7 +108,10 @@ final class APIClient {
     /// und der Server sieht einen unbekannten Pfad statt eines Filters. Deshalb
     /// wird ein "?" hier vorher abgetrennt und ueber URLComponents als echter
     /// Query gesetzt.
-    private func makeRequest(path: String, method: String = "GET", body: Data? = nil, authenticated: Bool = true) throws -> URLRequest {
+    /// `idempotencyKey`: lokale ID beim Anlegen. Kommt die Antwort nicht an und
+    /// der Sync wiederholt das POST, liefert der Server (ab 0.51.0) die schon
+    /// angelegte Zeile statt einer Dublette. Aeltere Server ignorieren den Header.
+    private func makeRequest(path: String, method: String = "GET", body: Data? = nil, authenticated: Bool = true, idempotencyKey: String? = nil) throws -> URLRequest {
         guard let base = AppSettings.shared.serverURL else { throw APIError.notConfigured }
         let parts = path.split(separator: "?", maxSplits: 1, omittingEmptySubsequences: false)
         var url = base.appendingPathComponent(String(parts[0]))
@@ -127,6 +130,9 @@ final class APIClient {
         // automatisch mitschicken. Fuer Login/Registrierung: authenticated = false.
         if authenticated, let token = KeychainStore.shared.readToken() {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        if let idempotencyKey {
+            request.setValue(idempotencyKey, forHTTPHeaderField: "Idempotency-Key")
         }
         request.httpBody = body
         request.timeoutInterval = 15
@@ -284,9 +290,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/vehicles"))
     }
 
-    func createVehicle(_ payload: VehiclePayload) async throws -> Vehicle {
+    func createVehicle(_ payload: VehiclePayload, idempotencyKey: String? = nil) async throws -> Vehicle {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/vehicles", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/vehicles", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateVehicle(id: String, _ payload: VehiclePayload) async throws -> Vehicle {
@@ -305,9 +311,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/providers"))
     }
 
-    func createProvider(_ payload: ProviderPayload) async throws -> Provider {
+    func createProvider(_ payload: ProviderPayload, idempotencyKey: String? = nil) async throws -> Provider {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/providers", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/providers", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateProvider(id: String, _ payload: ProviderPayload) async throws -> Provider {
@@ -329,9 +335,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/provider-fees"))
     }
 
-    func createProviderFee(_ payload: ProviderFeePayload) async throws -> ProviderFee {
+    func createProviderFee(_ payload: ProviderFeePayload, idempotencyKey: String? = nil) async throws -> ProviderFee {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/provider-fees", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/provider-fees", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateProviderFee(id: String, _ payload: ProviderFeePayload) async throws -> ProviderFee {
@@ -352,9 +358,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/vehicle-costs"))
     }
 
-    func createVehicleCost(_ payload: VehicleCostPayload) async throws -> VehicleCost {
+    func createVehicleCost(_ payload: VehicleCostPayload, idempotencyKey: String? = nil) async throws -> VehicleCost {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/vehicle-costs", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/vehicle-costs", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateVehicleCost(id: String, _ payload: VehicleCostPayload) async throws -> VehicleCost {
@@ -377,9 +383,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/reimbursement/rates"))
     }
 
-    func createReimbursementRate(_ payload: ReimbursementRatePayload) async throws -> ReimbursementRate {
+    func createReimbursementRate(_ payload: ReimbursementRatePayload, idempotencyKey: String? = nil) async throws -> ReimbursementRate {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/reimbursement/rates", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/reimbursement/rates", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateReimbursementRate(id: String, _ payload: ReimbursementRatePayload) async throws -> ReimbursementRate {
@@ -401,9 +407,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/reminders"))
     }
 
-    func createReminder(_ payload: ReminderPayload) async throws -> Reminder {
+    func createReminder(_ payload: ReminderPayload, idempotencyKey: String? = nil) async throws -> Reminder {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/reminders", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/reminders", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateReminder(id: String, _ payload: ReminderPayload) async throws -> Reminder {
@@ -437,9 +443,9 @@ final class APIClient {
         try await send(try makeRequest(path: "/api/locations"))
     }
 
-    func createLocation(_ payload: LocationPayload) async throws -> ChargingLocation {
+    func createLocation(_ payload: LocationPayload, idempotencyKey: String? = nil) async throws -> ChargingLocation {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/locations", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/locations", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateLocation(id: String, _ payload: LocationPayload) async throws -> ChargingLocation {
@@ -500,9 +506,9 @@ final class APIClient {
         return try await send(try makeRequest(path: path))
     }
 
-    func createSession(_ payload: ChargingSessionPayload) async throws -> ChargingSession {
+    func createSession(_ payload: ChargingSessionPayload, idempotencyKey: String? = nil) async throws -> ChargingSession {
         let body = try encoder.encode(payload)
-        let request = try makeRequest(path: "/api/sessions", method: "POST", body: body)
+        let request = try makeRequest(path: "/api/sessions", method: "POST", body: body, idempotencyKey: idempotencyKey)
         return try await send(request)
     }
 
@@ -543,14 +549,26 @@ final class APIClient {
 
     /// Reifensaetze, neueste Montage zuerst. Nur im Server-Modus - Reifen sind
     /// bewusst nicht Teil des lokalen Spiegels (siehe TireModels.swift).
+    /// Kodiert einen Body genau wie die uebrigen Aufrufe - fuer die
+    /// Warteschlange, die den fertigen Request speichert (TireOutbox).
+    func encodeBody<T: Encodable>(_ value: T) throws -> Data {
+        try encoder.encode(value)
+    }
+
+    /// Spielt einen gespeicherten Request aus der Warteschlange ab. Die Antwort
+    /// wird nicht gebraucht - die Ansicht laedt danach ohnehin neu.
+    func sendQueued(method: String, path: String, body: Data?, idempotencyKey: String?) async throws {
+        try await sendNoContent(try makeRequest(path: path, method: method, body: body, idempotencyKey: idempotencyKey))
+    }
+
     func fetchTireSets(vehicleId: String? = nil) async throws -> [TireSet] {
         let path = "/api/tires" + (vehicleId.map { "?vehicle_id=\($0)" } ?? "")
         return try await send(try makeRequest(path: path))
     }
 
-    func createTireSet(_ payload: TireSetPayload) async throws -> TireSet {
+    func createTireSet(_ payload: TireSetPayload, idempotencyKey: String? = nil) async throws -> TireSet {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/tires", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/tires", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func updateTireSet(id: String, _ payload: TireSetPayload) async throws -> TireSet {
@@ -568,9 +586,9 @@ final class APIClient {
         return try await send(try makeRequest(path: path))
     }
 
-    func createTreadMeasurement(tireSetId: String, _ payload: TreadMeasurementPayload) async throws -> TireTreadMeasurement {
+    func createTreadMeasurement(tireSetId: String, _ payload: TreadMeasurementPayload, idempotencyKey: String? = nil) async throws -> TireTreadMeasurement {
         let body = try encoder.encode(payload)
-        return try await send(try makeRequest(path: "/api/tires/\(tireSetId)/tread", method: "POST", body: body))
+        return try await send(try makeRequest(path: "/api/tires/\(tireSetId)/tread", method: "POST", body: body, idempotencyKey: idempotencyKey))
     }
 
     func deleteTreadMeasurement(id: String) async throws {

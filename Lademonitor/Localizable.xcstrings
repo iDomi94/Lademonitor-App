@@ -15844,6 +15844,176 @@
           }
         }
       }
+    },
+    "Offline – Stand vom %@. Neue Eingaben werden gespeichert und hochgeladen, sobald wieder Netz da ist." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline – Stand vom %@. Neue Eingaben werden gespeichert und hochgeladen, sobald wieder Netz da ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline – data as of %@. New entries are saved and uploaded once you're back online."
+          }
+        }
+      }
+    },
+    "Vom Server abgelehnt: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vom Server abgelehnt: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejected by the server: %@"
+          }
+        }
+      }
+    },
+    "Verwerfen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwerfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard"
+          }
+        }
+      }
+    },
+    "Wartet auf Upload" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wartet auf Upload"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for upload"
+          }
+        }
+      }
+    },
+    "Wird beim nächsten Abgleich mit dem Server hochgeladen. Zum Verwerfen nach links wischen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird beim nächsten Abgleich mit dem Server hochgeladen. Zum Verwerfen nach links wischen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Will be uploaded at the next sync with the server. Swipe left to discard."
+          }
+        }
+      }
+    },
+    "Profilmessung vom %@ löschen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilmessung vom %@ löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete tread measurement of %@"
+          }
+        }
+      }
+    },
+    "Reifenwechsel vom %@ löschen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifenwechsel vom %@ löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete tyre change of %@"
+          }
+        }
+      }
+    },
+    "Reifenwechsel vom %@ ändern" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifenwechsel vom %@ ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit tyre change of %@"
+          }
+        }
+      }
+    },
+    "Reifenwechsel am %@: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reifenwechsel am %1$@: %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tyre change on %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Profilmessung am %@: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilmessung am %1$@: %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tread measurement on %1$@: %2$@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

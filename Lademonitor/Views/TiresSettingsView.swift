@@ -16,6 +16,9 @@ struct TiresSettingsView: View {
     @State private var pendingDelete: TireMounting?
     @State private var measurements: [TireTreadMeasurement] = []
     @State private var measuringFor: TireSet?
+    /// Gesetzt, wenn ohne Netz der zwischengespeicherte Stand gezeigt wird.
+    @State private var cachedAt: Date?
+    @ObservedObject private var outbox = TireOutbox.shared
 
     var body: some View {
         List {
@@ -25,6 +28,16 @@ struct TiresSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            if let cachedAt {
+                Section {
+                    Label(String(format: String(localized: "Offline – Stand vom %@. Neue Eingaben werden gespeichert und hochgeladen, sobald wieder Netz da ist."),
+                                 cachedAt.formatted(date: .abbreviated, time: .shortened)),
+                          systemImage: "wifi.slash")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            pendingSection
 
             comparisonSection
             setsSection
@@ -58,6 +71,36 @@ struct TiresSettingsView: View {
     }
 
     // MARK: - Abschnitte
+
+    /// Offline erfasste Eingaben, die noch auf den Upload warten.
+    @ViewBuilder
+    private var pendingSection: some View {
+        if outbox.hasPending {
+            Section {
+                ForEach(outbox.entries) { entry in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Label(entry.label, systemImage: entry.failure == nil ? "icloud.and.arrow.up" : "exclamationmark.icloud")
+                        if let failure = entry.failure {
+                            Text(String(format: String(localized: "Vom Server abgelehnt: %@"), failure))
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
+                    }
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            outbox.discard(entry)
+                        } label: {
+                            Label("Verwerfen", systemImage: "trash")
+                        }
+                    }
+                }
+            } header: {
+                Text("Wartet auf Upload")
+            } footer: {
+                Text("Wird beim nächsten Abgleich mit dem Server hochgeladen. Zum Verwerfen nach links wischen.")
+            }
+        }
+    }
 
     @ViewBuilder
     private var comparisonSection: some View {
@@ -184,12 +227,12 @@ struct TiresSettingsView: View {
     private var treadSection: some View {
         if !sets.isEmpty {
             Section {
-                if measurements.isEmpty {
+                if visibleMeasurements.isEmpty {
                     Text("Noch keine Messung eingetragen.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                ForEach(measurements) { measurement in
+                ForEach(visibleMeasurements) { measurement in
                     TreadMeasurementRow(
                         measurement: measurement,
                         tireSet: sets.first { $0.id == measurement.tireSetId }
@@ -225,6 +268,17 @@ struct TiresSettingsView: View {
     /// Laufleistung kennt. Fehlt sie (alter Server, Abruf gescheitert), werden
     /// die reinen Stammdaten gezeigt statt gar nichts.
     private var mountings: [TireMounting] {
+        // Offline geloescht, Upload steht noch aus: schon jetzt ausblenden.
+        let deleted = outbox.pendingDeletedSetIds
+        return allMountings.filter { !deleted.contains($0.tireSetId) }
+    }
+
+    private var visibleMeasurements: [TireTreadMeasurement] {
+        let deleted = outbox.pendingDeletedTreadIds
+        return measurements.filter { !deleted.contains($0.id) }
+    }
+
+    private var allMountings: [TireMounting] {
         if let overview, !overview.mountings.isEmpty { return overview.mountings }
         return sets.map {
             TireMounting(tireSetId: $0.id, vehicleId: $0.vehicleId, kind: $0.kind,
@@ -260,14 +314,30 @@ struct TiresSettingsView: View {
             errorMessage = String(localized: "Bitte zuerst die Server-Adresse in den Einstellungen eintragen.")
             return
         }
+        // Fahrzeuge kommen aus dem lokalen Speicher, gehen also auch offline.
+        vehicles = (try? await AppRepository.shared.fetchVehicles()) ?? vehicles
+        // Zuerst offline Erfasstes hochladen, damit es gleich mit angezeigt wird.
+        await outbox.flush()
         do {
-            async let sets = APIClient.shared.fetchTireSets()
-            async let vehicles = AppRepository.shared.fetchVehicles()
-            self.sets = try await sets
-            self.vehicles = try await vehicles
+            sets = try await APIClient.shared.fetchTireSets()
             errorMessage = nil
+            cachedAt = nil
+        } catch let error where TireOutbox.isTransient(error) {
+            // Kein Netz: letzten Stand zeigen, Eingaben gehen in die Warteschlange.
+            if let cache = TireCache.load() {
+                sets = cache.sets
+                measurements = cache.measurements
+                overview = cache.overview
+                comparison = cache.comparison
+                cachedAt = cache.savedAt
+                errorMessage = nil
+            } else {
+                errorMessage = error.localizedDescription
+            }
+            return
         } catch {
             errorMessage = error.localizedDescription
+            return
         }
         // Auswertungen einzeln und fehlertolerant: gegen einen Server ohne
         // diese Endpunkte bleibt die Verwaltung trotzdem benutzbar.
@@ -275,21 +345,39 @@ struct TiresSettingsView: View {
         comparison = try? await APIClient.shared.fetchTireComparison()
         // Server vor 0.30.0 kennt keine Messungen - dann bleibt die Liste leer.
         measurements = (try? await APIClient.shared.fetchTreadMeasurements()) ?? []
+        TireCache(sets: sets, measurements: measurements, overview: overview, comparison: comparison,
+                  savedAt: Date(), userId: SessionManager.shared.currentUser?.id).save()
     }
 
     private func deleteMeasurement(_ measurement: TireTreadMeasurement) async {
+        let label = String(format: String(localized: "Profilmessung vom %@ löschen"),
+                           measurement.measuredOn.formatted(date: .numeric, time: .omitted))
         do {
+            guard NetworkMonitor.shared.isOnline else {
+                try outbox.enqueueDeleteTread(id: measurement.id, label: label)
+                return
+            }
             try await APIClient.shared.deleteTreadMeasurement(id: measurement.id)
             await load()
+        } catch let error where TireOutbox.isTransient(error) {
+            try? outbox.enqueueDeleteTread(id: measurement.id, label: label)
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
     private func delete(_ mounting: TireMounting) async {
+        let label = String(format: String(localized: "Reifenwechsel vom %@ löschen"),
+                           mounting.installedOn.formatted(date: .numeric, time: .omitted))
         do {
+            guard NetworkMonitor.shared.isOnline else {
+                try outbox.enqueueDeleteSet(id: mounting.tireSetId, label: label)
+                return
+            }
             try await APIClient.shared.deleteTireSet(id: mounting.tireSetId)
             await load()
+        } catch let error where TireOutbox.isTransient(error) {
+            try? outbox.enqueueDeleteSet(id: mounting.tireSetId, label: label)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -669,14 +757,34 @@ struct AddEditTireSetView: View {
             removedTread: isEditing || removedSet == nil ? nil : treadRemoved.input
         )
 
-        do {
+        let dayText = day.formatted(date: .numeric, time: .omitted)
+        let label = isEditing
+            ? String(format: String(localized: "Reifenwechsel vom %@ ändern"), dayText)
+            : String(format: String(localized: "Reifenwechsel am %@: %@"), dayText, kind.label)
+        // Eigene UUID als Idempotency-Key: kommt die Antwort nicht an, legt die
+        // Wiederholung aus der Warteschlange keinen zweiten Satz an.
+        let key = UUID().uuidString
+        // Offline: in die Warteschlange (TireOutbox), Upload beim naechsten Sync.
+        func enqueue() throws {
             if let tireSet {
-                _ = try await APIClient.shared.updateTireSet(id: tireSet.id, payload)
+                try TireOutbox.shared.enqueueUpdateSet(id: tireSet.id, payload, label: label)
             } else {
-                _ = try await APIClient.shared.createTireSet(payload)
+                try TireOutbox.shared.enqueueCreateSet(payload, label: label, idempotencyKey: key)
             }
             onSaved()
             dismiss()
+        }
+        do {
+            guard NetworkMonitor.shared.isOnline else { return try enqueue() }
+            if let tireSet {
+                _ = try await APIClient.shared.updateTireSet(id: tireSet.id, payload)
+            } else {
+                _ = try await APIClient.shared.createTireSet(payload, idempotencyKey: key)
+            }
+            onSaved()
+            dismiss()
+        } catch let error where TireOutbox.isTransient(error) {
+            do { try enqueue() } catch { errorMessage = error.localizedDescription }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -801,10 +909,28 @@ struct AddTreadMeasurementView: View {
             odometerKm: Double(odometerKm.replacingOccurrences(of: ",", with: ".")),
             tread: tread
         )
+        let label = String(format: String(localized: "Profilmessung am %@: %@"),
+                           measuredOn.formatted(date: .numeric, time: .omitted),
+                           tireSet.label.isEmpty ? tireSet.kind.label : tireSet.label)
+        // Eigene UUID als Idempotency-Key - auch fuer die Warteschlange, falls
+        // die Anfrage ankam, die Antwort aber nicht.
+        let key = UUID().uuidString
         do {
-            _ = try await APIClient.shared.createTreadMeasurement(tireSetId: tireSet.id, payload)
+            if NetworkMonitor.shared.isOnline {
+                _ = try await APIClient.shared.createTreadMeasurement(tireSetId: tireSet.id, payload, idempotencyKey: key)
+            } else {
+                try TireOutbox.shared.enqueueCreateTread(tireSetId: tireSet.id, payload, label: label, idempotencyKey: key)
+            }
             onSaved()
             dismiss()
+        } catch let error where TireOutbox.isTransient(error) {
+            do {
+                try TireOutbox.shared.enqueueCreateTread(tireSetId: tireSet.id, payload, label: label, idempotencyKey: key)
+                onSaved()
+                dismiss()
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
