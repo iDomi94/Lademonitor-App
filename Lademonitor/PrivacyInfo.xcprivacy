@@ -6,8 +6,80 @@
 	<false/>
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>
+	<!-- Erhoben wird nur im Modus "Lademonitor Cloud": dann liegen Konto und
+	     Ladeprotokoll auf lademonitor.cloud, also beim Anbieter der App. Im
+	     Local-Only-Modus verlaesst nichts das Geraet, beim eigenen Server
+	     erhebt der Anbieter der App nichts (der Nutzer betreibt den Server
+	     selbst). Apple fragt nach dem ungünstigsten Fall, deshalb steht die
+	     Cloud hier. Muss zu den Angaben "App-Datenschutz" in App Store Connect
+	     passen. Einzelheiten: PRIVACY.md.
+	     E-Mail: optional im Konto. Nutzer-ID: Nutzername/Konto-ID.
+	     Genauer Standort: Koordinaten von Ladeorten und Ladevorgaengen.
+	     Sonstige Nutzerinhalte: Notizen. Sonstige Daten: Fahrzeug- und
+	     Ladedaten (kWh, Akkustand, Kilometerstand, Preise). -->
 	<key>NSPrivacyCollectedDataTypes</key>
-	<array/>
+	<array>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeEmailAddress</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeUserID</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypePreciseLocation</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeOtherUserContent</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeOtherDataTypes</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSPrivacyAccessedAPITypes</key>
 	<array>
 		<dict>
@@ -15,11 +87,13 @@
 			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<!-- CA92.1: liest/schreibt ausschliesslich eigene App-Einstellungen
-				     (Server-Adresse, Modus, zuletzt synchronisiertes Konto) - siehe
-				     AppSettings.swift und SyncService.swift. Kein App-Group-Zugriff,
-				     keine Daten anderer Apps. -->
+				<!-- CA92.1: eigene App-Einstellungen (Server-Adresse, Modus,
+				     zuletzt synchronisiertes Konto, Sync-Cursor) - siehe
+				     AppSettings.swift und SyncService.swift. -->
 				<string>CA92.1</string>
+				<!-- 1C8F.1: App Group mit dem eigenen Widget
+				     (Shared/WidgetSnapshot.swift), sonst niemand. -->
+				<string>1C8F.1</string>
 			</array>
 		</dict>
 	</array>

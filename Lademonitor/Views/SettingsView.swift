@@ -134,6 +134,14 @@ struct SettingsView: View {
                 } label: {
                     Label("Einführung erneut ansehen", systemImage: "sparkles")
                 }
+                // Apple verlangt die Datenschutzerklaerung auch IN der App
+                // (Guideline 5.1.1), nicht nur im App-Store-Eintrag.
+                Link(destination: URL(string: "https://github.com/iDomi94/Lademonitor-App/blob/main/PRIVACY.md")!) {
+                    Label("Datenschutzerklärung", systemImage: "hand.raised")
+                }
+                Link(destination: URL(string: "https://github.com/iDomi94/Lademonitor-App/issues")!) {
+                    Label("Hilfe & Feedback", systemImage: "questionmark.bubble")
+                }
             }
 
             if settings.appMode == .server {
