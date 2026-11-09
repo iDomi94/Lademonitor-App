@@ -22,13 +22,19 @@ final class LocalStore {
             LocalReminder.self,
             LocalReimbursementRate.self
         ])
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        // Screenshot-Demo: nur im Speicher, damit die echten Daten unberuehrt bleiben.
+        let isDemo = ScreenshotDemoData.isActive
+        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isDemo)
         do {
             container = try ModelContainer(for: schema, configurations: [configuration])
         } catch {
             // Ein kaputter lokaler Store darf die App nicht raten: Ladevorgaenge sind
             // Nutzdaten, die es sonst nirgends gibt (im Local-Only-Modus kein Server-Backup).
             fatalError("SwiftData-Store konnte nicht initialisiert werden: \(error)")
+        }
+        // Im Server-Modus fuellt der Sync den Store mit dem Testkonto.
+        if isDemo && ScreenshotDemoData.serverAccount == nil {
+            ScreenshotDemoData.seed(into: container.mainContext)
         }
     }
 }

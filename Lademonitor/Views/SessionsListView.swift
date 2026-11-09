@@ -167,6 +167,7 @@ struct SessionsListView: View {
             if tagged {
                 row(for: session)
                     .tag(session.id)
+                    .accessibilityIdentifier("session.row")
                     .swipeActions(edge: .leading) { confirmSwipeButton(for: session) }
             } else {
                 Button {
@@ -176,6 +177,7 @@ struct SessionsListView: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("session.row")
                 .swipeActions(edge: .leading) { confirmSwipeButton(for: session) }
             }
         }

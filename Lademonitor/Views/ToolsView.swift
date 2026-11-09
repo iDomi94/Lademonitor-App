@@ -74,6 +74,7 @@ struct ToolsView: View {
                     icon: "fuelpump"
                 )
             }
+            .accessibilityIdentifier("tool.combustion")
             // Nur im Server-Modus, wie die Reifen in den Einstellungen:
             // die Auswertung rechnet allein der Server (battery.py).
             if settings.appMode == .server {
@@ -84,6 +85,7 @@ struct ToolsView: View {
                         icon: "battery.75percent"
                     )
                 }
+                .accessibilityIdentifier("tool.battery")
             }
             NavigationLink(value: ToolRoute.range) {
                 ToolLabel(
@@ -106,6 +108,7 @@ struct ToolsView: View {
                     icon: "calendar"
                 )
             }
+            .accessibilityIdentifier("tool.review")
         }
     }
 

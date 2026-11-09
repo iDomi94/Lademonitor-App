@@ -7,6 +7,7 @@ struct LademonitorApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task { await ScreenshotDemoData.loginIfNeeded() }
         }
         .onChange(of: scenePhase, initial: true) { _, phase in
             // Beim Verlassen der App den Widget-Stand festhalten - danach

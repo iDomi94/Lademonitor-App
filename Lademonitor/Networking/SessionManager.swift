@@ -15,6 +15,12 @@ final class SessionManager: ObservableObject {
         // (der Token laeuft serverseitig nicht ab). Ein ungueltiger Token faellt
         // beim ersten API-Call durch das 401-Handling auf.
         isAuthenticated = KeychainStore.shared.readToken() != nil
+        // Screenshot-Demo mit Testkonto: immer frisch anmelden (siehe
+        // ScreenshotDemoData.loginIfNeeded), kein Token aus einem frueheren Lauf.
+        if ScreenshotDemoData.serverAccount != nil {
+            KeychainStore.shared.deleteToken()
+            isAuthenticated = false
+        }
     }
 
     /// Nach erfolgreichem Login/Registrierung: Token sichern und in die App wechseln.

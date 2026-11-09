@@ -7,6 +7,17 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.18.2
+
+- Akku und Ladeverluste: Der Erklärtext unter der Auswertung erschien auch
+  in der englischen App auf Deutsch. Ursache war das Prozentzeichen in
+  „0 auf 100 %“, durch das der Text seine Übersetzung nicht fand.
+- App-Store-Screenshots entstehen jetzt automatisch: `scripts/screenshots.sh`
+  erzeugt sie auf iPhone und iPad, hell und dunkel, auf Deutsch und Englisch –
+  mit eingebauten Beispieldaten und optional mit Testkonten auf dem Server.
+  Die App selbst ändert sich dadurch nicht; der Demo-Modus greift nur mit dem
+  Launch-Argument `-screenshotDemo`.
+
 ## 1.18.1
 
 - Einstellungen → Hilfe: neue Links „Datenschutzerklärung“ und „Hilfe &

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Warteschlange fuer Reifen-Eingaben ohne Netz.
 ///
