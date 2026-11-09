@@ -7,6 +7,16 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.18.1
+
+- Einstellungen → Hilfe: neue Links „Datenschutzerklärung“ und „Hilfe &
+  Feedback“. Die Datenschutzerklärung steht als `PRIVACY.md` im Repo und ist
+  zugleich die Adresse für den App-Store-Eintrag.
+- Vorbereitung für den App Store: Datenschutz-Manifest um die vom Modus
+  „Lademonitor Cloud“ erhobenen Daten und den App-Group-Zugriff des Widgets
+  ergänzt, eigenes Manifest für das Widget, Versionsnummer im Projekt auf
+  1.18.1 (ein von Hand gestarteter Upload landete sonst als 1.0).
+
 ## 1.18.0
 
 - Reifen offline: Reifenwechsel und Profilmessungen lassen sich jetzt auch
