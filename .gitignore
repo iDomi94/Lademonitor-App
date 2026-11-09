@@ -25,3 +25,8 @@ DerivedData/
 !default.pbxuser
 *.xccheckout
 *.xcscmblueprint
+
+# Automatisch erzeugte Screenshots (scripts/screenshots.sh)
+screenshots/
+# Zugangsdaten fuer scripts/screenshots.sh (Testkonto)
+scripts/screenshots.env

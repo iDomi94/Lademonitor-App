@@ -86,6 +86,17 @@ final class AppSettings: ObservableObject {
             // Update ueber der App (ContentView), Neue vor der Moduswahl.
             self.hasCompletedOnboarding = false
         }
+        // Screenshot-Demo: direkt in die App mit den Beispieldaten (siehe
+        // ScreenshotDemoData). Im init gesetzt, damit didSet nichts persistiert.
+        if ScreenshotDemoData.isActive {
+            if let account = ScreenshotDemoData.serverAccount {
+                self.appMode = .server
+                self.serverURLString = account.url
+            } else {
+                self.appMode = .localOnly
+            }
+            self.hasCompletedOnboarding = true
+        }
     }
 
     var serverURL: URL? {

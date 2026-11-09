@@ -10643,19 +10643,19 @@
         }
       }
     },
-    "Grundlage sind nur Ladevorgänge mit echter kWh-Angabe (Rechnung, Wallbox, Import) und mindestens %lld Prozentpunkten SoC-Hub. Die scheinbare Kapazität ist, was eine Ladung von 0 auf 100 % am Zähler kosten würde. Der Verlust ist der Mehrbedarf gegenüber der Akkukapazität des Fahrzeugs – bei einem gealterten Akku fällt er etwas zu klein aus; belastbar ist vor allem der Unterschied zwischen AC und DC." : {
+    "Grundlage sind nur Ladevorgänge mit echter kWh-Angabe (Rechnung, Wallbox, Import) und mindestens %lld Prozentpunkten SoC-Hub. Die scheinbare Kapazität ist, was eine Ladung von 0 auf 100 %% am Zähler kosten würde. Der Verlust ist der Mehrbedarf gegenüber der Akkukapazität des Fahrzeugs – bei einem gealterten Akku fällt er etwas zu klein aus; belastbar ist vor allem der Unterschied zwischen AC und DC." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundlage sind nur Ladevorgänge mit echter kWh-Angabe (Rechnung, Wallbox, Import) und mindestens %lld Prozentpunkten SoC-Hub. Die scheinbare Kapazität ist, was eine Ladung von 0 auf 100 % am Zähler kosten würde. Der Verlust ist der Mehrbedarf gegenüber der Akkukapazität des Fahrzeugs – bei einem gealterten Akku fällt er etwas zu klein aus; belastbar ist vor allem der Unterschied zwischen AC und DC."
+            "value" : "Grundlage sind nur Ladevorgänge mit echter kWh-Angabe (Rechnung, Wallbox, Import) und mindestens %lld Prozentpunkten SoC-Hub. Die scheinbare Kapazität ist, was eine Ladung von 0 auf 100 %% am Zähler kosten würde. Der Verlust ist der Mehrbedarf gegenüber der Akkukapazität des Fahrzeugs – bei einem gealterten Akku fällt er etwas zu klein aus; belastbar ist vor allem der Unterschied zwischen AC und DC."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Only charging sessions with a real kWh figure (invoice, wallbox, import) and at least %lld percentage points of SoC gain are used. The apparent capacity is what charging from 0 to 100 % would take at the meter. The loss is the extra energy compared with the vehicle's battery capacity – with an aged battery it comes out slightly too low; the difference between AC and DC is the reliable part."
+            "value" : "Only charging sessions with a real kWh figure (invoice, wallbox, import) and at least %lld percentage points of SoC gain are used. The apparent capacity is what charging from 0 to 100 %% would take at the meter. The loss is the extra energy compared with the vehicle's battery capacity – with an aged battery it comes out slightly too low; the difference between AC and DC is the reliable part."
           }
         }
       }

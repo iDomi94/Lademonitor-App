@@ -9,6 +9,14 @@ nach TestFlight.
 
 ## 1.18.2
 
+- Akku und Ladeverluste: Der Erklärtext unter der Auswertung erschien auch
+  in der englischen App auf Deutsch. Ursache war das Prozentzeichen in
+  „0 auf 100 %“, durch das der Text seine Übersetzung nicht fand.
+- App-Store-Screenshots entstehen jetzt automatisch: `scripts/screenshots.sh`
+  erzeugt sie auf iPhone und iPad, hell und dunkel, auf Deutsch und Englisch –
+  mit eingebauten Beispieldaten und optional mit Testkonten auf dem Server.
+  Die App selbst ändert sich dadurch nicht; der Demo-Modus greift nur mit dem
+  Launch-Argument `-screenshotDemo`.
 - Build-Fix: der Upload von 1.18.0 und 1.18.1 brach beim Archivieren ab,
   weil `TireOutbox.swift` `import Combine` fehlte. Inhaltlich wie 1.18.1
   (mit den Neuerungen aus 1.18.0).
