@@ -7,6 +7,12 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.18.2
+
+- Build-Fix: der Upload von 1.18.0 und 1.18.1 brach beim Archivieren ab,
+  weil `TireOutbox.swift` `import Combine` fehlte. Inhaltlich wie 1.18.1
+  (mit den Neuerungen aus 1.18.0).
+
 ## 1.18.1
 
 - Einstellungen → Hilfe: neue Links „Datenschutzerklärung“ und „Hilfe &
