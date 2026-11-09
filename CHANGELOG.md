@@ -17,6 +17,9 @@ nach TestFlight.
   mit eingebauten Beispieldaten und optional mit Testkonten auf dem Server.
   Die App selbst ändert sich dadurch nicht; der Demo-Modus greift nur mit dem
   Launch-Argument `-screenshotDemo`.
+- Build-Fix: der Upload von 1.18.0 und 1.18.1 brach beim Archivieren ab,
+  weil `TireOutbox.swift` `import Combine` fehlte. Inhaltlich wie 1.18.1
+  (mit den Neuerungen aus 1.18.0).
 
 ## 1.18.1
 
