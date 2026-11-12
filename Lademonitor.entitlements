@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Passwortmanager: verknuepft die App mit lademonitor.cloud, damit iOS dort
+	     gespeicherte Zugangsdaten im Anmeldeformular vorschlaegt und neue mit
+	     dieser Adresse speichert. Gegenstueck auf dem Server:
+	     /.well-known/apple-app-site-association (Lademonitor-Server ab 0.52.0).
+	     Eigene Server unter eigener Domain lassen sich hier nicht eintragen. -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>webcredentials:lademonitor.cloud</string>
+	</array>
 	<!-- Gemeinsamer Speicher von App und Widget (siehe Shared/WidgetSnapshot.swift). -->
 	<key>com.apple.security.application-groups</key>
 	<array>

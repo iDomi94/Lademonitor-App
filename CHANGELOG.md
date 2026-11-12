@@ -7,6 +7,17 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.19.0
+
+- Anmelden: Der Passwortmanager (Schlüsselbund, 1Password usw.) erkennt
+  das Anmeldeformular jetzt zuverlässig – mit Vorschlag über der Tastatur,
+  „Passwort sichern“ nach dem Anmelden und starken Passwörtern beim
+  Registrieren und Passwort ändern.
+- Für lademonitor.cloud schlägt iOS die passenden Zugangsdaten direkt vor
+  und speichert neue mit der Adresse. Braucht Lademonitor-Server 0.52.0.
+  Bei einem eigenen Server unter eigener Domain wählt man den Eintrag über
+  das Schlüsselsymbol aus der Liste.
+
 ## 1.18.2
 
 - Akku und Ladeverluste: Der Erklärtext unter der Auswertung erschien auch
