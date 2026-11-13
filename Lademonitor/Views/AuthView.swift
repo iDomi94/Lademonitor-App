@@ -66,20 +66,28 @@ struct AuthView: View {
                 }
 
                 Section {
+                    // textContentType: ohne die Angabe erkennt iOS das Formular
+                    // nicht sicher als Anmeldung, der Passwortmanager bietet dann
+                    // weder Vorschlag noch Speichern an. Die Domain dazu kommt
+                    // ueber das Associated-Domains-Entitlement (webcredentials).
                     TextField(isRegistering ? "Nutzername" : "Nutzername oder E-Mail", text: $identifier)
+                        .textContentType(.username)
                         .textInputAutocapitalization(.never)
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
                         .keyboardType(isRegistering ? .default : .emailAddress)
                     if isRegistering {
                         TextField("E-Mail-Adresse (optional)", text: $email)
+                            .textContentType(.emailAddress)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .keyboardType(.emailAddress)
                     }
                     SecureField("Passwort", text: $password)
+                        .textContentType(isRegistering ? .newPassword : .password)
                     if isRegistering {
                         SecureField("Passwort wiederholen", text: $passwordConfirm)
+                            .textContentType(.newPassword)
                     }
                 } header: {
                     Text(isRegistering ? "Registrieren" : "Anmelden")
@@ -212,6 +220,7 @@ struct ForgotPasswordView: View {
                 } else {
                     Section {
                         TextField("Nutzername oder E-Mail", text: $identifier)
+                            .textContentType(.username)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .keyboardType(.emailAddress)

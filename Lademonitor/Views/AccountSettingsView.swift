@@ -95,6 +95,7 @@ struct AccountSettingsView: View {
     private func emailSection(user: AuthUser) -> some View {
         Section {
             TextField("E-Mail-Adresse", text: $email)
+                .textContentType(.emailAddress)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .keyboardType(.emailAddress)
@@ -116,6 +117,7 @@ struct AccountSettingsView: View {
             }
 
             SecureField("Aktuelles Passwort", text: $emailPassword)
+                .textContentType(.password)
 
             Button {
                 Task { await saveEmail() }
@@ -150,8 +152,11 @@ struct AccountSettingsView: View {
     private var passwordSection: some View {
         Section {
             SecureField("Aktuelles Passwort", text: $currentPassword)
+                .textContentType(.password)
             SecureField("Neues Passwort", text: $newPassword)
+                .textContentType(.newPassword)
             SecureField("Neues Passwort wiederholen", text: $newPasswordConfirm)
+                .textContentType(.newPassword)
 
             Button {
                 Task { await changePassword() }
@@ -234,6 +239,7 @@ struct AccountSettingsView: View {
     private var deleteAccountSection: some View {
         Section {
             SecureField("Aktuelles Passwort", text: $deletePassword)
+                .textContentType(.password)
 
             Button(role: .destructive) {
                 showingDeleteConfirmation = true
