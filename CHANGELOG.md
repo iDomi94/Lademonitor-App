@@ -7,6 +7,14 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.20.0
+
+- Neues App-Symbol „Säule lädt Auto“: eine Ladesäule, per Kabel mit einem
+  Auto verbunden, auf dem eine Batterie den Ladestand zeigt – mit eigener
+  Fassung für den Dunkelmodus und getönte Symbole.
+- Dasselbe Motiv jetzt auch auf dem Erststart-Bildschirm („Drei Wege“), in
+  der Weboberfläche, der Android-App und Home Assistant.
+
 ## 1.18.2
 
 - Akku und Ladeverluste: Der Erklärtext unter der Auswertung erschien auch
