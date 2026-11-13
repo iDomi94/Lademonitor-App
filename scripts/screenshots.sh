@@ -32,8 +32,10 @@ has_server_account() {
     [[ -n "${SCREENSHOT_SERVER_URL:-}" && -n "${SCREENSHOT_USER:-}" && -n "${SCREENSHOT_PASSWORD:-}" ]]
 }
 
-# 6,9"-iPhone und 13"-iPad decken die Pflichtgroessen in App Store Connect ab.
+# Je eine Displaygroesse in App Store Connect: 6,9" (iPhone 17 Pro Max),
+# 6,3" (iPhone 18 Pro) und 13" (iPad Pro).
 DEVICES=(${(f)${DEVICES:-"iPhone 17 Pro Max
+iPhone 18 Pro
 iPad Pro 13-inch (M5)"}})
 LANGUAGES=(${=${LANGUAGES:-"de en"}})
 APPEARANCES=(${=${APPEARANCES:-"light dark"}})
@@ -51,8 +53,6 @@ OUTPUT_DIR="screenshots"
 WORK_DIR="$(mktemp -d)"
 # KEEP_WORK=1 behaelt Ergebnis-Bundles und Elementbaeume zur Fehlersuche.
 trap '[[ -n "${KEEP_WORK:-}" ]] || rm -rf "$WORK_DIR"' EXIT
-
-rm -rf "$OUTPUT_DIR"
 
 # Einmal bauen, danach nur noch testen.
 echo "==> Build"
@@ -119,7 +119,10 @@ for devices in json.load(sys.stdin)['devices'].values():
                 -resultBundlePath "$result" \
                 -quiet
 
+            # Nur den Ordner dieses Durchgangs leeren - Bilder anderer
+            # Geraete/Sprachen aus frueheren Laeufen bleiben liegen.
             target="$OUTPUT_DIR/$source/$appearance/$language/$device"
+            rm -rf "$target"
             mkdir -p "$target"
             export_dir="$WORK_DIR/export-${run}"
             xcrun xcresulttool export attachments --path "$result" --output-path "$export_dir"
