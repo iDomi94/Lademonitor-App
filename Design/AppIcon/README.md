@@ -16,3 +16,12 @@ sind aus diesen SVGs in 1024 × 1024 px gerendert, quadratisch ohne Maske.
 Für Liquid Glass (iOS 26) lässt sich das Motiv in Icon Composer in Ebenen
 aufteilen: Hintergrund als Verlauf, darüber Säule, Auto und das türkise Kabel
 mit Ring und Batterie als Akzent-Ebene.
+
+## Ein Ursprung für alle Repos
+
+Seit Server 0.53.0 liegen dieselben SVGs auch in
+`design/logo/saeule-auto/` von Lademonitor-Server. Der Generator dort
+(`design/logo/icons.py --ios <Pfad zu diesem Repo>`) schreibt AppIcon (hell,
+dunkel, getönt) und `LogoMark.png` und bedient genauso Android, die
+Weboberfläche und Home Assistant. Änderungen am Motiv also dort machen und
+neu erzeugen, damit die Varianten nicht auseinanderlaufen.
