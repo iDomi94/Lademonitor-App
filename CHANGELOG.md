@@ -7,6 +7,18 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.22.0
+
+- „Lädt gerade“ in der Ladevorgangsliste sieht jetzt aus wie die übrigen
+  Ladevorgänge: Fahrzeug, Anbieter und Ort, SoC und Kilometerstand, der
+  Ladebalken mit den roten Markierungen aus den Ladebalken-Einstellungen
+  und rechts kWh, Gesamtpreis und Preis je kWh.
+- Der Preis ist eine Schätzung (mit ~ gekennzeichnet): der letzte Preis des
+  Anbieters am erkannten Ladeort, sonst dein Durchschnittspreis („Ø-Preis
+  geschätzt“). Braucht Lademonitor-Server 0.55.0, auf älteren Servern steht
+  dort ein Hinweis.
+- Auch die „Lädt gerade“-Karte im Dashboard zeigt die roten Markierungen.
+
 ## 1.21.0
 
 - Anmelden: Der Passwortmanager (Schlüsselbund, 1Password usw.) erkennt

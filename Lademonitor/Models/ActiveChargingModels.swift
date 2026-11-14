@@ -27,6 +27,15 @@ struct ActiveCharging: Codable, Identifiable {
     /// Zeitpunkt des Berichts, aus dem die Werte stammen - beim
     /// VW-Datenportal gern Stunden alt.
     let updatedAt: Date?
+    /// Preisschaetzung (Server ab 0.55.0, sonst nil): Ladeort und Anbieter nur,
+    /// wenn die Position zu einem Ladeort passt.
+    let locationName: String?
+    let providerName: String?
+    let pricePerKwh: Double?
+    let priceTotal: Double?
+    /// "provider" = letzter Preis des Anbieters am Ladeort, "average" =
+    /// Durchschnittspreis, nil = keine Schaetzung moeglich.
+    let priceSource: String?
 
     enum CodingKeys: String, CodingKey {
         case vehicleId = "vehicle_id"
@@ -42,7 +51,14 @@ struct ActiveCharging: Codable, Identifiable {
         case odometerKm = "odometer_km"
         case outsideTempC = "outside_temp_c"
         case updatedAt = "updated_at"
+        case locationName = "location_name"
+        case providerName = "provider_name"
+        case pricePerKwh = "price_per_kwh"
+        case priceTotal = "price_total"
+        case priceSource = "price_source"
     }
+
+    var priceIsAverage: Bool { priceSource == "average" }
 
     var sourceLabel: String {
         switch source {

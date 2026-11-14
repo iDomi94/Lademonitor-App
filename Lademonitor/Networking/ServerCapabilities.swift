@@ -12,10 +12,13 @@ import Combine
 enum ServerFeature {
     /// THG-Quote als Gutschrift (Kostenkategorie "thg").
     case thgCredit
+    /// Preisschaetzung auf der "Lädt gerade"-Karte.
+    case activeChargingPrice
 
     var minimumServerVersion: String {
         switch self {
         case .thgCredit: return "0.50.0"
+        case .activeChargingPrice: return "0.55.0"
         }
     }
 }
