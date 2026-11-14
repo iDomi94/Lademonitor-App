@@ -16048,6 +16048,23 @@
           }
         }
       }
+    },
+    "Ø-Preis geschätzt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø-Preis geschätzt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "est. from avg. price"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
