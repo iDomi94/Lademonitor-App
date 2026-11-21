@@ -16,6 +16,9 @@ import Foundation
 /// - Zugeordnet wird ueber den Kalendertag von `startTime`.
 /// - Umgelegt nach kWh; haben alle Vorgaenge keine Energie, gleichmaessig.
 ///   Auf den Cent gerundet, der Rest landet beim ersten groessten Vorgang.
+/// - Gutschriften (Server ab 0.56.0) sind Gebuehren mit negativem Betrag und
+///   laufen genauso durch; `singleSession` legt den ganzen Betrag auf die
+///   erste Ladung des Anbieters ab dem Startdatum.
 enum LocalFeeAllocator {
     struct Period {
         let feeId: String
@@ -25,6 +28,9 @@ enum LocalFeeAllocator {
         /// Exklusive, lokale Mitternacht.
         let end: Date
         let amount: Double
+        /// Ganzer Betrag auf die erste Ladung des Anbieters ab `start`
+        /// (Server ab 0.56.0), `end` ist dann bedeutungslos.
+        var singleSession: Bool = false
     }
 
     struct Allocation {
@@ -55,6 +61,10 @@ enum LocalFeeAllocator {
         if start > untilDay { return [] }
 
         if fee.interval == .once {
+            if fee.singleSession {
+                return [Period(feeId: fee.id, providerId: fee.providerId, start: start, end: nextDay(start),
+                               amount: fee.amount, singleSession: true)]
+            }
             let last = endIncl.flatMap { $0 >= start ? $0 : nil } ?? start
             return [Period(feeId: fee.id, providerId: fee.providerId, start: start, end: nextDay(last), amount: fee.amount)]
         }
@@ -119,9 +129,15 @@ enum LocalFeeAllocator {
         for fee in fees {
             let candidates = byProvider[fee.providerId] ?? []
             for period in periods(of: fee, until: until) {
-                let inPeriod = candidates.filter {
-                    let day = calendar.startOfDay(for: $0.startTime)
-                    return period.start <= day && day < period.end
+                let inPeriod: [ChargingSession]
+                if period.singleSession {
+                    let first = candidates.first { calendar.startOfDay(for: $0.startTime) >= period.start }
+                    inPeriod = first.map { [$0] } ?? []
+                } else {
+                    inPeriod = candidates.filter {
+                        let day = calendar.startOfDay(for: $0.startTime)
+                        return period.start <= day && day < period.end
+                    }
                 }
                 if inPeriod.isEmpty {
                     result.unallocated.append(period)

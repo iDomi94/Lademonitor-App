@@ -139,7 +139,8 @@ struct SessionDetailView: View {
                         LabeledContent("Pro kWh", value: String(format: "%.4f €", pricePerKwh))
                     }
                     if let feeShare = session.feeShare {
-                        LabeledContent("Grundgebühr-Anteil", value: String(format: "%.2f €", feeShare))
+                        LabeledContent(feeShare < 0 ? LocalizedStringKey("Gutschrift-Anteil") : LocalizedStringKey("Grundgebühr-Anteil"),
+                                       value: String(format: "%.2f €", feeShare))
                         if let effective = session.effectiveTotal {
                             LabeledContent("Effektiv gesamt", value: String(format: "%.2f €", effective))
                         }
@@ -151,7 +152,7 @@ struct SessionDetailView: View {
                     Text("Preis")
                 } footer: {
                     if session.feeShare != nil {
-                        Text("Die Grundgebühr des Anbieters wird nach kWh auf alle seine Ladevorgänge im jeweiligen Zeitraum umgelegt.")
+                        Text("Grundgebühren und Gutschriften des Anbieters werden nach kWh auf seine Ladevorgänge im jeweiligen Zeitraum umgelegt.")
                     }
                 }
             }

@@ -76,7 +76,7 @@ struct SettingsView: View {
                     Label("Anbieter", systemImage: "bolt.fill")
                 }
                 NavigationLink(value: SettingsRoute.fees) {
-                    Label("Grundgebühren", systemImage: "creditcard")
+                    Label("Grundgebühren & Gutschriften", systemImage: "creditcard")
                 }
                 // Kosten und Erinnerungen hingen frueher in der
                 // Fahrzeug-Detailansicht - dort waren sie zu versteckt.

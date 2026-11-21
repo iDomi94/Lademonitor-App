@@ -184,7 +184,10 @@ enum TariffCalculator {
     static func suggestedMonthlyFee(providerId: String, fees: [ProviderFee], now: Date = Date()) -> Double? {
         let today = calendar.startOfDay(for: now)
         let active = fees.filter { fee in
-            guard fee.providerId == providerId, calendar.startOfDay(for: fee.startDate) <= today else { return false }
+            // Gutschriften und Betraege fuer eine einzelne Ladung sind keine
+            // laufende Grundgebuehr des Tarifs.
+            guard fee.providerId == providerId, fee.amount > 0, !fee.singleSession,
+                  calendar.startOfDay(for: fee.startDate) <= today else { return false }
             if let end = fee.endDate { return calendar.startOfDay(for: end) >= today }
             return true
         }

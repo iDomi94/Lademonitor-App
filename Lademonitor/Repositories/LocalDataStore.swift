@@ -385,7 +385,8 @@ final class LocalDataStore {
         return LocalFeeAllocator.allocate(fees: fees, sessions: sessions)
     }
 
-    func createFee(_ payload: ProviderFeePayload) throws -> ProviderFee {
+    func createFee(_ rawPayload: ProviderFeePayload) throws -> ProviderFee {
+        let payload = rawPayload.normalized()
         let fee = LocalProviderFee(
             providerId: payload.providerId,
             amount: payload.amount,
@@ -393,7 +394,9 @@ final class LocalDataStore {
             startDate: Calendar.current.startOfDay(for: payload.startDate),
             endDate: payload.endDate.map { Calendar.current.startOfDay(for: $0) },
             label: payload.label,
-            notes: payload.notes
+            notes: payload.notes,
+            singleSession: payload.singleSession,
+            spreadMonths: payload.spreadMonths
         )
         context.insert(fee)
         try context.save()
@@ -402,7 +405,8 @@ final class LocalDataStore {
 
     /// Ersetzt alle Felder, wie der PATCH der App (siehe ProviderFeePayload):
     /// ein leeres Enddatum hebt eine Kuendigung wieder auf.
-    func updateFee(id: String, _ payload: ProviderFeePayload) throws -> ProviderFee {
+    func updateFee(id: String, _ rawPayload: ProviderFeePayload) throws -> ProviderFee {
+        let payload = rawPayload.normalized()
         guard let fee = try findFee(id: id) else { throw LocalStoreError.notFound }
         fee.providerId = payload.providerId
         fee.amount = payload.amount
@@ -411,6 +415,8 @@ final class LocalDataStore {
         fee.endDate = payload.endDate.map { Calendar.current.startOfDay(for: $0) }
         fee.label = payload.label
         fee.notes = payload.notes
+        fee.singleSession = payload.singleSession
+        fee.spreadMonths = payload.spreadMonths
         fee.updatedAt = Date()
         fee.isDirty = true
         try context.save()

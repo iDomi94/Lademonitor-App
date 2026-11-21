@@ -13,7 +13,7 @@ enum FeeInterval: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .monthly: return String(localized: "Monatlich")
         case .yearly: return String(localized: "Jährlich")
-        case .once: return String(localized: "Einmalig (Zeitraum)")
+        case .once: return String(localized: "Einmalig")
         }
     }
 
@@ -47,12 +47,65 @@ struct ProviderFee: Codable, Identifiable, Hashable {
     var endDate: Date?
     var label: String?
     var notes: String?
+    /// Nur bei `.once` (Server ab 0.56.0): ganzer Betrag auf die erste Ladung
+    /// des Anbieters ab `startDate`, kein Enddatum.
+    var singleSession: Bool = false
+    /// Nur bei `.once` (Server ab 0.56.0): Zeitraum in Monaten ab `startDate`;
+    /// `endDate` ist daraus abgeleitet (siehe ProviderFee.spreadEndDate).
+    var spreadMonths: Int? = nil
+
+    /// Negativer Betrag = Gutschrift (Rabatt, Gutschein), Server ab 0.56.0.
+    var isCredit: Bool { amount < 0 }
 
     enum CodingKeys: String, CodingKey {
         case id, amount, interval, label, notes
         case providerId = "provider_id"
         case startDate = "start_date"
         case endDate = "end_date"
+        case singleSession = "single_session"
+        case spreadMonths = "spread_months"
+    }
+
+    init(
+        id: String, providerId: String, amount: Double, interval: FeeInterval,
+        startDate: Date, endDate: Date?, label: String?, notes: String?,
+        singleSession: Bool = false, spreadMonths: Int? = nil
+    ) {
+        self.id = id
+        self.providerId = providerId
+        self.amount = amount
+        self.interval = interval
+        self.startDate = startDate
+        self.endDate = endDate
+        self.label = label
+        self.notes = notes
+        self.singleSession = singleSession
+        self.spreadMonths = spreadMonths
+    }
+
+    /// Aeltere Server kennen die beiden neuen Felder nicht - dann gelten die
+    /// Vorgaben.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        providerId = try c.decode(String.self, forKey: .providerId)
+        amount = try c.decode(Double.self, forKey: .amount)
+        interval = try c.decode(FeeInterval.self, forKey: .interval)
+        startDate = try c.decode(Date.self, forKey: .startDate)
+        endDate = try c.decodeIfPresent(Date.self, forKey: .endDate)
+        label = try c.decodeIfPresent(String.self, forKey: .label)
+        notes = try c.decodeIfPresent(String.self, forKey: .notes)
+        singleSession = try c.decodeIfPresent(Bool.self, forKey: .singleSession) ?? false
+        spreadMonths = try c.decodeIfPresent(Int.self, forKey: .spreadMonths)
+    }
+
+    /// Letzter Tag bei "x Monate ab Start": Monatstag x Monate spaeter minus 1,
+    /// wie `routers/provider_fees.py::_normalize()` im Server.
+    static func spreadEndDate(start: Date, months: Int) -> Date {
+        let calendar = Calendar.current
+        let day = calendar.startOfDay(for: start)
+        let next = LocalFeeAllocator.addMonths(day, months)
+        return calendar.date(byAdding: .day, value: -1, to: next) ?? day
     }
 }
 
@@ -70,12 +123,35 @@ struct ProviderFeePayload: Encodable {
     var endDate: Date?
     var label: String?
     var notes: String?
+    var singleSession: Bool = false
+    var spreadMonths: Int? = nil
 
     enum CodingKeys: String, CodingKey {
         case amount, interval, label, notes
         case providerId = "provider_id"
         case startDate = "start_date"
         case endDate = "end_date"
+        case singleSession = "single_session"
+        case spreadMonths = "spread_months"
+    }
+
+    /// Bringt die abhaengigen Felder in dieselbe Form wie der Server
+    /// (`_normalize()`): nur bei `.once`, eine Ladung ohne Enddatum, x Monate
+    /// mit abgeleitetem Enddatum.
+    func normalized() -> ProviderFeePayload {
+        var p = self
+        if p.interval != .once {
+            p.singleSession = false
+            p.spreadMonths = nil
+        } else if p.singleSession {
+            p.spreadMonths = nil
+            p.endDate = nil
+        } else if let months = p.spreadMonths, months >= 1 {
+            p.endDate = ProviderFee.spreadEndDate(start: p.startDate, months: months)
+        } else {
+            p.spreadMonths = nil
+        }
+        return p
     }
 
     func encode(to encoder: Encoder) throws {
@@ -87,6 +163,8 @@ struct ProviderFeePayload: Encodable {
         try c.encode(endDate, forKey: .endDate)
         try c.encode(label, forKey: .label)
         try c.encode(notes, forKey: .notes)
+        try c.encode(singleSession, forKey: .singleSession)
+        try c.encode(spreadMonths, forKey: .spreadMonths)
     }
 }
 
@@ -107,6 +185,9 @@ final class LocalProviderFee {
     var endDate: Date?
     var label: String?
     var notes: String?
+    /// Seit 1.23.0 (leichte Migration, deshalb mit Vorgabewert).
+    var singleSession: Bool = false
+    var spreadMonths: Int? = nil
     var createdAt: Date
     var updatedAt: Date
     var isDirty: Bool
@@ -122,6 +203,8 @@ final class LocalProviderFee {
         endDate: Date? = nil,
         label: String? = nil,
         notes: String? = nil,
+        singleSession: Bool = false,
+        spreadMonths: Int? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         isDirty: Bool = true,
@@ -136,6 +219,8 @@ final class LocalProviderFee {
         self.endDate = endDate
         self.label = label
         self.notes = notes
+        self.singleSession = singleSession
+        self.spreadMonths = spreadMonths
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.isDirty = isDirty
@@ -151,7 +236,9 @@ final class LocalProviderFee {
             startDate: startDate,
             endDate: endDate,
             label: label,
-            notes: notes
+            notes: notes,
+            singleSession: singleSession,
+            spreadMonths: spreadMonths
         )
     }
 }

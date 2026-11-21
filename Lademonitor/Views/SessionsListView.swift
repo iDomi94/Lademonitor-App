@@ -400,8 +400,11 @@ private struct SessionRow: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                if let feeShare = session.feeShare {
-                    Text(String(format: String(localized: "+ %.2f € Grundgebühr"), feeShare))
+                if let feeShare = session.feeShare, feeShare != 0 {
+                    // Negativ = Gutschrift (Rabatt, Gutschein) ueberwiegt.
+                    Text(feeShare < 0
+                         ? String(format: String(localized: "− %.2f € Gutschrift"), -feeShare)
+                         : String(format: String(localized: "+ %.2f € Grundgebühr"), feeShare))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
