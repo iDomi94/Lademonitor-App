@@ -16065,6 +16065,380 @@
           }
         }
       }
+    },
+    "Gutschrift" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gutschrift"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "credit"
+          }
+        }
+      }
+    },
+    "Nächste Ladung ab %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste Ladung ab %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next charge from %@"
+          }
+        }
+      }
+    },
+    "%lld Monate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Monate"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld months"
+          }
+        }
+      }
+    },
+    "Die Gebühr wird nach kWh auf die Ladevorgänge des Anbieters im jeweiligen Zeitraum umgelegt und zählt in Gesamtkosten, Preis pro kWh und Kosten pro 100 km mit. Der Preis an der Säule bleibt unverändert. Eine Gutschrift (Rabatt, Gutschein) wird genauso umgelegt, nur abgezogen." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Gebühr wird nach kWh auf die Ladevorgänge des Anbieters im jeweiligen Zeitraum umgelegt und zählt in Gesamtkosten, Preis pro kWh und Kosten pro 100 km mit. Der Preis an der Säule bleibt unverändert. Eine Gutschrift (Rabatt, Gutschein) wird genauso umgelegt, nur abgezogen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fee is split by kWh across the provider's charging sessions in each period and counts towards total cost, price per kWh and cost per 100 km. The price at the charger stays unchanged. A credit (discount, voucher) is split the same way, only subtracted."
+          }
+        }
+      }
+    },
+    "Zum Beispiel ein Abo mit monatlicher Gebühr, das einen günstigeren kWh-Preis bringt, oder ein Gutschein des Anbieters." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zum Beispiel ein Abo mit monatlicher Gebühr, das einen günstigeren kWh-Preis bringt, oder ein Gutschein des Anbieters."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For example a subscription with a monthly fee that gives a lower price per kWh, or a voucher from the provider."
+          }
+        }
+      }
+    },
+    "Grundgebühren & Gutschriften" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühren & Gutschriften"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base fees & credits"
+          }
+        }
+      }
+    },
+    "Gutschriften: " : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gutschriften: "
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credits: "
+          }
+        }
+      }
+    },
+    "Verteilen auf" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verteilen auf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spread over"
+          }
+        }
+      }
+    },
+    "Bis einschließlich %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis einschließlich %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until %@ inclusive."
+          }
+        }
+      }
+    },
+    "Neue Gutschrift" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Gutschrift"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New credit"
+          }
+        }
+      }
+    },
+    "Gutschrift bearbeiten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gutschrift bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit credit"
+          }
+        }
+      }
+    },
+    "Ab (nächste Ladung)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab (nächste Ladung)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From (next charge)"
+          }
+        }
+      }
+    },
+    "Der ganze Betrag zählt bei der nächsten Ladung dieses Anbieters ab dem Datum." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der ganze Betrag zählt bei der nächsten Ladung dieses Anbieters ab dem Datum."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The whole amount counts towards this provider's next charge from the date."
+          }
+        }
+      }
+    },
+    "Verteilt nach kWh auf die Ladungen dieses Anbieters in den Monaten ab dem Datum." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verteilt nach kWh auf die Ladungen dieses Anbieters in den Monaten ab dem Datum."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Split by kWh across this provider's charges in the months from the date."
+          }
+        }
+      }
+    },
+    "Gebühr / Abo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebühr / Abo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fee / subscription"
+          }
+        }
+      }
+    },
+    "Gutschrift (Rabatt, Gutschein)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gutschrift (Rabatt, Gutschein)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit (discount, voucher)"
+          }
+        }
+      }
+    },
+    "Eine Ladung" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Ladung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One charge"
+          }
+        }
+      }
+    },
+    "Zeitraum bis Enddatum" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum bis Enddatum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Period until end date"
+          }
+        }
+      }
+    },
+    "− %.2f € Gutschrift" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "− %.2f € Gutschrift"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "− €%.2f credit"
+          }
+        }
+      }
+    },
+    "davon %.2f € Gutschriften" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "davon %.2f € Gutschriften"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "incl. €%.2f credits"
+          }
+        }
+      }
+    },
+    "Gutschrift-Anteil" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gutschrift-Anteil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit share"
+          }
+        }
+      }
+    },
+    "Grundgebühren und Gutschriften des Anbieters werden nach kWh auf seine Ladevorgänge im jeweiligen Zeitraum umgelegt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grundgebühren und Gutschriften des Anbieters werden nach kWh auf seine Ladevorgänge im jeweiligen Zeitraum umgelegt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The provider's base fees and credits are split by kWh across its charging sessions in each period."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

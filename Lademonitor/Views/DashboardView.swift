@@ -95,7 +95,7 @@ struct DashboardView: View {
                         StatCard(
                             label: String(localized: "Gesamtkosten"),
                             value: String(format: "%.2f €", stats.totalCost),
-                            detail: stats.totalFees.flatMap { $0 > 0 ? String(format: String(localized: "davon %.2f € Grundgebühren"), $0) : nil }
+                            detail: stats.totalFees.flatMap(feesDetailText)
                         )
                         StatCard(label: String(localized: "Ø Preis/kWh"), value: stats.avgPricePerKwh.map { String(format: "%.3f €", $0) } ?? "–")
                         StatCard(label: String(localized: "Ø Verbrauch/100km"), value: stats.avgConsumptionKwhPer100km.map { String(format: "%.1f kWh", $0) } ?? "–")
@@ -513,8 +513,8 @@ private struct ProviderPriceCard: View {
                         Text(detailLine(stat))
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        if let fees = stat.totalFees, fees > 0 {
-                            Text(String(format: String(localized: "davon %.2f € Grundgebühren"), fees))
+                        if let fees = stat.totalFees, let detail = feesDetailText(fees) {
+                            Text(detail)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -1181,4 +1181,12 @@ private struct LegendDot: View {
 
 #Preview {
     DashboardView()
+}
+
+/// "davon X € Grundgebühren" unter den Kosten - bzw. "davon X € Gutschriften",
+/// wenn Rabatte und Gutscheine (Server ab 0.56.0) ueberwiegen.
+func feesDetailText(_ fees: Double) -> String? {
+    if fees > 0 { return String(format: String(localized: "davon %.2f € Grundgebühren"), fees) }
+    if fees < 0 { return String(format: String(localized: "davon %.2f € Gutschriften"), -fees) }
+    return nil
 }

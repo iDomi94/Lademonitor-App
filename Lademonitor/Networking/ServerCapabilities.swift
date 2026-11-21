@@ -14,11 +14,15 @@ enum ServerFeature {
     case thgCredit
     /// Preisschaetzung auf der "Lädt gerade"-Karte.
     case activeChargingPrice
+    /// Gutschriften (Rabatt, Gutschein) und einmalige Betraege auf eine
+    /// Ladung bzw. x Monate bei den Grundgebuehren.
+    case providerCredit
 
     var minimumServerVersion: String {
         switch self {
         case .thgCredit: return "0.50.0"
         case .activeChargingPrice: return "0.55.0"
+        case .providerCredit: return "0.56.0"
         }
     }
 }
