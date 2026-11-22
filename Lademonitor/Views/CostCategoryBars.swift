@@ -34,12 +34,17 @@ private extension Color {
 }
 
 /// Ein liegender Balken je Kategorie, groesster Posten zuerst (die Liste
-/// kommt schon sortiert), Laenge relativ zum groessten Posten.
+/// kommt schon sortiert). Gutschriften (THG-Quote) kommen negativ und wachsen
+/// von einer Nulllinie aus nach LINKS, Kosten nach rechts - beide im selben
+/// Massstab, wie im Web (`renderCostBars`). Ohne Gutschrift liegt die
+/// Nulllinie ganz links und alles sieht aus wie bisher.
 struct CostCategoryBars: View {
     let categories: [CostCategoryStat]
 
-    // Gutschriften (THG-Quote) kommen negativ - Balkenlaenge nach Betrag.
-    private var maxAmount: Double { max(categories.map { abs($0.amount) }.max() ?? 0, 0.0001) }
+    private var maxPositive: Double { max(categories.map(\.amount).max() ?? 0, 0) }
+    private var maxNegative: Double { max(categories.map { -$0.amount }.max() ?? 0, 0) }
+    private var span: Double { max(maxPositive + maxNegative, 0.0001) }
+    private var hasCredit: Bool { maxNegative > 0 }
 
     var body: some View {
         VStack(spacing: 8) {
@@ -52,13 +57,26 @@ struct CostCategoryBars: View {
                         .minimumScaleFactor(0.8)
                         .frame(width: 110, alignment: .leading)
                     GeometryReader { geo in
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(CostCategoryStyle.color(stat.category))
-                            .frame(width: max(geo.size.width * abs(stat.amount) / maxAmount, 4))
+                        let zero = geo.size.width * maxNegative / span
+                        let width = max(geo.size.width * abs(stat.amount) / span, 4)
+                        let credit = stat.amount < 0
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(CostCategoryStyle.color(stat.category))
+                                .frame(width: width)
+                                .offset(x: credit ? zero - width : zero)
+                            if hasCredit {
+                                Rectangle()
+                                    .fill(Color.secondary.opacity(0.7))
+                                    .frame(width: 2)
+                                    .offset(x: zero - 1)
+                            }
+                        }
                     }
                     .frame(height: 16)
                     Text(stat.amount.formatted(.currency(code: "EUR").precision(.fractionLength(0))))
                         .font(.caption.monospacedDigit())
+                        .foregroundStyle(stat.amount < 0 ? Color.green : Color.primary)
                         .frame(width: 70, alignment: .trailing)
                 }
             }
