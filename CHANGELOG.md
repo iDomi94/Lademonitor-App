@@ -7,6 +7,13 @@ bis zur nächsten `## `-Überschrift wird übernommen – höchstens 4000 Zeiche
 Fehlt der Abschnitt, gehen stattdessen die Commit-Titel seit dem letzten Tag
 nach TestFlight.
 
+## 1.23.1
+
+- Gesamtkosten: Gutschriften wie die THG-Quote wachsen jetzt von einer
+  Nulllinie aus nach links, Kosten nach rechts, beide im selben Maßstab.
+  Der Betrag einer Gutschrift steht in Grün. Gilt im Dashboard und bei den
+  Fahrzeugkosten.
+
 ## 1.23.0
 
 - Gutschriften für Ladeanbieter: unter „Grundgebühren & Gutschriften“ lässt
